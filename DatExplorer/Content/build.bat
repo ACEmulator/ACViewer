@@ -1,0 +1,1 @@
+2mgfx.exe %1.fx %1.mgfxo /Profile:DirectX_11
