@@ -81,11 +81,6 @@ namespace ACE.Server.Physics.Common
         /// </summary>
         public static SetupModel GetSetup(uint id)
         {
-            if (id >> 24 == 0x01)
-            {
-                var debug = true;
-            }
-
             return DatManager.PortalDat.ReadFromDat<SetupModel>(id);
         }
 

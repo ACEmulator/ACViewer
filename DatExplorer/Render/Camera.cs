@@ -113,7 +113,7 @@ namespace DatExplorer
             largest = Math.Max(largest, 1.2f);
             var isAdjustWidth = face.Width > face.Height;
             var adjustWidth = face.Width / face.Height;
-            var ratio = 1280.0f / 720.0f;
+            //var ratio = 1280.0f / 720.0f;
 
             Position = new Vector3(center.X, center.Y, center.Z);
 

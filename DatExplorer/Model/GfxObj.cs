@@ -51,12 +51,8 @@ namespace DatExplorer.Model
         {
             Polygons = new List<Polygon>();
 
-            var i = 0;
             foreach (var polygon in _gfxObj.Polygons.Values)
-            {
-                //Console.WriteLine("Poly " + (i++));
                 Polygons.Add(new Polygon(this, polygon));
-            }
         }
 
         public void BuildVertexBuffer()

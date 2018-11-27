@@ -17,11 +17,6 @@ namespace DatExplorer.Entity
 
         public override string ToString()
         {
-            if (_sphere == null)
-            {
-                var debug = true;
-            }
-
             return $"Origin: {_sphere.Origin}, Radius: {_sphere.Radius}";
         }
     }
