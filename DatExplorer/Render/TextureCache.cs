@@ -66,7 +66,9 @@ namespace DatExplorer.Render
             var width = texture.Width;
             var height = texture.Height;
 
-            var data = texture.SourceData;
+            var data = new byte[texture.SourceData.Length];
+            Array.Copy(texture.SourceData, data, data.Length);  // fixme: multiple rgb reversals
+
             if (surfaceFormat == SurfaceFormat.Color)
             {
                 switch (texture.Format)
@@ -160,7 +162,9 @@ namespace DatExplorer.Render
             var width = texture.Width;
             var height = texture.Height;
 
-            var data = texture.SourceData;
+            var data = new byte[texture.SourceData.Length];
+            Array.Copy(texture.SourceData, data, data.Length);  // fixme: multiple rgb reversals
+
             if (surfaceFormat == SurfaceFormat.Color)
             {
                 switch (texture.Format)
