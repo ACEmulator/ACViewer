@@ -33,6 +33,8 @@ namespace DatExplorer
 
         public KeyboardState PrevKeyboardState;
 
+        public bool DungeonMode = false;
+
         public WorldViewer()
         {
             Instance = this;
@@ -48,6 +50,8 @@ namespace DatExplorer
             var landblock = LScape.get_landblock(landblockID);
             if (landblock.IsDungeon)
                 radius = 0;
+
+            DungeonMode = landblock.IsDungeon;
 
             var center_lbx = landblockID >> 24;
             var center_lby = landblockID >> 16 & 0xFF;
@@ -83,12 +87,14 @@ namespace DatExplorer
             Buffer.Init();
             TextureCache.Init();
 
+            DungeonMode = false;
+
             var dx = (int)(endBlock.X - startBlock.X) + 1;
             var dy = (int)(startBlock.Y - endBlock.Y) + 1;
             var numBlocks = dx * dy;
 
             MainWindow.Status.WriteLine($"Loading {numBlocks} landblocks");
-            await Task.Run(() => Thread.Sleep(10));
+            await Task.Run(() => Thread.Sleep(50));
 
             Landblocks = new Dictionary<uint, R_Landblock>();
             for (var lbx = (uint)startBlock.X; lbx <= endBlock.X; lbx++)

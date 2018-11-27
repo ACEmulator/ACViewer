@@ -148,6 +148,8 @@ namespace DatExplorer.Render
                     batch.AddPolygon(vertices, polygon, transform);
                 }
             }
+            foreach (var staticObj in envCell.StaticObjs)
+                AddStaticObj(staticObj, RB_StaticObjs);
         }
 
         public void BuildTerrain()
@@ -238,7 +240,9 @@ namespace DatExplorer.Render
 
         public void DrawBuffer(Dictionary<uint, RenderBatch> batches)
         {
-            SetRasterizerState(CullMode.None);  // todo: neg uv indices
+            var cullMode = WorldViewer.Instance.DungeonMode ? CullMode.CullClockwiseFace : CullMode.None;
+
+            SetRasterizerState(cullMode);  // todo: neg uv indices
             Effect.CurrentTechnique = Effect.Techniques["TexturedNoShading"];
 
             foreach (var batch in batches.Values)

@@ -26,6 +26,10 @@ namespace DatExplorer
         public float Speed { get; set; } = Model_Speed;
         public float SpeedMod = 1.5f;
 
+        public static float NearPlane_Model = 0.1f;
+        public static float NearPlane_World = 1.0f;
+
+        public float NearPlane = 1.0f;
         public int DrawDistance = 10000;
 
         public float FieldOfView = 90.0f;
@@ -64,6 +68,13 @@ namespace DatExplorer
             Up = Vector3.UnitZ;
 
             CreateLookAt();
+        }
+
+        public void SetNearPlane(float nearPlane)
+        {
+            NearPlane = nearPlane;
+            CreateProjection();
+            Render.Render.Effect.Parameters["xProjection"].SetValue(ProjectionMatrix);
         }
 
         public void InitLandblock(R_Landblock landblock)
@@ -184,7 +195,7 @@ namespace DatExplorer
             return ProjectionMatrix = Matrix.CreatePerspectiveFieldOfView(
                  FieldOfView * 0.0174533f / 2,       // degrees to radians
                  aspectRatio,
-                 1.0f,
+                 NearPlane,
                  DrawDistance);
         }
 

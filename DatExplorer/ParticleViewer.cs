@@ -220,6 +220,9 @@ namespace DatExplorer
 
                     //var indexCnt = poly.IndexArray.Count;
                     //GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, indexCnt / 3);
+                    if (poly == null || poly._polygon == null || poly._polygon.Vertices == null)
+                        continue;
+
                     var vertexCnt = poly._polygon.Vertices.Count;
                     GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexCnt / 3);
                 }

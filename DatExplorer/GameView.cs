@@ -58,10 +58,15 @@ namespace DatExplorer
                         Camera.Position = new Vector3(-10, -10, 10);
                         Camera.Dir = Vector3.Normalize(-Camera.Position);
                         Camera.Speed = Camera.Model_Speed;
+                        Camera.SetNearPlane(Camera.NearPlane_Model);
                     }
                     if (_viewMode == ViewMode.Particle)
                     {
                         Camera.InitParticle();
+                    }
+                    if (_viewMode == ViewMode.World)
+                    {
+                        Camera.SetNearPlane(Camera.NearPlane_World);
                     }
                 }
             }
