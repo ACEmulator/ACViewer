@@ -71,27 +71,7 @@ namespace DatExplorer.Model
                 var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
                 Surfaces.Add(surface);
 
-                if (surface.ColorValue != 0)
-                {
-                    // swatch
-                    var swatch = new Texture2D(GraphicsDevice, 1, 1);
-                    var a = surface.ColorValue >> 24;
-                    var r = (surface.ColorValue >> 16) & 0xFF;
-                    var g = (surface.ColorValue >> 8) & 0xFF;
-                    var b = surface.ColorValue & 0xFF;
-                    a = 0;
-                    swatch.SetData(new Color[] { new Color(r, g, b, a) });
-                    Textures.Add(swatch);
-                    continue;
-                }
-
-                var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(surface.OrigTextureId);
-
-                foreach (var textureID in surfaceTexture.Textures)
-                {
-                    Textures.Add(TextureCache.LoadTexture(surface, textureID));
-                    break;
-                }
+                Textures.Add(TextureCache.Get(surfaceID));
             }
         }
     }

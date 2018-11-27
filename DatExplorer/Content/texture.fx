@@ -330,7 +330,7 @@ float4 CombineRoad(BaseData base, RoadData roads)
 
     if (h0 > 0)
     {
-        result = xOverlays.Sample(TextureSampler, float3(uvb, 32));
+        result = xOverlays.Sample(TextureSampler, float3(uvb, 4));
         float4 roadAlpha0 = xAlphas.Sample(TextureSampler, roads.Road0.xyz);
         result.a = 1 - roadAlpha0.a;
 

@@ -30,7 +30,7 @@ namespace DatExplorer.Render
             Textures = new Dictionary<uint, Texture2D>();
         }
 
-        public static Texture2D LoadTexture(uint textureID, bool useDummy = false)
+        private static Texture2D LoadTexture(uint textureID, bool useDummy = false)
         {
             if (textureID >> 24 == 0x04)
                 return LoadPalette(textureID);
@@ -127,7 +127,7 @@ namespace DatExplorer.Render
             return tex;
         }
 
-        public static Texture2D LoadTexture(Surface surface, uint textureID, bool useDummy = false)
+        private static Texture2D LoadTexture(Surface surface, uint textureID, bool useDummy = false)
         {
             MainWindow.Instance.Status.WriteLine($"Loading texture {textureID:X8}");
 
@@ -221,7 +221,7 @@ namespace DatExplorer.Render
             return tex;
         }
 
-        public static void AdjustClip(Texture2D texture)
+        private static void AdjustClip(Texture2D texture)
         {
             var colors = new Microsoft.Xna.Framework.Color[texture.Width * texture.Height];
             texture.GetData(colors);
@@ -233,7 +233,7 @@ namespace DatExplorer.Render
             texture.SetData(colors);
         }
 
-        public static SurfaceFormat GetSurfaceFormat(SurfacePixelFormat spf)
+        private static SurfaceFormat GetSurfaceFormat(SurfacePixelFormat spf)
         {
             switch (spf)
             {
@@ -258,7 +258,7 @@ namespace DatExplorer.Render
             }
         }
 
-        public static Texture2D LoadPalette(uint paletteID)
+        private static Texture2D LoadPalette(uint paletteID)
         {
             var colors = LoadPaletteColors(paletteID, out var width, out var height);
 
@@ -268,9 +268,9 @@ namespace DatExplorer.Render
             return texture;
         }
 
-        public static List<Microsoft.Xna.Framework.Color> Padding = Enumerable.Repeat(Microsoft.Xna.Framework.Color.Black, 384).ToList();
+        private static List<Microsoft.Xna.Framework.Color> Padding = Enumerable.Repeat(Microsoft.Xna.Framework.Color.Black, 384).ToList();
 
-        public static Texture2D LoadPaletteSet(uint paletteSetID)
+        private static Texture2D LoadPaletteSet(uint paletteSetID)
         {
             var paletteSet = DatManager.PortalDat.ReadFromDat<PaletteSet>(paletteSetID);
 
@@ -294,9 +294,9 @@ namespace DatExplorer.Render
             return texture;
         }
 
-        public static int PaletteWidth = 64;
+        private static int PaletteWidth = 64;
 
-        public static Microsoft.Xna.Framework.Color[] LoadPaletteColors(uint paletteID, out int width, out int height)
+        private static Microsoft.Xna.Framework.Color[] LoadPaletteColors(uint paletteID, out int width, out int height)
         {
             var palette = DatManager.PortalDat.ReadFromDat<Palette>(paletteID);
 
@@ -333,7 +333,7 @@ namespace DatExplorer.Render
             return colors;
         }
 
-        public static Texture2D GetTexture2DFromBitmap(GraphicsDevice device, Bitmap bitmap)
+        private static Texture2D GetTexture2DFromBitmap(GraphicsDevice device, Bitmap bitmap)
         {
             Texture2D tex = new Texture2D(device, bitmap.Width, bitmap.Height, false, SurfaceFormat.Color);
 
@@ -356,7 +356,7 @@ namespace DatExplorer.Render
             return tex;
         }
 
-        public static byte[] AddAlpha(byte[] rgb)
+        private static byte[] AddAlpha(byte[] rgb)
         {
             var rgba = new byte[rgb.Length + rgb.Length / 3];
 
@@ -371,7 +371,7 @@ namespace DatExplorer.Render
             return rgba;
         }
 
-        public static void ConvertToABGR(byte[] argb)
+        private static void ConvertToABGR(byte[] argb)
         {
             for (var i = 0; i < argb.Length; i += 4)
             {
@@ -381,7 +381,7 @@ namespace DatExplorer.Render
             }
         }
 
-        public static byte[] IndexToColor(RenderSurface texture, bool isClipMap = false)
+        private static byte[] IndexToColor(RenderSurface texture, bool isClipMap = false)
         {
             var colors = GetColors(texture);
             var palette = DatManager.PortalDat.ReadFromDat<Palette>((uint)texture.DefaultPaletteId);
@@ -418,7 +418,7 @@ namespace DatExplorer.Render
             return output;
         }
 
-        public static List<int> GetColors(RenderSurface texture)
+        private static List<int> GetColors(RenderSurface texture)
         {
             var colors = new List<int>();
             using (BinaryReader reader = new BinaryReader(new MemoryStream(texture.SourceData)))
@@ -509,7 +509,7 @@ namespace DatExplorer.Render
             return null;
         }
 
-        public static Texture2D GetTexture(uint textureID)
+        private static Texture2D GetTexture(uint textureID)
         {
             if (Textures.TryGetValue(textureID, out var cached))
                 return cached;
@@ -519,12 +519,12 @@ namespace DatExplorer.Render
             return texture;
         }
 
-        public static Texture2D GetTexture(SurfaceTexture surfaceTexture)
+        private static Texture2D GetTexture(SurfaceTexture surfaceTexture)
         {
             return GetTexture(surfaceTexture.Textures[0]);
         }
 
-        public static Texture2D GetTexture(Surface surface, uint textureID)
+        private static Texture2D GetTexture(Surface surface, uint textureID)
         {
             if (Textures.TryGetValue(textureID, out var cached))
                 return cached;
