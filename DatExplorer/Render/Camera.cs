@@ -87,6 +87,8 @@ namespace DatExplorer
             Position = new Vector3(x * 192.0f, y * 192.0f, height + 50.0f);
 
             var lookAt = new Vector3(x * 192.0f + 96.0f, y * 192.0f + 96.0f, height);
+            if (landblock.Landblock.IsDungeon)
+                lookAt = new Vector3(x * 192.0f + 96.0f, (y - 1) * 192.0f + 96.0f, -50);
 
             Dir = Vector3.Normalize(lookAt - Position);
 
