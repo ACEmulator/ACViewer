@@ -35,6 +35,8 @@ namespace DatExplorer
 
         public bool DungeonMode = false;
 
+        public Model.BoundingBox BoundingBox;
+
         public WorldViewer()
         {
             Instance = this;
@@ -79,7 +81,15 @@ namespace DatExplorer
 
             Buffer.BuildBuffers();
 
-            Camera.InitLandblock(Landblocks[landblockID]);
+            var r_landblock = Landblocks[landblockID];
+
+            if (DungeonMode)
+            {
+                BoundingBox = new Model.BoundingBox(Buffer.RB_EnvCell);
+                Camera.InitDungeon(r_landblock, BoundingBox);
+            }
+            else
+                Camera.InitLandblock(r_landblock);
         }
 
         public async void LoadLandblocks(Vector2 startBlock, Vector2 endBlock)

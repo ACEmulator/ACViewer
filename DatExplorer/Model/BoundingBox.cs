@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using DatExplorer.Render;
 
 namespace DatExplorer.Model
 {
@@ -30,9 +31,24 @@ namespace DatExplorer.Model
 
         public BoundingBox(List<Vector3> verts)
         {
+            Init(verts);
+        }
+
+        public void Init(List<Vector3> verts)
+        {
             GetMinMax(verts);
             BuildVerts();
             BuildFaces();
+        }
+
+        public BoundingBox(Dictionary<uint, RenderBatch> batches)
+        {
+            var verts = new List<Vector3>();
+
+            foreach (var batch in batches.Values)
+                verts.AddRange(batch.Vertices.Select(v => v.Position));
+
+            Init(verts);
         }
 
         public void GetMinMax(List<Vector3> verts)

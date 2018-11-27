@@ -77,6 +77,37 @@ namespace DatExplorer
             Render.Render.Effect.Parameters["xProjection"].SetValue(ProjectionMatrix);
         }
 
+        public void InitDungeon(R_Landblock landblock, Model.BoundingBox box)
+        {
+            var size = box.Size;
+
+            var center = box.Center;
+
+            // draw a view plane from NW to SE
+            var p1 = new Vector3(box.Mins.X, box.Maxs.Y, center.Z);
+            var p2 = new Vector3(box.Maxs.X, box.Mins.Y, center.Z);
+
+            var length = Vector3.Distance(p1, p2);
+
+            var unit_length = (float)Math.Sqrt(length * length / 2);
+
+            var dist_scalar = 0.75f;
+            unit_length *= dist_scalar;
+
+            // move camera out in -x, -y by this distance
+            Position = center;
+            Position.X -= unit_length;
+            Position.Y -= unit_length;
+            Position.Z += unit_length;
+
+            Dir = Vector3.Normalize(box.Center - Position);
+
+            Up = Vector3.UnitZ;
+            Speed = World_Speed;
+
+            CreateLookAt();
+        }
+
         public void InitLandblock(R_Landblock landblock)
         {
             var x = landblock.Landblock.ID >> 24;
@@ -87,8 +118,6 @@ namespace DatExplorer
             Position = new Vector3(x * 192.0f, y * 192.0f, height + 50.0f);
 
             var lookAt = new Vector3(x * 192.0f + 96.0f, y * 192.0f + 96.0f, height);
-            if (landblock.Landblock.IsDungeon)
-                lookAt = new Vector3(x * 192.0f + 96.0f, (y - 1) * 192.0f + 96.0f, -50);
 
             Dir = Vector3.Normalize(lookAt - Position);
 
