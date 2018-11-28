@@ -1,0 +1,108 @@
+﻿<html>
+<head>
+	<title>AC DAT Explorer - Help</title>
+<style>
+body
+{
+	font-family: Arial;
+}
+p
+{
+	margin-left: 30px;
+}
+img
+{
+	max-width: 624px;
+	height: auto;
+	margin-left: 60px;
+	margin-bottom: 5px;
+}
+hr
+{
+	width: 85%;
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
+</style>
+</head>
+<body>
+    <h1>AC DAT Explorer - Help</h1>
+	<h3>Contents:</h3>
+	<ol>
+		<li><a href="#getting-started">Getting Started</a></li>
+		<li><a href="#file-types">File Types</a></li>
+		<li><a href="#world-map">World Map</a></li>
+	</ol>
+	
+	<h2 id="getting-started">Getting Started</h2>
+	<p>Navigate to the DatExplorer/bin/x64/Debug/ folder, and double-click the DatExplorer.exe file to launch AC DAT Explorer.</p>
+	<img src="images/DatExplorer.png">
+	<p>The first step is to load the AC folder into the application. In the menu bar at the top of the window, go to File > Open and browse to the folder that contains the AC .DAT files. Select any DAT to load the folder (can take a few seconds)</p>
+	<img src="images/OpenFile.png"><br><br>
+	<img src="images/Open.png">
+	
+	<h2 id="file-types">File Types</h2>
+	<p>On the left side of the window, there is a 'File Type' dropdown selector. This list contains all of the known file types within the DAT files that can be displayed:</p>
+	<img src="images/FileType.png">
+	<p>For a description of these file types, Optimshi has created an excellent website <a href="http://ac.yotesfan.com/">http://ac.yotesfan.com/</a> that gives an overview of what all of these files are.</p>
+	
+	<h3>client_cell_1.dat:</h3>
+	<p><b>0xFFFF - Landblock</b> - These are file IDs within the client_cell.dat that end with 0xFFFF. The world map contains 254x254 landblocks, and clicking on landblock will also bring up a world map in the viewer on the right side.</p>
+	<p><b>0xFFFE - LandblockInfo</b> - Contains additional info about the landblocks, such as how many buildings they contain, and how many indoor EnvCells are contained within the landblock (for dungeons and interiors).</p>
+	<p><b>0x100 - EnvCell</b> - These are dungeon and interior cells for each landblock. Clicking on an individual EnvCell will display it in the viewer.</p>
+	
+	<h3>client_portal.dat</h3>
+	<p><b>0x01 - GfxObj</b> - Graphics Objects are individual pieces of the 3D models. Some things like buildings that don't have any moving parts are just 1 large graphics object, but for moving creatures such as players and monsters, they are composed of multiple graphics object parts, that are linked together in the next file type. Clicking these files will show them in a model viewer.</p>
+	<p><b>0x02 - Setup</b> - An object that contains multiple GfxObj parts, usually with an associated animation table sent by the server. Clicking on a setup will show the assembled / animated model in the viewer, along with a list of all its animations available. Clicking on the animations to the right will show those in the viewer.</p>
+	<p><b>0x03 - Animation</b> - These are raw animations describing how an object changes over time. These raw lists of animations need to be linked up to a model to be displayed, which is usually done through a MotionTable sent by the server.</p>
+	<p><b>0x04 - Palette</b> - For textures which use indexed colors, these are all of the palettes in the game, and the individual colors they contain. Clicking on a palette ID from the list will show it in the image viewer.</p>
+	<p><b>0x05 - SurfaceTexture</b> - Each texture in the game can be displayed at multiple resolutions, ie. textures in the foreground will be displayed at max resolution, and distance textures will be displayed at half resolution (mipmaps). A SurfaceTexture has the different resolutions for each texture.</p>
+	<p><b>0x06 - Texture</b> - An individual image file. Clicking on these will display them in the image viewer.</p>
+	<p><b>0x08 - Surface</b> - Surfaces have a lot of additional info for a texture, such as if a clipmap, translucency, luminosity, and diffuse values.</p>
+	<p><b>0x09 - MotionTable</b> - A motion table links up objects to animations. It describes all of the motions an object can perform, and translates them to the raw animations. It also defines cycles, and which motions can link to other motions (ie. bow combat can perform the reload animation, but other combat stances might not have a reload motion).</p>
+	<p><b>0x0A - Sounds</b> - All of the sound effects in the game. Click on a sound to hear it!</p>
+	<p><b>0x0D - Environment</b> - each EnvCell in the cell.dat links to 1 Environment, which contains the vertices and polygons. The EnvCell contains the textures, so 1 environment can be textured differently. Clicking on an environment will show a wireframe view</p>
+	<p><b>0xE000002 - CharGen</b> - Contains information for character creation, templates, starter stats, starting towns and locations</p>
+	<p><b>0XE00001A - BadData</b> - Contains a list of expired IDs for game objects (weenies).</p>
+	<p><b>0x0F - PaletteSet</b> - A group of palettes w/ different shades. ie., this will define the indexed colors at different brightness.</p>
+	<p><b>0x10 - Clothing</b> - Contains information about the appearance and color shades for various pieces of clothing.</p>
+	<p><b>0x11 - DegradeInfo</b> - Contains information about the distances to switch to different rendering quality and detail textures for objects.</p>
+	<p><b>0x12 - Scene</b> - The tables which describe the pseudo-randomized scenery (trees, bushes, rocks) that appear on the landscape.</p>
+	<p><b>0x13 - Region</b> - One giant record that has a bunch of info describing the game world. Only 1 region was ever defined for AC (Dereth)</p>
+	<p><b>0x20 - SoundTable</b> - A sound table maps audio cues (such as 'death') to sound files for an object. The server sent the SoundTable IDs for each object.</p>
+	<p><b>0x22 - Enums</b> - Various lists of information defined in the dats, such as a mapping of character IDs -> character titles</p>
+	<p><b>0x23 - StringTable</b> - A list of strings of text defined in the dat files. Most of the text was sent by the server, but also a bunch of client-side text stored in here.
+	<p><b>0x25 - DIDs</b> - Links to different data IDs, ie. UI layout, attribute icons, etc.
+	<p><b>0x27 - Dual DIDs</b> - Weenies and their W_Class values</p>
+	<p><b>0x30 - CombatTable</b> - The combat maneuvers table describes which attacks a creature can perform, depending on its current stance / equipped items, along with the probabilities of performing special attacks.</p>
+	<p><b>0x32 - EmitterInfo</b> - A particle emitter. Click to display the particle system animations.</p>
+	<p><b>0x33 - PhysicsScript</b> - A script which can trigger different physical effects and actions in the game world.</p>
+	<p><b>0x34 - PhysicsScriptTable</b> - A mapping of physics script cues (such as BreatheFlame) to the actual PhysicsScript, along with different intensities.</p>
+	<hr>
+	<p>After selecting a file type, all files in the DAT matching that type will be displayed:</p>
+	<img src="images/SelectFile.png">
+	<p>Selecting the individual files will display the raw data in a navigable tree view below:</p>
+	<img src="images/FileInfo.png">
+	
+	<h2 id="world-map">World Map</h2>
+	<p>To access the World Map, go to the 'View' menu at the top of the application, and click 'World Viewer':<p>
+	<img src="images/ViewMenu.png">
+	<p>The World Map can also be accessed by select '0xFFFF - Landblock' or '0xFFFE - LandblockInfo' from the FileType selector.</p>
+	<img src="images/WorldMap.png">
+	<p>To zoom in and out of the world map, use the mouse scrollwheel.</p>
+	<img src="images/WorldMap_Zoom.png">
+	<p>To pan around the world map, click and drag with the RIGHT mouse button. The arrow keys can also be used.</p>
+	<p>There is a red square that appears on the mouse cursor. This square is the current landblock the mouse cursor is hovered over.</p>
+	<p>To view just 1 landblock, LEFT mouse click to bring up the 3D viewer for the current landblock highlighted by the red square.</p>
+	<img src="images/yaraq.png">
+	<p>To view a range of landblocks, click and drag the LEFT mouse button to select the range of landblocks you want to view.</p>
+	<img src="images/WorldMap_SelectRange.png"><br><br>
+	<img src="images/op.png">
+	<p>A word of caution: viewing more than 1k landblocks at a time may consume significant RAM, and take awhile to load, so try to keep the selection to a reasonable range!</p>
+	
+	<h2 id="world-viewer">World Viewer</h2>
+	<img src="images/op-house.png">
+	<p>To fly around the world viewer, use the WASD keys to move the camera around. To rotate the camera, click and hold the RIGHT mouse button in the world viewer area, and drag the mouse around.</p>
+	<p>To adjust the speed of the camera in the world viewer, use the mouse wheel.</p>
+</body>
+</html>

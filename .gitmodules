@@ -1,0 +1,3 @@
+[submodule "ACE"]
+	path = ACE
+	url = https://github.com/ACEmulator/ACE.git
