@@ -501,9 +501,6 @@
     <Resource Include="Icons\OpenFile_16x.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Help\index.html">
-      <Generator>MSBuild:Compile</Generator>
-    </Content>
     <None Include="Content\Images\highres.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

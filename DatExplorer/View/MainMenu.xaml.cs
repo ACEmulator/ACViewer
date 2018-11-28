@@ -83,7 +83,7 @@ namespace DatExplorer.View
 
         private void Guide_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(@"..\..\..\Help\index.html");
+            Process.Start(@"..\..\..\..\docs\index.html");
         }
     }
 }
