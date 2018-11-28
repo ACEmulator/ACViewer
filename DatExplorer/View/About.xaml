@@ -11,6 +11,6 @@
             <Run FontWeight="Bold">AC DAT Explorer - build 2018.11.25</Run><LineBreak /><LineBreak />
             Much thanks: the emulator teams, Pea, parad0x, and the AC community!<LineBreak />
         </TextBlock>
-        <Button Content="OK" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button Content="OK" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Width="75" Click="OK_Click"/>
     </Grid>
 </Window>

@@ -23,5 +23,10 @@ namespace DatExplorer.View
         {
             InitializeComponent();
         }
+
+        private void OK_Click(object sender, RoutedEventArgs e)
+        {
+            Close();   
+        }
     }
 }
