@@ -263,6 +263,17 @@ namespace ACE.Server.Physics.Common
             }
         }
 
+        public void ConstructNormals()
+        {
+            foreach (var polygon in Polygons)
+                foreach (var vertex in polygon.Vertices)
+                    vertex.Normal += polygon.Plane.Normal;
+
+            foreach (var polygon in Polygons)
+                foreach (var vertex in polygon.Vertices)
+                    vertex.Normal = Vector3.Normalize(vertex.Normal);
+        }
+
         public void ConstructUVs(uint landblockID)
         {
             for (uint x = 0; x < SidePolyCount; x++)
@@ -399,7 +410,10 @@ namespace ACE.Server.Physics.Common
                 ConstructPolygons(landblockID);
 
                 if (!PhysicsEngine.Instance.Server)
+                {
+                    ConstructNormals();
                     ConstructUVs(landblockID);      // client mode only
+                }
             }
 
             CalcWater();

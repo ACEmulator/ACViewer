@@ -10,6 +10,8 @@ float xPointSpriteSizeX;
 float xPointSpriteSizeY;
 float xOpacity;
 float3x3 xAlphaRot;
+float xAmbient;
+float3 xLightDirection;
 
 Texture2DArray xOverlays;
 Texture2DArray xAlphas;
@@ -54,6 +56,7 @@ struct VertexShaderOutput
     float4 Position : SV_POSITION;
 	//float3 Normal : TEXCOORD0;
     float4 Color : COLOR0;
+    float LightingFactor : COLOR1;
     float2 TextureCoord : TEXCOORD0;
     float2 AlphaCoord : TEXCOORD1;
 };
@@ -80,6 +83,7 @@ struct PSCombined
     BaseData Base;
     TerrainData Terrains;
     RoadData Roads;
+    float LightingFactor : COLOR1;
 };
 
 //------- Technique: ColoredNoShading --------
@@ -114,11 +118,79 @@ technique ColoredNoShading
     }
 }
 
+//------- Technique: Textured ----------
+
+VertexShaderOutput TexturedVS(float4 iPos : SV_POSITION, float3 iNormal : NORMAL, float2 iTexCoord: TEXCOORD0)
+{
+    VertexShaderOutput output = (VertexShaderOutput) 0;
+    float4 worldPos = mul(iPos, xWorld);
+    float4 viewPos = mul(worldPos, xView);
+    output.Position = mul(viewPos, xProjection);
+
+    output.TextureCoord = iTexCoord;
+    
+    float3 normal = normalize(mul(iNormal, xWorld));
+    output.LightingFactor = dot(normal, -xLightDirection);
+    
+    return output;
+}
+
+PixelShaderOutput TexturedPS(VertexShaderOutput input)
+{
+    PixelShaderOutput output = (PixelShaderOutput) 0;
+
+    output.Color = xTexture.Sample(TextureSampler, input.TextureCoord);
+
+ 	// only output completely opaque pixels
+    clip(output.Color.a < 1.0f ? -1 : 1);
+
+    output.Color.rgb *= saturate(input.LightingFactor) + xAmbient;
+
+    return output;
+}
+
+PixelShaderOutput TexturedTransPS(VertexShaderOutput input)
+{
+    PixelShaderOutput output = (PixelShaderOutput) 0;
+
+    output.Color = xTexture.Sample(TextureSampler, input.TextureCoord);
+
+	// only output semi-transparent pixels
+    clip(output.Color.a < 1.0f && output.Color.a >= 0.03125f ? 1 : -1);
+    //clip(output.Color.a < 1.0f ? 1 : -1);
+
+    output.Color.rgb *= saturate(input.LightingFactor) + xAmbient;
+
+    return output;
+}
+
+technique Textured
+{
+    pass Pass0
+    {
+        ZWriteEnable = true;
+
+        VertexShader = compile vs_4_0 TexturedVS();
+        PixelShader = compile ps_4_0 TexturedPS();
+    }
+    pass Pass1
+    {
+        ZWriteEnable = false;
+
+        AlphaBlendEnable = true;
+        DestBlend = InvSrcAlpha;
+        SrcBlend = SrcAlpha;
+
+        VertexShader = compile vs_4_0 TexturedVS();
+        PixelShader = compile ps_4_0 TexturedTransPS();
+    }
+}
+
 //------- Technique: TexturedNoShading --------
 
 VertexShaderOutput TexturedNoShadingVS(float4 iPos : SV_POSITION, float2 iTexCoord : TEXCOORD0)
 {
-    VertexShaderOutput output = (VertexShaderOutput)0;
+    VertexShaderOutput output = (VertexShaderOutput) 0;
 
     float4 worldPos = mul(iPos, xWorld);
     float4 viewPos = mul(worldPos, xView);
@@ -389,6 +461,9 @@ PSCombined LandscapeSinglePassVS(VertexShaderInput input)
     
     output.Roads = roads;
 
+    float3 normal = normalize(mul(input.Normal, xWorld));
+    output.LightingFactor = dot(normal, -xLightDirection);
+
     return output;
 }
 
@@ -420,7 +495,9 @@ float4 LandscapeSinglePassPS(PSCombined input) : COLOR
     float3 r1 = saturate(((1 - a2) * a1) * c1.rgb);
     float3 r2 = a2 * c2.rgb;
 
-    return float4(r0 + r1 + r2, 1);
+    float4 color = float4(r0 + r1 + r2, 1);
+    color.rgb *= saturate(input.LightingFactor) + xAmbient;
+    return color;
     //return c1;
     
     //return maskBlend3(b0, c1, c2, 1, ht, hr);
