@@ -498,20 +498,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ACE\Source\ACE.Common\ACE.Common.csproj">
-      <Project>{e7a43a6c-fe57-407e-8282-9874f4dd900e}</Project>
-      <Name>ACE.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ACE\Source\ACE.DatLoader\ACE.DatLoader.csproj">
-      <Project>{bf480964-06f1-4f97-abe9-ca238cc1d939}</Project>
-      <Name>ACE.DatLoader</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ACE\Source\ACE.Entity\ACE.Entity.csproj">
-      <Project>{4793d0d7-84c5-4d35-8619-65851080f9bd}</Project>
-      <Name>ACE.Entity</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Icons\OpenFile_16x.png" />
   </ItemGroup>
   <ItemGroup>
@@ -531,6 +517,20 @@
     <PackageReference Include="MonoGame.Framework.WpfInterop">
       <Version>1.7.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ACE\Source\ACE.Common\ACE.Common.csproj">
+      <Project>{7390aa69-13b1-45b9-b50b-0261f7cd4a64}</Project>
+      <Name>ACE.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACE\Source\ACE.DatLoader\ACE.DatLoader.csproj">
+      <Project>{baa1d75c-426a-44ca-a1b3-86fd101c7454}</Project>
+      <Name>ACE.DatLoader</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ACE\Source\ACE.Entity\ACE.Entity.csproj">
+      <Project>{473b5235-8870-465b-aa73-aeeebb51f53a}</Project>
+      <Name>ACE.Entity</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
