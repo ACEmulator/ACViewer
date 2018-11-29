@@ -30,9 +30,9 @@ namespace DatExplorer.Render
 
         public static void Init()
         {
-            if (Textures != null)
+            /*if (Textures != null)
                 foreach (var texture in Textures.Values)
-                    texture.Dispose();
+                    texture.Dispose();*/
 
             Textures = new Dictionary<uint, Texture2D>();
         }

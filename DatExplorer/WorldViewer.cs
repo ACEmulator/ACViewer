@@ -90,6 +90,8 @@ namespace DatExplorer
             }
             else
                 Camera.InitLandblock(r_landblock);
+
+            ClearPhysics();
         }
 
         public async void LoadLandblocks(Vector2 startBlock, Vector2 endBlock)
@@ -137,6 +139,17 @@ namespace DatExplorer
 
             Camera.InitLandblock(Landblocks[centerBlock]);
             GameView.ViewMode = ViewMode.World;
+
+            ClearPhysics();
+        }
+
+        public void ClearPhysics()
+        {
+            foreach (var landblock in Landblocks.Values)
+            {
+                var landblockID = landblock.Landblock.ID;
+                LScape.unload_landblock(landblockID);
+            }
         }
 
         public void ShowLoadStatus(int numBlocks)
