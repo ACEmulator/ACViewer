@@ -46,7 +46,7 @@ namespace DatExplorer
 
         public void LoadLandblock(uint landblockID, uint radius = 1)
         {
-            Buffer.Init();
+            Buffer.ClearBuffer();
             TextureCache.Init();
 
             var landblock = LScape.get_landblock(landblockID);
@@ -94,7 +94,7 @@ namespace DatExplorer
 
         public async void LoadLandblocks(Vector2 startBlock, Vector2 endBlock)
         {
-            Buffer.Init();
+            Buffer.ClearBuffer();
             TextureCache.Init();
 
             DungeonMode = false;
