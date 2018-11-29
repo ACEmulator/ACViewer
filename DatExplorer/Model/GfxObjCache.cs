@@ -9,6 +9,11 @@ namespace DatExplorer.Model
 
         static GfxObjCache()
         {
+            Init();
+        }
+
+        public static void Init()
+        {
             Cache = new Dictionary<uint, GfxObj>();
         }
 

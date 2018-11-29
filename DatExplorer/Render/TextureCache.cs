@@ -12,6 +12,7 @@ using ACE.Entity.Enum;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using DatExplorer.Model;
 using DatExplorer.View;
 
 namespace DatExplorer.Render
@@ -30,9 +31,12 @@ namespace DatExplorer.Render
 
         public static void Init()
         {
-            /*if (Textures != null)
+            if (Textures != null)
                 foreach (var texture in Textures.Values)
-                    texture.Dispose();*/
+                    texture.Dispose();
+
+            GfxObjCache.Init();
+            SetupCache.Init();
 
             Textures = new Dictionary<uint, Texture2D>();
         }
@@ -460,7 +464,7 @@ namespace DatExplorer.Render
             if (fileID >> 24 == 0x01)
             {
                 // gfxobj
-                var gfxObj = DatManager.PortalDat.ReadFromDat<GfxObj>(fileID);
+                var gfxObj = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.GfxObj>(fileID);
 
                 var surfaceID = gfxObj.Surfaces[0];
 
