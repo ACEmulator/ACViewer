@@ -46,6 +46,7 @@ SamplerState TextureSampler
     Texture = <xTexture>;
     MinFilter = Anisotropic;
     MagFilter = Linear;
+    MipFilter = Linear;
     AddressU = Wrap;
     AddressV = Wrap;
     MaxAnisotropy = 16;

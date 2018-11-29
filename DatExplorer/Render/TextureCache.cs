@@ -18,6 +18,9 @@ namespace DatExplorer.Render
 {
     public class TextureCache
     {
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
+        public static SpriteBatch spriteBatch => GameView.Instance.SpriteBatch;
+
         public static Dictionary<uint, Texture2D> Textures;
 
         static TextureCache()
@@ -122,8 +125,13 @@ namespace DatExplorer.Render
             }
             else
             {
-                tex = new Texture2D(GameView.Instance.GraphicsDevice, texture.Width, texture.Height, false, surfaceFormat);
-                tex.SetData(data);
+                if (surfaceFormat == SurfaceFormat.Color && texture.Width == texture.Height)
+                    tex = GenerateMipMaps(data, texture.Width);
+                else
+                {
+                    tex = new Texture2D(GameView.Instance.GraphicsDevice, texture.Width, texture.Height, false, surfaceFormat);
+                    tex.SetData(data);
+                }
             }
 
             return tex;
@@ -218,8 +226,13 @@ namespace DatExplorer.Render
             }
             else
             {
-                tex = new Texture2D(GameView.Instance.GraphicsDevice, texture.Width, texture.Height, false, surfaceFormat);
-                tex.SetData(data);
+                if (surfaceFormat == SurfaceFormat.Color && texture.Width == texture.Height)
+                    tex = GenerateMipMaps(data, texture.Width);
+                else
+                {
+                    tex = new Texture2D(GameView.Instance.GraphicsDevice, texture.Width, texture.Height, false, surfaceFormat);
+                    tex.SetData(data);
+                }
             }
 
             return tex;
@@ -536,6 +549,45 @@ namespace DatExplorer.Render
             var texture = LoadTexture(surface, textureID);
             Textures.Add(textureID, texture);
             return texture;
+        }
+
+        public static Texture2D GenerateMipMaps(byte[] data, int size)
+        {
+            var source = new Texture2D(GraphicsDevice, size, size, false, SurfaceFormat.Color);
+            source.SetData(data);
+
+            var texture = new Texture2D(GraphicsDevice, size, size, true, SurfaceFormat.Color);
+            texture.SetData(0, null, data, 0, data.Length);
+
+            var miplevel = new List<byte[]>();
+            var mipsize = size / 2;
+            while (true)
+            {
+                var mipmap = GenerateMipMap(source, mipsize);
+                var mipdata = new byte[mipsize * mipsize * 4];
+                mipmap.GetData(mipdata);
+                miplevel.Add(mipdata);
+                if (mipsize > 1)
+                    mipsize /= 2;
+                else
+                    break;
+            };
+
+            for (var i = 0; i < miplevel.Count; i++)
+                texture.SetData(i + 1, null, miplevel[i], 0, miplevel[i].Length);
+
+            return texture;
+        }
+
+        public static RenderTarget2D GenerateMipMap(Texture2D source, int size)
+        {
+            var renderTarget = new RenderTarget2D(GraphicsDevice, size, size);
+            GraphicsDevice.SetRenderTarget(renderTarget);
+            spriteBatch.Begin();
+            spriteBatch.Draw(source, new Microsoft.Xna.Framework.Rectangle(0, 0, size, size), Microsoft.Xna.Framework.Color.White);
+            spriteBatch.End();
+            GraphicsDevice.SetRenderTarget(null);
+            return renderTarget;
         }
     }
 }

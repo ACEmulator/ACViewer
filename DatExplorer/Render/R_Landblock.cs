@@ -186,22 +186,30 @@ namespace DatExplorer.Render
 
                 var texID = surfInfo.TerrainBase.TexGID;
                 var baseTexture = TextureCache.Get(texID);
+                var numLevels = baseTexture.LevelCount;
                 var numColors = baseTexture.Width * baseTexture.Height;
-                var data = new Color[numColors];
-                baseTexture.GetData(data, 0, numColors);
+                //var data = new Color[numColors];
+                //baseTexture.GetData(data, 0, numColors);
 
-                var overlays = new Texture2D(GraphicsDevice, baseTexture.Width, baseTexture.Height, false, SurfaceFormat.Color, 5);
-                overlays.SetData(0, 0, null, data, 0, numColors);
+                var mipData = baseTexture.GetMipData(numColors);
+
+                var overlays = new Texture2D(GraphicsDevice, baseTexture.Width, baseTexture.Height, true, SurfaceFormat.Color, 5);
+                //overlays.SetData(0, 0, null, data, 0, numColors);
+                for (var j = 0; j < numLevels; j++)
+                    overlays.SetData(j, 0, null, mipData[j], 0, mipData[j].Length);
 
                 // terrain overlays
                 for (var i = 0; i < surfInfo.TerrainOverlays.Count; i++)
                 {
                     var overlayID = surfInfo.TerrainOverlays[i].TexGID;
                     var overlayTexture = TextureCache.Get(overlayID);
-                    data = new Color[numColors];
-                    overlayTexture.GetData(data, 0, numColors);
+                    //data = new Color[numColors];
+                    //overlayTexture.GetData(data, 0, numColors);
+                    mipData = overlayTexture.GetMipData(numColors);
 
-                    overlays.SetData(0, i + 1, null, data, 0, numColors);
+                    //overlays.SetData(0, i + 1, null, data, 0, numColors);
+                    for (var j = 0; j < numLevels; j++)
+                        overlays.SetData(j, i + 1, null, mipData[j], 0, mipData[j].Length);
                 }
 
                 // road overlay
@@ -209,10 +217,13 @@ namespace DatExplorer.Render
                 {
                     var overlayID = surfInfo.RoadOverlay.TexGID;
                     var overlayTexture = TextureCache.Get(overlayID);
-                    data = new Color[numColors];
-                    overlayTexture.GetData(data, 0, numColors);
+                    //data = new Color[numColors];
+                    //overlayTexture.GetData(data, 0, numColors);
+                    mipData = overlayTexture.GetMipData(numColors);
 
-                    overlays.SetData(0, 4, null, data, 0, numColors);
+                    //overlays.SetData(0, 4, null, data, 0, numColors);
+                    for (var j = 0; j < numLevels; j++)
+                        overlays.SetData(j, 4, null, mipData[j], 0, mipData[j].Length);
                 }
 
                 //Console.WriteLine($"Adding {surfnum}");

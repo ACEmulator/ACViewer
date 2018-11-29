@@ -22,6 +22,7 @@ namespace DatExplorer
     public class GameView : WpfGame
     {
         public WpfGraphicsDeviceService _graphicsDeviceManager;
+        public SpriteBatch SpriteBatch;
 
         public WpfKeyboard _keyboard;
         public WpfMouse _mouse;
@@ -87,6 +88,8 @@ namespace DatExplorer
                 PreferMultiSampling = UseMSAA
             };
 
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            
             // wpf and keyboard need reference to the host control in order to receive input
             // this means every WpfGame control will have it's own keyboard & mouse manager which will only react if the mouse is in the control
             _keyboard = new WpfKeyboard(this);
