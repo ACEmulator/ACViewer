@@ -220,6 +220,8 @@ namespace DatExplorer.Render
         public void Draw()
         {
             Effect.Parameters["xWorld"].SetValue(Matrix.Identity);
+            Effect.Parameters["xLightDirection"].SetValue(-Vector3.UnitZ);
+            Effect.Parameters["xAmbient"].SetValue(0.5f);
 
             DrawTerrain();
 
@@ -243,7 +245,8 @@ namespace DatExplorer.Render
             var cullMode = WorldViewer.Instance.DungeonMode ? CullMode.CullClockwiseFace : CullMode.None;
 
             SetRasterizerState(cullMode);  // todo: neg uv indices
-            Effect.CurrentTechnique = Effect.Techniques["TexturedNoShading"];
+            //Effect.CurrentTechnique = Effect.Techniques["TexturedNoShading"];
+            Effect.CurrentTechnique = Effect.Techniques["Textured"];
 
             foreach (var batch in batches.Values)
                 batch.Draw();
