@@ -32,6 +32,25 @@ namespace DatExplorer.Render
             RB_Scenery = new Dictionary<uint, RenderBatch>();
         }
 
+        public void ClearBuffer()
+        {
+            foreach (var batch in TerrainGroups.Values)
+                batch.Dispose();
+
+            ClearBuffer(RB_EnvCell);
+            ClearBuffer(RB_StaticObjs);
+            ClearBuffer(RB_Buildings);
+            ClearBuffer(RB_Scenery);
+
+            Init();
+        }
+
+        public void ClearBuffer(Dictionary<uint, RenderBatch> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.Dispose();
+        }
+
         public void AddOutdoor(R_Landblock landblock)
         {
             AddTerrain(landblock);

@@ -65,5 +65,10 @@ namespace DatExplorer.Render
                 GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, NumItems);
             }
         }
+
+        public void Dispose()
+        {
+            VertexBuffer.Dispose();
+        }
     }
 }

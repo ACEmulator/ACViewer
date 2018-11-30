@@ -138,6 +138,7 @@
     <Compile Include="Entity\TimeOfDay.cs" />
     <Compile Include="Entity\TMTerrainDesc.cs" />
     <Compile Include="Extensions\PositionExtensions.cs" />
+    <Compile Include="Extensions\TextureExtensions.cs" />
     <Compile Include="Extensions\Vector2Extensions.cs" />
     <Compile Include="Extensions\VertexExtensions.cs" />
     <Compile Include="FileTypes\CellLandblock.cs" />

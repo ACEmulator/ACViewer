@@ -8,6 +8,11 @@ namespace DatExplorer.Model
 
         static SetupCache()
         {
+            Init();
+        }
+
+        public static void Init()
+        {
             Cache = new Dictionary<uint, Setup>();
         }
 
