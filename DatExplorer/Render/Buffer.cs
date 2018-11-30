@@ -11,6 +11,7 @@ namespace DatExplorer.Render
         public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
 
         public Dictionary<uint, TerrainBatch> TerrainGroups;   // key: surfnum
+        public Dictionary<uint, InstanceBatch> RB_Instances;   // key: setup id
         public Dictionary<uint, RenderBatch> RB_EnvCell;       // key: surface id
         public Dictionary<uint, RenderBatch> RB_StaticObjs;
         public Dictionary<uint, RenderBatch> RB_Buildings;
@@ -26,6 +27,7 @@ namespace DatExplorer.Render
         public void Init()
         {
             TerrainGroups = new Dictionary<uint, TerrainBatch>();
+            RB_Instances = new Dictionary<uint, InstanceBatch>();
             RB_EnvCell = new Dictionary<uint, RenderBatch>();
             RB_StaticObjs = new Dictionary<uint, RenderBatch>();
             RB_Buildings = new Dictionary<uint, RenderBatch>();
@@ -37,6 +39,7 @@ namespace DatExplorer.Render
             foreach (var batch in TerrainGroups.Values)
                 batch.Dispose();
 
+            ClearBuffer(RB_Instances);
             ClearBuffer(RB_EnvCell);
             ClearBuffer(RB_StaticObjs);
             ClearBuffer(RB_Buildings);
@@ -46,6 +49,12 @@ namespace DatExplorer.Render
         }
 
         public void ClearBuffer(Dictionary<uint, RenderBatch> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.Dispose();
+        }
+
+        public void ClearBuffer(Dictionary<uint, InstanceBatch> batches)
         {
             foreach (var batch in batches.Values)
                 batch.Dispose();
@@ -85,7 +94,8 @@ namespace DatExplorer.Render
         public void AddStaticObjs(R_Landblock landblock)
         {
             foreach (var obj in landblock.StaticObjs)
-                AddStaticObj(obj, RB_StaticObjs);
+                //AddStaticObj(obj, RB_StaticObjs);
+                AddInstanceObj(obj, RB_Instances);
         }
 
         public void AddStaticObj(R_PhysicsObj obj, Dictionary<uint, RenderBatch> batches)
@@ -122,6 +132,19 @@ namespace DatExplorer.Render
             }
         }
 
+        public void AddInstanceObj(R_PhysicsObj obj, Dictionary<uint, InstanceBatch> batches)
+        {
+            var setupID = obj.Setup.Setup._setup.Id;
+            batches.TryGetValue(setupID, out var batch);
+            if (batch == null)
+            {
+                batch = new InstanceBatch(obj);
+                batches.Add(setupID, batch);
+            }
+            else
+                batch.AddInstance(obj);
+        }
+
         public void AddBuildings(R_Landblock landblock)
         {
             foreach (var building in landblock.Buildings)
@@ -131,7 +154,8 @@ namespace DatExplorer.Render
         public void AddScenery(R_Landblock landblock)
         {
             foreach (var scenery in landblock.Scenery)
-                AddStaticObj(scenery, RB_Scenery);
+                //AddStaticObj(scenery, RB_Scenery);
+                AddInstanceObj(scenery, RB_Instances);
         }
 
         public void AddEnvCells(R_Landblock landblock)
@@ -168,7 +192,8 @@ namespace DatExplorer.Render
                 }
             }
             foreach (var staticObj in envCell.StaticObjs)
-                AddStaticObj(staticObj, RB_StaticObjs);
+                //AddStaticObj(staticObj, RB_StaticObjs);
+                AddInstanceObj(staticObj, RB_Instances);
         }
 
         public void BuildTerrain()
@@ -181,6 +206,7 @@ namespace DatExplorer.Render
         {
             BuildTerrain();
 
+            BuildBuffer(RB_Instances);
             BuildBuffer(RB_StaticObjs);
             BuildBuffer(RB_Buildings);
             BuildBuffer(RB_EnvCell);
@@ -200,12 +226,14 @@ namespace DatExplorer.Render
             var buildingCnt = QueryBuffer(RB_Buildings);
             var sceneryCnt = QueryBuffer(RB_Scenery);
             var envCellCnt = QueryBuffer(RB_EnvCell);
+            var instanceCnt = QueryBuffer(RB_Instances, out var drawCnt);
 
             Console.WriteLine($"Terrain: {terrainCnt:N0} / {TerrainGroups.Count:N0}");
             Console.WriteLine($"StaticObjs: {staticObjCnt:N0} / {RB_StaticObjs.Count:N0}");
             Console.WriteLine($"Buildings: {buildingCnt:N0} / {RB_Buildings.Count:N0}");
             Console.WriteLine($"Scenery: {sceneryCnt:N0} / {RB_Scenery.Count:N0}");
             Console.WriteLine($"EnvCells: {envCellCnt:N0} / {RB_EnvCell.Count:N0}");
+            Console.WriteLine($"Instances: {instanceCnt:N0} / {RB_Instances.Count:N0} / {drawCnt:N0}");
         }
 
         public int QueryBuffer(Dictionary<uint, RenderBatch> buffer)
@@ -218,10 +246,31 @@ namespace DatExplorer.Render
             return count;
         }
 
+        public int QueryBuffer(Dictionary<uint, InstanceBatch> buffer, out int drawCnt)
+        {
+            var vertexCnt = 0;
+            drawCnt = 0;
+
+            foreach (var batch in buffer.Values)
+            {
+                foreach (var draw in batch.DrawCalls.Values)
+                    vertexCnt += draw.Vertices.Count;
+
+                drawCnt += batch.DrawCalls.Count;
+            }
+            return vertexCnt;
+        }
+
         public void BuildBuffer(Dictionary<uint, RenderBatch> batches)
         {
             foreach (var batch in batches.Values)
                 batch.BuildBuffer();
+        }
+
+        public void BuildBuffer(Dictionary<uint, InstanceBatch> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.OnCompleted();
         }
 
         public static void SetRasterizerState(CullMode cullMode = CullMode.CullClockwiseFace)
@@ -248,6 +297,7 @@ namespace DatExplorer.Render
             DrawBuffer(RB_Buildings);
             DrawBuffer(RB_EnvCell);
             DrawBuffer(RB_Scenery);
+            DrawBuffer(RB_Instances);
         }
 
         public void DrawTerrain()
@@ -266,6 +316,18 @@ namespace DatExplorer.Render
             SetRasterizerState(cullMode);  // todo: neg uv indices
             //Effect.CurrentTechnique = Effect.Techniques["TexturedNoShading"];
             Effect.CurrentTechnique = Effect.Techniques["Textured"];
+
+            foreach (var batch in batches.Values)
+                batch.Draw();
+        }
+
+        public void DrawBuffer(Dictionary<uint, InstanceBatch> batches)
+        {
+            var cullMode = WorldViewer.Instance.DungeonMode ? CullMode.CullClockwiseFace : CullMode.None;
+
+            SetRasterizerState(cullMode);  // todo: neg uv indices
+            //Effect.CurrentTechnique = Effect.Techniques["TexturedInstanceNoShading"];
+            Effect.CurrentTechnique = Effect.Techniques["TexturedInstance"];
 
             foreach (var batch in batches.Values)
                 batch.Draw();

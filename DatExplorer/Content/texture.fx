@@ -16,6 +16,51 @@ float3 xLightDirection;
 Texture2DArray xOverlays;
 Texture2DArray xAlphas;
 
+SamplerState TextureSampler
+{
+    Texture = <xTexture>;
+    MinFilter = Anisotropic;
+    MagFilter = Linear;
+    MipFilter = Linear;
+    AddressU = Wrap;
+    AddressV = Wrap;
+    MaxAnisotropy = 16;
+};
+
+struct VertexPositionColor
+{
+    float4 Position : SV_POSITION;
+    float4 Color : COLOR;
+};
+
+struct VertexPositionNormalTexture
+{
+    float4 Position : SV_POSITION;
+    float4 Normal : NORMAL;
+    float4 TextureCoord : TEXCOORD0;
+};
+
+struct VertexInstance
+{
+    float4 Position : POSITION1;
+    float2 HeadingScale : TEXCOORD1;
+};
+
+struct VertexShaderOutput
+{
+    float4 Position : SV_POSITION;
+	//float3 Normal : TEXCOORD0;
+    float4 Color : COLOR0;
+    float LightingFactor : COLOR1;
+    float2 TextureCoord : TEXCOORD0;
+    float2 AlphaCoord : TEXCOORD1;
+};
+
+struct PixelShaderOutput
+{
+    float4 Color : COLOR0;
+};
+
 struct BaseData
 {
     float4 Position : SV_POSITION0;
@@ -41,32 +86,6 @@ struct RoadData
     float4 Road1 : TEXCOORD7;
 };
 
-SamplerState TextureSampler
-{
-    Texture = <xTexture>;
-    MinFilter = Anisotropic;
-    MagFilter = Linear;
-    MipFilter = Linear;
-    AddressU = Wrap;
-    AddressV = Wrap;
-    MaxAnisotropy = 16;
-};
-
-struct VertexShaderOutput
-{
-    float4 Position : SV_POSITION;
-	//float3 Normal : TEXCOORD0;
-    float4 Color : COLOR0;
-    float LightingFactor : COLOR1;
-    float2 TextureCoord : TEXCOORD0;
-    float2 AlphaCoord : TEXCOORD1;
-};
-
-struct PixelShaderOutput
-{
-    float4 Color : COLOR0;
-};
-
 struct VertexShaderInput
 {
     float4 Position : SV_POSITION0;
@@ -89,25 +108,22 @@ struct PSCombined
 
 //------- Technique: ColoredNoShading --------
 
-VertexShaderOutput ColoredNoShadingVS(float4 inPos : SV_POSITION, float4 inColor : COLOR)
+VertexShaderOutput ColoredNoShadingVS(VertexPositionColor vertex)
 {
-    VertexShaderOutput Output = (VertexShaderOutput)0;
+    VertexShaderOutput Output = (VertexShaderOutput) 0;
+
     float4x4 preViewProjection = mul(xView, xProjection);
     float4x4 preWorldViewProjection = mul(xWorld, preViewProjection);
     
-    Output.Position = mul(inPos, preWorldViewProjection);
-    Output.Color = inColor;
+    Output.Position = mul(vertex.Position, preWorldViewProjection);
+    Output.Color = vertex.Color;
     
     return Output;
 }
 
-PixelShaderOutput ColoredNoShadingPS(VertexShaderOutput PSIn)
+float4 ColoredNoShadingPS(VertexShaderOutput vsData) : COLOR
 {
-    PixelShaderOutput Output = (PixelShaderOutput)0;
-    
-    Output.Color = PSIn.Color;
-
-    return Output;
+    return vsData.Color;
 }
 
 technique ColoredNoShading
@@ -121,16 +137,16 @@ technique ColoredNoShading
 
 //------- Technique: Textured ----------
 
-VertexShaderOutput TexturedVS(float4 iPos : SV_POSITION, float3 iNormal : NORMAL, float2 iTexCoord: TEXCOORD0)
+VertexShaderOutput TexturedVS(VertexPositionNormalTexture vertex)
 {
     VertexShaderOutput output = (VertexShaderOutput) 0;
-    float4 worldPos = mul(iPos, xWorld);
+    float4 worldPos = mul(vertex.Position, xWorld);
     float4 viewPos = mul(worldPos, xView);
     output.Position = mul(viewPos, xProjection);
 
-    output.TextureCoord = iTexCoord;
+    output.TextureCoord = vertex.TextureCoord;
     
-    float3 normal = normalize(mul(iNormal, xWorld));
+    float3 normal = normalize(mul(vertex.Normal, xWorld));
     output.LightingFactor = dot(normal, -xLightDirection);
     
     return output;
@@ -187,6 +203,97 @@ technique Textured
     }
 }
 
+//------- Technique: TexturedInstance --------
+
+VertexShaderOutput TexturedInstanceVS(VertexPositionNormalTexture model, VertexInstance instance)
+{
+    VertexShaderOutput output = (VertexShaderOutput) 0;
+
+    matrix<float, 4, 4> translation =
+    {
+        1.0f, 0.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        instance.Position.x, instance.Position.y, instance.Position.z, 1.0f
+    };
+
+    matrix<float, 4, 4> rotation =
+    {
+        cos(instance.HeadingScale.x), -sin(instance.HeadingScale.x), 0.0f, 0.0f,
+        sin(instance.HeadingScale.x), cos(instance.HeadingScale.x), 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 1.0f
+    };
+
+    matrix<float, 4, 4> scale =
+    {
+        instance.HeadingScale.y, 0, 0, 0,
+        0, instance.HeadingScale.y, 0, 0,
+        0, 0, instance.HeadingScale.y, 0,
+        0, 0, 0, 1.0f
+    };
+
+    float4 instancePos = mul(mul(mul(model.Position, rotation), scale), translation);
+
+    float4x4 preViewProjection = mul(xView, xProjection);
+    float4x4 preWorldViewProjection = mul(xWorld, preViewProjection);
+
+    output.Position = mul(instancePos, preWorldViewProjection);
+	//output.Normal = input.Normal;
+    output.TextureCoord = model.TextureCoord;
+
+    float3 normal = normalize(mul(model.Normal, xWorld));
+    output.LightingFactor = dot(normal, -xLightDirection);
+
+    return output;
+}
+
+float4 TexturedInstancePS(VertexShaderOutput input) : COLOR
+{
+    float4 color = xTexture.Sample(TextureSampler, input.TextureCoord);
+
+ 	// only output completely opaque pixels
+    clip(color.a < 1.0f ? -1 : 1);
+
+    color.rgb *= saturate(input.LightingFactor) + xAmbient;
+
+    return color;
+}
+
+float4 TexturedInstanceTransPS(VertexShaderOutput input) : COLOR
+{
+    float4 color = xTexture.Sample(TextureSampler, input.TextureCoord);
+
+	// only output semi-transparent pixels
+    clip(color.a < 1.0f && color.a >= 0.03125f ? 1 : -1);
+
+    color.rgb *= saturate(input.LightingFactor) + xAmbient;
+
+    return color;
+}
+
+technique TexturedInstance
+{
+    pass Pass0
+    {
+        ZWriteEnable = true;
+
+        VertexShader = compile vs_4_0 TexturedInstanceVS();
+        PixelShader = compile ps_4_0 TexturedInstancePS();
+    }
+    pass Pass1
+    {
+        ZWriteEnable = false;
+
+        AlphaBlendEnable = true;
+        DestBlend = InvSrcAlpha;
+        SrcBlend = SrcAlpha;
+
+        VertexShader = compile vs_4_0 TexturedInstanceVS();
+        PixelShader = compile ps_4_0 TexturedInstanceTransPS();
+    }
+}
+
 //------- Technique: TexturedNoShading --------
 
 VertexShaderOutput TexturedNoShadingVS(float4 iPos : SV_POSITION, float2 iTexCoord : TEXCOORD0)
@@ -210,7 +317,7 @@ PixelShaderOutput TexturedNoShadingPS(VertexShaderOutput input)
     output.Color = xTexture.Sample(TextureSampler, input.TextureCoord);
 
  	// only output completely opaque pixels
-    //output.Color.a *= xOpacity;
+    output.Color.a *= xOpacity;
     clip(output.Color.a < 1.0f ? -1 : 1);
 
     return output;
@@ -223,9 +330,8 @@ PixelShaderOutput TexturedNoShadingTransPS(VertexShaderOutput input)
     output.Color = xTexture.Sample(TextureSampler, input.TextureCoord);
 
 	// only output semi-transparent pixels
-    //output.Color.a *= xOpacity;
+    output.Color.a *= xOpacity;
     clip(output.Color.a < 1.0f && output.Color.a >= 0.03125f ? 1 : -1);
-    //clip(output.Color.a < 1.0f ? 1 : -1);
 
     return output;
 }

@@ -226,6 +226,8 @@
     <Compile Include="Render\Buffer.cs" />
     <Compile Include="Render\DrawCount.cs" />
     <Compile Include="Render\EffectParameters.cs" />
+    <Compile Include="Render\InstanceBatch.cs" />
+    <Compile Include="Render\InstanceBatchDraw.cs" />
     <Compile Include="Render\RenderBatch.cs" />
     <Compile Include="Render\R_CellStruct.cs" />
     <Compile Include="Render\R_EnvCell.cs" />
@@ -233,6 +235,7 @@
     <Compile Include="Render\R_EnvironmentCache.cs" />
     <Compile Include="Render\R_Landblock.cs" />
     <Compile Include="Render\TerrainBatch.cs" />
+    <Compile Include="Model\VertexInstance.cs" />
     <Compile Include="TextureViewer.cs" />
     <Compile Include="ViewObject.cs" />
     <Compile Include="View\About.xaml.cs">
