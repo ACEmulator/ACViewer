@@ -30,7 +30,7 @@ namespace DatExplorer
         public static float NearPlane_World = 1.0f;
 
         public float NearPlane = 1.0f;
-        public int DrawDistance = 10000;
+        public int DrawDistance = 60000;
 
         public float FieldOfView = 90.0f;
 

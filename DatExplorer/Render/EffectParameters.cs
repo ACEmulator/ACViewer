@@ -68,5 +68,15 @@ namespace DatExplorer.Render
 
             return clone;
         }
+
+        public void Dispose()
+        {
+            if (Texture != null)
+                Texture.Dispose();
+            if (Overlays != null)
+                Overlays.Dispose();
+            if (Alphas != null)
+                Alphas.Dispose();
+        }
     }
 }

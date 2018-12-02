@@ -9,5 +9,10 @@ namespace DatExplorer
         {
             return new VertexPositionNormalTexture(Vector3.Transform(_v.Position, transform), _v.Normal, _v.TextureCoordinate);
         }
+
+        public static VertexPositionNormalTextures Transform(this VertexPositionNormalTexture _v, Matrix transform, byte textureIdx)
+        {
+            return new VertexPositionNormalTextures(Vector3.Transform(_v.Position, transform), _v.Normal, _v.TextureCoordinate, textureIdx);
+        }
     }
 }

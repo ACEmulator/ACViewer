@@ -10,6 +10,7 @@ namespace ACE.Server.Physics.Collision
 {
     public class GfxObj
     {
+        public DatLoader.FileTypes.GfxObj _dat;
         public uint ID;
         public CVertexArray VertexArray;
         public Dictionary<ushort, Polygon> Polygons;
@@ -29,6 +30,8 @@ namespace ACE.Server.Physics.Collision
         public GfxObj(DatLoader.FileTypes.GfxObj gfxObj)
         {
             if (gfxObj == null) return;
+
+            _dat = gfxObj;
 
             ID = gfxObj.Id;
             VertexArray = gfxObj.VertexArray;

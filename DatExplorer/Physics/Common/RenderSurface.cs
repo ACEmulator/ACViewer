@@ -4,7 +4,7 @@ namespace ACE.Server.Physics.Common
 {
     public class RenderSurface
     {
-        public DatLoader.FileTypes.RenderSurface _renderSurface;
+        public DatLoader.FileTypes.Texture _renderSurface;
 
         public int Width;
         public int Height;
@@ -17,7 +17,7 @@ namespace ACE.Server.Physics.Common
         {
         }
 
-        public RenderSurface(DatLoader.FileTypes.RenderSurface renderSurface)
+        public RenderSurface(DatLoader.FileTypes.Texture renderSurface)
         {
             _renderSurface = renderSurface;
 

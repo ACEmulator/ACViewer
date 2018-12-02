@@ -71,7 +71,7 @@ namespace DatExplorer.View
                 new Entity.FileType(0x03, "Animation", typeof(ACE.DatLoader.FileTypes.Animation)),
                 new Entity.FileType(0x04, "Palette", typeof(ACE.DatLoader.FileTypes.Palette)),
                 new Entity.FileType(0x05, "SurfaceTexture", typeof(ACE.DatLoader.FileTypes.SurfaceTexture)),
-                new Entity.FileType(0x06, "Textures", typeof(RenderSurface)),
+                new Entity.FileType(0x06, "Textures", typeof(ACE.DatLoader.FileTypes.Texture)),
                 new Entity.FileType(0x08, "Surface", typeof(ACE.DatLoader.FileTypes.Surface)),
                 new Entity.FileType(0x09, "MotionTable", typeof(ACE.DatLoader.FileTypes.MotionTable)),
                 new Entity.FileType(0x0A, "Sound", typeof(Wave)),
@@ -234,8 +234,8 @@ namespace DatExplorer.View
                     TextureViewer.LoadTexture(fileID);
                     break;
                 case 0x06:
-                    var texture = DatManager.PortalDat.ReadFromDat<RenderSurface>(fileID);
-                    FileInfo.SetInfo(new Texture(texture).BuildTree());
+                    var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(fileID);
+                    FileInfo.SetInfo(new FileTypes.Texture(texture).BuildTree());
                     GameView.ViewMode = ViewMode.Texture;
                     TextureViewer.LoadTexture(fileID);
                     break;

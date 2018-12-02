@@ -115,7 +115,7 @@ namespace DatExplorer.Render
                 GraphicsDevice.Indices = polygon.IndexBuffer;
 
                 var surfaceIdx = polygon._polygon.PosSurface;
-                Effect.Parameters["xTexture"].SetValue(textures[surfaceIdx]);
+                Effect.Parameters["xTextures"].SetValue(textures[surfaceIdx]);
 
                 foreach (var pass in Effect.CurrentTechnique.Passes)
                 {

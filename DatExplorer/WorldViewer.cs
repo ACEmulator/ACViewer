@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop.Input;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Common;
+using DatExplorer.Model;
 using DatExplorer.Render;
 using DatExplorer.View;
 
@@ -20,7 +21,7 @@ namespace DatExplorer
 
         public static WorldViewer Instance;
 
-        public Dictionary<uint, R_Landblock> Landblocks;
+        //public Dictionary<uint, R_Landblock> Landblocks;
 
         public PhysicsEngine Physics;
 
@@ -58,7 +59,10 @@ namespace DatExplorer
             var center_lbx = landblockID >> 24;
             var center_lby = landblockID >> 16 & 0xFF;
 
-            Landblocks = new Dictionary<uint, R_Landblock>();
+            //Landblocks = new Dictionary<uint, R_Landblock>();
+            R_Landblock r_landblock = null;
+            R_Landblock centerBlock = null;
+
             for (var lbx = (int)(center_lbx - radius); lbx <= center_lbx + radius; lbx++)
             {
                 if (lbx < 0 || lbx > 254) continue;
@@ -73,15 +77,19 @@ namespace DatExplorer
                     landblock = LScape.get_landblock(lbid);
                     timer.Stop();
 
+                    r_landblock = new R_Landblock(landblock);
+                    LScape.unload_landblock(lbid);
+
+                    if (landblockID == lbid)
+                        centerBlock = r_landblock;
+
                     MainWindow.Status.WriteLine($"Loaded {lbid:X8} in {timer.Elapsed.TotalMilliseconds}ms");
 
-                    Landblocks.Add(lbid, new R_Landblock(landblock));
+                    //Landblocks.Add(lbid, new R_Landblock(landblock));
                 }
             }
 
             Buffer.BuildBuffers();
-
-            var r_landblock = Landblocks[landblockID];
 
             if (DungeonMode)
             {
@@ -91,7 +99,7 @@ namespace DatExplorer
             else
                 Camera.InitLandblock(r_landblock);
 
-            ClearPhysics();
+            FreeResources();
         }
 
         public async void LoadLandblocks(Vector2 startBlock, Vector2 endBlock)
@@ -105,10 +113,19 @@ namespace DatExplorer
             var dy = (int)(startBlock.Y - endBlock.Y) + 1;
             var numBlocks = dx * dy;
 
+            var size = endBlock - startBlock;
+            var center = startBlock + size / 2;
+            var centerX = (uint)Math.Round(center.X);
+            var centerY = (uint)Math.Round(center.Y);
+            var landblockID = centerX << 24 | centerY << 16 | 0xFFFF;
+
             MainWindow.Status.WriteLine($"Loading {numBlocks} landblocks");
             await Task.Run(() => Thread.Sleep(50));
 
-            Landblocks = new Dictionary<uint, R_Landblock>();
+            //Landblocks = new Dictionary<uint, R_Landblock>();
+            R_Landblock r_landblock = null;
+            R_Landblock centerBlock = null;
+
             for (var lbx = (uint)startBlock.X; lbx <= endBlock.X; lbx++)
             {
                 if (lbx < 0 || lbx > 254) continue;
@@ -123,33 +140,30 @@ namespace DatExplorer
                     var landblock = LScape.get_landblock(lbid);
                     timer.Stop();
 
+                    r_landblock = new R_Landblock(landblock);
+                    LScape.unload_landblock(lbid);
+
+                    if (lbid == landblockID)
+                        centerBlock = r_landblock;
+
                     MainWindow.Status.WriteLine($"Loaded {lbid:X8} in {timer.Elapsed.TotalMilliseconds}ms");
 
-                    Landblocks.Add(lbid, new R_Landblock(landblock));
+                    //Landblocks.Add(lbid, new R_Landblock(landblock));
                 }
             }
 
             Buffer.BuildBuffers();
 
-            var size = endBlock - startBlock;
-            var center = startBlock + size / 2;
-            var centerX = (uint)Math.Round(center.X);
-            var centerY = (uint)Math.Round(center.Y);
-            var centerBlock = centerX << 24 | centerY << 16 | 0xFFFF;
-
-            Camera.InitLandblock(Landblocks[centerBlock]);
+            Camera.InitLandblock(centerBlock);
             GameView.ViewMode = ViewMode.World;
 
-            ClearPhysics();
+            FreeResources();
         }
 
-        public void ClearPhysics()
+        public void FreeResources()
         {
-            foreach (var landblock in Landblocks.Values)
-            {
-                var landblockID = landblock.Landblock.ID;
-                LScape.unload_landblock(landblockID);
-            }
+            R_Landblock.Init();
+            TextureCache.Init(false);
         }
 
         public void ShowLoadStatus(int numBlocks)
@@ -177,7 +191,8 @@ namespace DatExplorer
 
         public void Draw(GameTime time)
         {
-            Render.Draw(Landblocks);
+            //Render.Draw(Landblocks);
+            Render.Draw(null);
         }
     }
 }

@@ -68,6 +68,7 @@ namespace DatExplorer.Render
 
         public void Dispose()
         {
+            EffectParameters.Dispose();
             VertexBuffer.Dispose();
         }
     }

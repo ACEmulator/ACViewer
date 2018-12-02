@@ -41,13 +41,26 @@ namespace DatExplorer.Model
             BuildFaces();
         }
 
-        public BoundingBox(Dictionary<uint, RenderBatch> batches)
+        public BoundingBox(Dictionary<TextureSet, InstanceBatch> batches)
         {
             var verts = new List<Vector3>();
 
             foreach (var batch in batches.Values)
-                verts.AddRange(batch.Vertices.Select(v => v.Position));
+            {
+                foreach (var instance in batch.Instances_Env)
+                {
+                    var pos = instance.Position;
+                    var rotation = instance.Rotation;
 
+                    var transform = Matrix.CreateFromQuaternion(new Quaternion(rotation.X, rotation.Y, rotation.Z, rotation.W)) * Matrix.CreateTranslation(pos);
+
+                    foreach (var drawCall in batch.DrawCalls.Values)
+                    {
+                        foreach (var vertex in drawCall.Vertices)
+                            verts.Add(Vector3.Transform(vertex.Position, transform));
+                    }
+                }
+            }
             Init(verts);
         }
 

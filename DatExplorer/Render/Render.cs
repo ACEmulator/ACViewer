@@ -89,7 +89,7 @@ namespace DatExplorer.Render
 
             Effect.CurrentTechnique = Effect.Techniques["PointSprite"];
             Effect.Parameters["xWorld"].SetValue(translateWorld);
-            Effect.Parameters["xTexture"].SetValue(texture);
+            Effect.Parameters["xTextures"].SetValue(texture);
             Effect.Parameters["xCamPos"].SetValue(Camera.Position);
             Effect.Parameters["xCamUp"].SetValue(Camera.Up);
             Effect.Parameters["xPointSpriteSizeX"].SetValue(part.GfxObjScale.X);
@@ -130,7 +130,7 @@ namespace DatExplorer.Render
                         //GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
                     //GraphicsDevice.Indices = poly.IndexBuffer;
-                    Effect.Parameters["xTexture"].SetValue(poly.Texture);
+                    Effect.Parameters["xTextures"].SetValue(poly.Texture);
                     pass.Apply();
 
                     var indexCnt = poly.Indices.Count;
