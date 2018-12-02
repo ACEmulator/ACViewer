@@ -9,9 +9,9 @@ namespace DatExplorer.FileTypes
 {
     public class Texture
     {
-        public ACE.DatLoader.FileTypes.RenderSurface _texture;
+        public ACE.DatLoader.FileTypes.Texture _texture;
 
-        public Texture(ACE.DatLoader.FileTypes.RenderSurface texture)
+        public Texture(ACE.DatLoader.FileTypes.Texture texture)
         {
             _texture = texture;
         }

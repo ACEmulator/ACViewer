@@ -12,10 +12,14 @@ namespace DatExplorer.Render
 
         public Dictionary<uint, TerrainBatch> TerrainGroups;   // key: surfnum
         public Dictionary<uint, InstanceBatch> RB_Instances;   // key: setup id
-        public Dictionary<uint, RenderBatch> RB_EnvCell;       // key: surface id
+        //public Dictionary<uint, RenderBatch> RB_EnvCell;     // key: surface id
+        public Dictionary<TextureSet, InstanceBatch> RB_EnvCell;
         public Dictionary<uint, RenderBatch> RB_StaticObjs;
-        public Dictionary<uint, RenderBatch> RB_Buildings;
-        public Dictionary<uint, RenderBatch> RB_Scenery;
+        //public Dictionary<uint, InstanceBatch> RB_StaticObjs;
+        //public Dictionary<uint, RenderBatch> RB_Buildings;
+        public Dictionary<uint, InstanceBatch> RB_Buildings;
+        //public Dictionary<uint, RenderBatch> RB_Scenery;
+        public Dictionary<uint, InstanceBatch> RB_Scenery;
 
         public static Effect Effect { get => Render.Effect; }
 
@@ -28,10 +32,14 @@ namespace DatExplorer.Render
         {
             TerrainGroups = new Dictionary<uint, TerrainBatch>();
             RB_Instances = new Dictionary<uint, InstanceBatch>();
-            RB_EnvCell = new Dictionary<uint, RenderBatch>();
+            //RB_EnvCell = new Dictionary<uint, RenderBatch>();
+            RB_EnvCell = new Dictionary<TextureSet, InstanceBatch>();
             RB_StaticObjs = new Dictionary<uint, RenderBatch>();
-            RB_Buildings = new Dictionary<uint, RenderBatch>();
-            RB_Scenery = new Dictionary<uint, RenderBatch>();
+            //RB_StaticObjs = new Dictionary<uint, InstanceBatch>();
+            //RB_Buildings = new Dictionary<uint, RenderBatch>();
+            RB_Buildings = new Dictionary<uint, InstanceBatch>();
+            //RB_Scenery = new Dictionary<uint, RenderBatch>();
+            RB_Scenery = new Dictionary<uint, InstanceBatch>();
         }
 
         public void ClearBuffer()
@@ -55,6 +63,12 @@ namespace DatExplorer.Render
         }
 
         public void ClearBuffer(Dictionary<uint, InstanceBatch> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.Dispose();
+        }
+
+        public void ClearBuffer(Dictionary<TextureSet, InstanceBatch> batches)
         {
             foreach (var batch in batches.Values)
                 batch.Dispose();
@@ -94,8 +108,8 @@ namespace DatExplorer.Render
         public void AddStaticObjs(R_Landblock landblock)
         {
             foreach (var obj in landblock.StaticObjs)
-                //AddStaticObj(obj, RB_StaticObjs);
-                AddInstanceObj(obj, RB_Instances);
+                AddStaticObj(obj, RB_StaticObjs);
+                //AddInstanceObj(obj, RB_StaticObjs);
         }
 
         public void AddStaticObj(R_PhysicsObj obj, Dictionary<uint, RenderBatch> batches)
@@ -135,6 +149,13 @@ namespace DatExplorer.Render
         public void AddInstanceObj(R_PhysicsObj obj, Dictionary<uint, InstanceBatch> batches)
         {
             var setupID = obj.Setup.Setup._setup.Id;
+            if (setupID == 0)
+                setupID = obj.Setup.Setup.Parts[0]._gfxObj.Id;
+            if (setupID == 0)
+            {
+                Console.WriteLine($"Couldn't find instance ID");
+                return;
+            }
             batches.TryGetValue(setupID, out var batch);
             if (batch == null)
             {
@@ -145,23 +166,44 @@ namespace DatExplorer.Render
                 batch.AddInstance(obj);
         }
 
+        public void AddInstanceObj(R_EnvCell envCell, Dictionary<TextureSet, InstanceBatch> batches)
+        {
+            var textureSet = new TextureSet(envCell);
+            batches.TryGetValue(textureSet, out var batch);
+            if (batch == null)
+            {
+                batch = new InstanceBatch(envCell);
+                batches.Add(textureSet, batch);
+            }
+            else
+                batch.AddInstance(envCell);
+        }
+
         public void AddBuildings(R_Landblock landblock)
         {
             foreach (var building in landblock.Buildings)
-                AddStaticObj(building, RB_Buildings);
+                //AddStaticObj(building, RB_Buildings);
+                AddInstanceObj(building, RB_Buildings);
         }
 
         public void AddScenery(R_Landblock landblock)
         {
             foreach (var scenery in landblock.Scenery)
                 //AddStaticObj(scenery, RB_Scenery);
-                AddInstanceObj(scenery, RB_Instances);
+                AddInstanceObj(scenery, RB_Scenery);
         }
 
         public void AddEnvCells(R_Landblock landblock)
         {
             foreach (var envcell in landblock.EnvCells)
-                AddEnvCell(envcell);
+            {
+                //AddEnvCell(envcell);
+                AddInstanceObj(envcell, RB_EnvCell);
+
+                foreach (var staticObj in envcell.StaticObjs)
+                    AddStaticObj(staticObj, RB_StaticObjs);
+                    //AddInstanceObj(staticObj, RB_StaticObjs);
+            }
         }
 
         public static Matrix Buildings = Matrix.CreateTranslation(Vector3.UnitZ * 0.01f);
@@ -180,20 +222,21 @@ namespace DatExplorer.Render
                     var surfaceIdx = polygon._polygon.PosSurface;
                     var surfaceID = envCell.EnvCell._envCell.Surfaces[surfaceIdx];
 
-                    RB_EnvCell.TryGetValue(surfaceID, out var batch);
+                    //RB_EnvCell.TryGetValue(surfaceID, out var batch);
+                    InstanceBatch batch = null;
 
                     if (batch == null)
                     {
                         var texture = envCell.Textures[surfaceIdx];
-                        batch = new RenderBatch(texture);
-                        RB_EnvCell.Add(surfaceID, batch);
+                        //batch = new RenderBatch(texture);
+                        //RB_EnvCell.Add(surfaceID, batch);
                     }
-                    batch.AddPolygon(vertices, polygon, transform);
+                    //batch.AddPolygon(vertices, polygon, transform);
                 }
             }
             foreach (var staticObj in envCell.StaticObjs)
-                //AddStaticObj(staticObj, RB_StaticObjs);
-                AddInstanceObj(staticObj, RB_Instances);
+                AddStaticObj(staticObj, RB_StaticObjs);
+                //AddInstanceObj(staticObj, RB_StaticObjs);
         }
 
         public void BuildTerrain()
@@ -213,6 +256,216 @@ namespace DatExplorer.Render
             BuildBuffer(RB_Scenery);
 
             //QueryBuffers();
+
+            //DebugBuffer(RB_StaticObjs);
+        }
+
+        public void DebugBuffer(Dictionary<uint, InstanceBatch> objects)
+        {
+            Console.WriteLine($"\nRB_StaticObjs:");
+            Console.WriteLine($"Total unique setups: {objects.Count}");
+
+            //DebugBuffer_GfxObj(objects);
+            DebugBuffer_Textures(objects);
+        }
+
+        public void DebugBuffer_GfxObj(Dictionary<uint, InstanceBatch> objects)
+        {
+            var gfxObjs = QueryGfxObjInfo(objects);
+
+            Console.WriteLine($"GfxObj refs: {gfxObjs.Values.Sum()}");
+            Console.WriteLine($"GfxObj uniques: {gfxObjs.Count}");
+
+            var g2s_index = GfxObjToSetup(objects);
+
+            Console.WriteLine($"GfxObj -> Setup ({g2s_index.Count}):");
+            foreach (var entry in g2s_index)
+            {
+                var gfxObjID = entry.Key;
+                var setupIDs = entry.Value;
+                Console.WriteLine($"{gfxObjID:X8} ({setupIDs.Count}): {String.Join(",", setupIDs.Select(i => i.ToString("X8")))}");
+            }
+
+            var s2g_index = SetupToGfxObj(objects);
+
+            Console.WriteLine($"\nSetup -> GfxObjs ({s2g_index.Count}):");
+            foreach (var entry in s2g_index)
+            {
+                var setupID = entry.Key;
+                var gfxObjIDs = entry.Value;
+                Console.WriteLine($"{setupID:X8} ({gfxObjIDs.Count}): {String.Join(",", gfxObjIDs.Select(i => i.ToString("X8")))}");
+            }
+        }
+
+        public void DebugBuffer_Textures(Dictionary<uint, InstanceBatch> objects)
+        {
+            var textures = QueryTextureInfo(objects);
+
+            Console.WriteLine($"Texture refs: {textures.Values.Sum()}");
+            Console.WriteLine($"Texture uniques: {textures.Count}");
+
+            var t2s_index = TextureToSetup(objects);
+
+            Console.WriteLine($"Texture -> Setup ({t2s_index.Count}):");
+            foreach (var entry in t2s_index)
+            {
+                var textureID = entry.Key;
+                var setupIDs = entry.Value;
+                Console.WriteLine($"{textureID:X8} ({setupIDs.Count}): {String.Join(",", setupIDs.Select(i => i.ToString("X8")))}");
+            }
+
+            var s2t_index = SetupToTexture(objects);
+
+            Console.WriteLine($"\nSetup -> Texture ({s2t_index.Count}):");
+            foreach (var entry in s2t_index)
+            {
+                var setupID = entry.Key;
+                var textureIDs = entry.Value;
+                Console.WriteLine($"{setupID:X8} ({textureIDs.Count}): {String.Join(",", textureIDs.Select(i => i.ToString("X8")))}");
+            }
+        }
+
+        public Dictionary<uint, int> QueryGfxObjInfo(Dictionary<uint, InstanceBatch> objects)
+        {
+            var gfxObjs = new Dictionary<uint, int>();
+
+            foreach (var obj in objects.Values)
+            {
+                foreach (var part in obj.R_PhysicsObj.PhysicsObj.PartArray.Parts)
+                {
+                    var gfxObjID = part.GfxObj.ID;
+
+                    if (!gfxObjs.TryGetValue(gfxObjID, out var gfxObj))
+                        gfxObjs.Add(gfxObjID, 1);
+                    else
+                        gfxObjs[gfxObjID]++;
+                }
+            }
+            return gfxObjs;
+        }
+
+        public Dictionary<uint, int> QueryTextureInfo(Dictionary<uint, InstanceBatch> objects)
+        {
+            var textures = new Dictionary<uint, int>();
+
+            foreach (var obj in objects.Values)
+            {
+                foreach (var part in obj.R_PhysicsObj.PhysicsObj.PartArray.Parts)
+                {
+                    var surfaces = part.GfxObj._dat.Surfaces;
+
+                    foreach (var surfaceID in surfaces)
+                    {
+                        if (!textures.TryGetValue(surfaceID, out var textureID))
+                            textures.Add(surfaceID, 1);
+                        else
+                            textures[surfaceID]++;
+                    }
+                }
+            }
+            return textures;
+        }
+
+        public Dictionary<uint, List<uint>> GfxObjToSetup(Dictionary<uint, InstanceBatch> objects)
+        {
+            var table = new Dictionary<uint, List<uint>>();
+
+            foreach (var obj in objects.Values)
+            {
+                var setupID = obj.R_PhysicsObj.PhysicsObj.PartArray.Setup._dat.Id;
+                if (setupID == 0)
+                    setupID = obj.R_PhysicsObj.PhysicsObj.PartArray.Parts[0].GfxObj.ID;
+
+                foreach (var part in obj.R_PhysicsObj.PhysicsObj.PartArray.Parts)
+                {
+                    var gfxObjID = part.GfxObj.ID;
+
+                    if (!table.TryGetValue(gfxObjID, out var gfxObj))
+                        table.Add(gfxObjID, new List<uint>() { setupID });
+                    else if (!gfxObj.Contains(setupID))
+                        gfxObj.Add(setupID);
+                }
+            }
+            return table;
+        }
+
+        public Dictionary<uint, List<uint>> SetupToGfxObj(Dictionary<uint, InstanceBatch> objects)
+        {
+            var table = new Dictionary<uint, List<uint>>();
+
+            foreach (var obj in objects.Values)
+            {
+                var setupID = obj.R_PhysicsObj.PhysicsObj.PartArray.Setup._dat.Id;
+                if (setupID == 0)
+                    setupID = obj.R_PhysicsObj.PhysicsObj.PartArray.Parts[0].GfxObj.ID;
+
+                table.TryGetValue(setupID, out var gfxObjIDs);
+                if (gfxObjIDs != null) continue;
+
+                gfxObjIDs = new List<uint>();
+
+                foreach (var part in obj.R_PhysicsObj.PhysicsObj.PartArray.Parts)
+                {
+                    var gfxObjID = part.GfxObj.ID;
+
+                    if (!gfxObjIDs.Contains(gfxObjID))
+                        gfxObjIDs.Add(gfxObjID);
+                }
+                table.Add(setupID, gfxObjIDs);
+            }
+            return table;
+        }
+
+        public Dictionary<uint, List<uint>> TextureToSetup(Dictionary<uint, InstanceBatch> objects)
+        {
+            var table = new Dictionary<uint, List<uint>>();
+
+            foreach (var obj in objects.Values)
+            {
+                var setupID = obj.R_PhysicsObj.PhysicsObj.PartArray.Setup._dat.Id;
+                if (setupID == 0)
+                    setupID = obj.R_PhysicsObj.PhysicsObj.PartArray.Parts[0].GfxObj.ID;
+
+                foreach (var part in obj.R_PhysicsObj.PhysicsObj.PartArray.Parts)
+                {
+                    foreach (var surfaceID in part.GfxObj._dat.Surfaces)
+                    {
+                        if (!table.TryGetValue(surfaceID, out var setup))
+                            table.Add(surfaceID, new List<uint>() { setupID });
+                        else if (!setup.Contains(setupID))
+                            setup.Add(setupID);
+                    }
+                }
+            }
+            return table;
+        }
+
+        public Dictionary<uint, List<uint>> SetupToTexture(Dictionary<uint, InstanceBatch> objects)
+        {
+            var table = new Dictionary<uint, List<uint>>();
+
+            foreach (var obj in objects.Values)
+            {
+                var setupID = obj.R_PhysicsObj.PhysicsObj.PartArray.Setup._dat.Id;
+                if (setupID == 0)
+                    setupID = obj.R_PhysicsObj.PhysicsObj.PartArray.Parts[0].GfxObj.ID;
+
+                table.TryGetValue(setupID, out var textureIDs);
+                if (textureIDs != null) continue;
+
+                textureIDs = new List<uint>();
+
+                foreach (var part in obj.R_PhysicsObj.PhysicsObj.PartArray.Parts)
+                {
+                    foreach (var textureID in part.GfxObj._dat.Surfaces)
+                    {
+                        if (!textureIDs.Contains(textureID))
+                            textureIDs.Add(textureID);
+                    }
+                }
+                table.Add(setupID, textureIDs);
+            }
+            return table;
         }
 
         public void QueryBuffers()
@@ -223,16 +476,24 @@ namespace DatExplorer.Render
                 terrainCnt += buffer.Vertices.Count;
 
             var staticObjCnt = QueryBuffer(RB_StaticObjs);
-            var buildingCnt = QueryBuffer(RB_Buildings);
-            var sceneryCnt = QueryBuffer(RB_Scenery);
-            var envCellCnt = QueryBuffer(RB_EnvCell);
+            //var staticObjCnt = QueryBuffer(RB_StaticObjs, out var sDrawCnt);
+            //var buildingCnt = QueryBuffer(RB_Buildings);
+            var buildingCnt = QueryBuffer(RB_Buildings, out var bDrawCnt);
+            //var sceneryCnt = QueryBuffer(RB_Scenery);
+            var sceneryCnt = QueryBuffer(RB_Scenery, out var nDrawCnt);
+            //var envCellCnt = QueryBuffer(RB_EnvCell);
+            var envCellCnt = QueryBuffer(RB_EnvCell, out var eDrawCnt);
             var instanceCnt = QueryBuffer(RB_Instances, out var drawCnt);
 
             Console.WriteLine($"Terrain: {terrainCnt:N0} / {TerrainGroups.Count:N0}");
             Console.WriteLine($"StaticObjs: {staticObjCnt:N0} / {RB_StaticObjs.Count:N0}");
-            Console.WriteLine($"Buildings: {buildingCnt:N0} / {RB_Buildings.Count:N0}");
-            Console.WriteLine($"Scenery: {sceneryCnt:N0} / {RB_Scenery.Count:N0}");
-            Console.WriteLine($"EnvCells: {envCellCnt:N0} / {RB_EnvCell.Count:N0}");
+            //Console.WriteLine($"StaticObjs: {staticObjCnt:N0} / {RB_StaticObjs.Count:N0} / {sDrawCnt:N0}");
+            //Console.WriteLine($"Buildings: {buildingCnt:N0} / {RB_Buildings.Count:N0}");
+            Console.WriteLine($"Buildings: {buildingCnt:N0} / {RB_Buildings.Count:N0} / {bDrawCnt:N0}");
+            //Console.WriteLine($"Scenery: {sceneryCnt:N0} / {RB_Scenery.Count:N0}");
+            Console.WriteLine($"Scenery: {sceneryCnt:N0} / {RB_Scenery.Count:N0} / {nDrawCnt:N0}");
+            //Console.WriteLine($"EnvCells: {envCellCnt:N0} / {RB_EnvCell.Count:N0}");
+            Console.WriteLine($"EnvCells: {envCellCnt:N0} / {RB_EnvCell.Count:N0} / {eDrawCnt:N0}");
             Console.WriteLine($"Instances: {instanceCnt:N0} / {RB_Instances.Count:N0} / {drawCnt:N0}");
         }
 
@@ -261,6 +522,21 @@ namespace DatExplorer.Render
             return vertexCnt;
         }
 
+        public int QueryBuffer(Dictionary<TextureSet, InstanceBatch> buffer, out int drawCnt)
+        {
+            var vertexCnt = 0;
+            drawCnt = 0;
+
+            foreach (var batch in buffer.Values)
+            {
+                foreach (var draw in batch.DrawCalls.Values)
+                    vertexCnt += draw.Vertices.Count;
+
+                drawCnt += batch.DrawCalls.Count;
+            }
+            return vertexCnt;
+        }
+
         public void BuildBuffer(Dictionary<uint, RenderBatch> batches)
         {
             foreach (var batch in batches.Values)
@@ -268,6 +544,12 @@ namespace DatExplorer.Render
         }
 
         public void BuildBuffer(Dictionary<uint, InstanceBatch> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.OnCompleted();
+        }
+
+        public void BuildBuffer(Dictionary<TextureSet, InstanceBatch> batches)
         {
             foreach (var batch in batches.Values)
                 batch.OnCompleted();
@@ -328,6 +610,18 @@ namespace DatExplorer.Render
             SetRasterizerState(cullMode);  // todo: neg uv indices
             //Effect.CurrentTechnique = Effect.Techniques["TexturedInstanceNoShading"];
             Effect.CurrentTechnique = Effect.Techniques["TexturedInstance"];
+
+            foreach (var batch in batches.Values)
+                batch.Draw();
+        }
+
+        public void DrawBuffer(Dictionary<TextureSet, InstanceBatch> batches)
+        {
+            var cullMode = WorldViewer.Instance.DungeonMode ? CullMode.CullClockwiseFace : CullMode.None;
+
+            SetRasterizerState(cullMode);  // todo: neg uv indices
+            //Effect.CurrentTechnique = Effect.Techniques["TexturedInstanceNoShading"];
+            Effect.CurrentTechnique = Effect.Techniques["TexturedInstanceEnv"];
 
             foreach (var batch in batches.Values)
                 batch.Draw();

@@ -615,7 +615,7 @@ namespace ACE.Server.Physics
                 if (setup._dat.DefaultScript != 0)
                     State |= PhysicsState.HasDefaultScript;
 
-                PhysicsEngine.AddStaticAnimatingObject(this);
+                //PhysicsEngine.AddStaticAnimatingObject(this);
             }
         }
 

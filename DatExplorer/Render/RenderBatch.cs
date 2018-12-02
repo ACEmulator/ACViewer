@@ -55,7 +55,7 @@ namespace DatExplorer.Render
         {
             GraphicsDevice.SetVertexBuffer(VertexBuffer);
 
-            Effect.Parameters["xTexture"].SetValue(EffectParameters.Texture);
+            Effect.Parameters["xTextures"].SetValue(EffectParameters.Texture);
 
             foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
             {
@@ -67,6 +67,7 @@ namespace DatExplorer.Render
 
         public void Dispose()
         {
+            EffectParameters.Dispose();
             VertexBuffer.Dispose();
         }
     }

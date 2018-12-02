@@ -42,6 +42,11 @@ namespace DatExplorer.Render
 
         static R_Landblock()
         {
+            Init();
+        }
+
+        public static void Init()
+        {
             LandOverlays = new Dictionary<uint, Texture2D>();
             LandAlphas = new Dictionary<uint, Texture2D>();
         }

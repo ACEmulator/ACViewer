@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop.Input;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Common;
+using DatExplorer.Model;
 using DatExplorer.Render;
 using DatExplorer.View;
 
@@ -77,6 +78,7 @@ namespace DatExplorer
                     timer.Stop();
 
                     r_landblock = new R_Landblock(landblock);
+                    LScape.unload_landblock(lbid);
 
                     if (landblockID == lbid)
                         centerBlock = r_landblock;
@@ -97,7 +99,7 @@ namespace DatExplorer
             else
                 Camera.InitLandblock(r_landblock);
 
-            ClearPhysics();
+            FreeResources();
         }
 
         public async void LoadLandblocks(Vector2 startBlock, Vector2 endBlock)
@@ -139,6 +141,7 @@ namespace DatExplorer
                     timer.Stop();
 
                     r_landblock = new R_Landblock(landblock);
+                    LScape.unload_landblock(lbid);
 
                     if (lbid == landblockID)
                         centerBlock = r_landblock;
@@ -154,16 +157,13 @@ namespace DatExplorer
             Camera.InitLandblock(centerBlock);
             GameView.ViewMode = ViewMode.World;
 
-            ClearPhysics();
+            FreeResources();
         }
 
-        public void ClearPhysics()
+        public void FreeResources()
         {
-            /*foreach (var landblock in Landblocks.Values)
-            {
-                var landblockID = landblock.Landblock.ID;
-                LScape.unload_landblock(landblockID);
-            }*/
+            R_Landblock.Init();
+            TextureCache.Init(false);
         }
 
         public void ShowLoadStatus(int numBlocks)

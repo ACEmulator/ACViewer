@@ -29,9 +29,9 @@ namespace DatExplorer.Render
             Init();
         }
 
-        public static void Init()
+        public static void Init(bool dispose = true)
         {
-            if (Textures != null)
+            if (dispose && Textures != null)
                 foreach (var texture in Textures.Values)
                     texture.Dispose();
 
@@ -50,9 +50,9 @@ namespace DatExplorer.Render
 
             MainWindow.Instance.Status.WriteLine($"Loading texture {textureID:X8}");
 
-            var texture = DatManager.PortalDat.ReadFromDat<RenderSurface>(textureID);
+            var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
             if (texture.SourceData == null)
-                texture = DatManager.HighResDat.ReadFromDat<RenderSurface>(textureID);
+                texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
 
             var surfaceFormat = SurfaceFormat.Color;
             switch (texture.Format)
@@ -151,9 +151,9 @@ namespace DatExplorer.Render
 
             var isClipMap = surface.Type.HasFlag(SurfaceType.Base1ClipMap);
 
-            var texture = DatManager.PortalDat.ReadFromDat<RenderSurface>(textureID);
+            var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
             if (texture.SourceData == null)
-                texture = DatManager.HighResDat.ReadFromDat<RenderSurface>(textureID);
+                texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
 
             var surfaceFormat = SurfaceFormat.Color;
             switch (texture.Format)
@@ -406,7 +406,7 @@ namespace DatExplorer.Render
             }
         }
 
-        private static byte[] IndexToColor(RenderSurface texture, bool isClipMap = false)
+        private static byte[] IndexToColor(ACE.DatLoader.FileTypes.Texture texture, bool isClipMap = false)
         {
             var colors = GetColors(texture);
             var palette = DatManager.PortalDat.ReadFromDat<Palette>((uint)texture.DefaultPaletteId);
@@ -443,7 +443,7 @@ namespace DatExplorer.Render
             return output;
         }
 
-        private static List<int> GetColors(RenderSurface texture)
+        private static List<int> GetColors(ACE.DatLoader.FileTypes.Texture texture)
         {
             var colors = new List<int>();
             using (BinaryReader reader = new BinaryReader(new MemoryStream(texture.SourceData)))

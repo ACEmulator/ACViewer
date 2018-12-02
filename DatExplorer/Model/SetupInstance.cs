@@ -112,7 +112,7 @@ namespace DatExplorer.Model
                         polygon.BuildIndexBuffer();
 
                     GraphicsDevice.Indices = polygon.IndexBuffer;
-                    Effect.Parameters["xTexture"].SetValue(polygon.Texture);
+                    Effect.Parameters["xTextures"].SetValue(polygon.Texture);
 
                     foreach (var pass in Effect.CurrentTechnique.Passes)
                     {

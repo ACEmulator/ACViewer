@@ -3,22 +3,21 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DatExplorer
 {
-    public struct VertexInstance : IVertexType
+    public struct VertexInstanceEnv : IVertexType
     {
         public Vector3 Position;
-        public Vector2 HeadingScale;
+        public Vector4 Rotation;
 
         public readonly static VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
             new VertexElement(0, VertexElementFormat.Vector3, VertexElementUsage.Position, 1),
-            new VertexElement(sizeof(float) * 3, VertexElementFormat.Vector2, VertexElementUsage.TextureCoordinate, 1)  // heading, scale
+            new VertexElement(sizeof(float) * 3, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1)
         );
 
-        public VertexInstance(Vector3 position, float rotation = 0.0f, float scale = 1.0f)
+        public VertexInstanceEnv(Vector3 position, Quaternion rotation)
         {
             Position = position;
-            HeadingScale.X = rotation;
-            HeadingScale.Y = scale;
+            Rotation = new Vector4(rotation.X, rotation.Y, rotation.Z, rotation.W);
         }
 
         VertexDeclaration IVertexType.VertexDeclaration { get => VertexDeclaration; }
