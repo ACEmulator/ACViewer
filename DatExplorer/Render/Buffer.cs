@@ -577,7 +577,7 @@ namespace DatExplorer.Render
 
             DrawBuffer(RB_StaticObjs);
             DrawBuffer(RB_Buildings);
-            DrawBuffer(RB_EnvCell);
+            DrawBuffer(RB_EnvCell, true);
             DrawBuffer(RB_Scenery);
             DrawBuffer(RB_Instances);
         }
@@ -615,9 +615,9 @@ namespace DatExplorer.Render
                 batch.Draw();
         }
 
-        public void DrawBuffer(Dictionary<TextureSet, InstanceBatch> batches)
+        public void DrawBuffer(Dictionary<TextureSet, InstanceBatch> batches, bool culling = false)
         {
-            var cullMode = WorldViewer.Instance.DungeonMode ? CullMode.CullClockwiseFace : CullMode.None;
+            var cullMode = WorldViewer.Instance.DungeonMode || culling ? CullMode.CullClockwiseFace : CullMode.None;
 
             SetRasterizerState(cullMode);  // todo: neg uv indices
             //Effect.CurrentTechnique = Effect.Techniques["TexturedInstanceNoShading"];
