@@ -83,8 +83,7 @@ namespace DatExplorer.View
 
         private void Guide_Click(object sender, RoutedEventArgs e)
         {
-            //Process.Start(@"..\..\..\..\docs\index.html");
-            Process.Start(@"https://ACEmulator.github.io/ACViewer/");
+            Process.Start(@"docs\index.html");
         }
     }
 }
