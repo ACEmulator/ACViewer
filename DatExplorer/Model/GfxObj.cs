@@ -28,7 +28,7 @@ namespace DatExplorer.Model
 
         public BoundingBox BoundingBox;
 
-        public GfxObj(uint gfxObjID)
+        public GfxObj(uint gfxObjID, bool doBuild = true)
         {
             MainWindow.Instance.Status.WriteLine($"Loading GfxObj {gfxObjID:X8}");
 
@@ -40,9 +40,13 @@ namespace DatExplorer.Model
             if (!_gfxObj.VertexArray.Verify())
                 Console.WriteLine($"ERROR: vertex array {gfxObjID:X8}");
 
-            LoadTextures();
+            // If we are doing any texture/palette swaps, we'll do this after we swap them
+            if (doBuild)
+            {
+                LoadTextures();
 
-            BuildPolygons();
+                BuildPolygons();
+            }
 
             //BuildVertexBuffer();
         }
@@ -69,6 +73,26 @@ namespace DatExplorer.Model
             foreach (var surfaceID in _gfxObj.Surfaces)
             {
                 var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
+                Surfaces.Add(surface);
+
+                Textures.Add(TextureCache.Get(surfaceID));
+            }
+        }
+        public void LoadTextures(List<ACE.DatLoader.Entity.CloTextureEffect> cloTextureEffects)
+        {
+            Textures = new List<Texture2D>();
+            Surfaces = new List<Surface>();
+
+            foreach (var surfaceID in _gfxObj.Surfaces)
+            {
+                var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
+                foreach(var texEffect in cloTextureEffects)
+                {
+                    if(surface.OrigTextureId == texEffect.OldTexture)
+                    {
+                        surface.OrigTextureId = texEffect.NewTexture;
+                    }
+                }
                 Surfaces.Add(surface);
 
                 Textures.Add(TextureCache.Get(surfaceID));

@@ -44,6 +44,54 @@ namespace DatExplorer.Model
             BuildBoundingBox();
         }
 
+        public Setup(uint setupID, ClothingTable clothingBase, uint palTemplate, float shade)
+        {
+            // make simple setup if gfxobj
+            if (setupID >> 24 == 0x1)
+            {
+                MakeSimpleSetup(setupID);
+                BuildBoundingBox();
+                return;
+            }
+
+            _setup = DatManager.PortalDat.ReadFromDat<SetupModel>(setupID);
+
+            Parts = new List<GfxObj>();
+
+            // store these in a dictionary to more easily reference...
+            var clothingBaseParts = new Dictionary<int, ACE.DatLoader.Entity.CloObjectEffect>();
+            var cbe = clothingBase.ClothingBaseEffects[setupID].CloObjectEffects;
+            foreach(var objEffect in cbe)
+                clothingBaseParts.Add((int)objEffect.Index, objEffect);
+
+            for(var i = 0; i < _setup.Parts.Count; i++)
+            {
+                uint gfxObjID;
+                GfxObj gfxObj;
+                if (clothingBaseParts.ContainsKey(i))
+                {
+                    gfxObjID = clothingBaseParts[i].ModelId;
+                    gfxObj = new GfxObj(gfxObjID, false);
+                    gfxObj.LoadTextures(clothingBaseParts[i].CloTextureEffects);
+                    gfxObj.BuildPolygons();
+                }
+                else
+                {
+                    gfxObjID = _setup.Parts[i];
+                    gfxObj = new GfxObj(gfxObjID);
+                }
+
+                Parts.Add(gfxObj);
+            }
+
+            PlacementFrames = new List<Matrix>();
+
+            foreach (var placementFrame in _setup.PlacementFrames[0].AnimFrame.Frames)
+                PlacementFrames.Add(placementFrame.ToXna());
+
+            BuildBoundingBox();
+        }
+
         public void MakeSimpleSetup(uint gfxObjID)
         {
             _setup = SetupModel.CreateSimpleSetup();

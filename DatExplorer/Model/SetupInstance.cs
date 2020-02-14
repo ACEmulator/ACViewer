@@ -38,6 +38,24 @@ namespace DatExplorer.Model
             BuildWorldTransform();
         }
 
+        /// <summary>
+        /// For loading a SetupInstance with a Clothing Base
+        /// </summary>
+        /// <param name="setupID"></param>
+        /// <param name="clothingBase"></param>
+        /// <param name="palTemplate"></param>
+        /// <param name="shade"></param>
+        public SetupInstance(uint setupID, ACE.DatLoader.FileTypes.ClothingTable clothingBase, uint palTemplate, float shade)
+        {
+            Setup = new Setup(setupID, clothingBase, palTemplate, shade);
+            
+            Position = Vector3.Zero;
+            Rotation = Quaternion.Identity;
+            Scale = Vector3.One;
+
+            BuildWorldTransform();
+        }
+
         public SetupInstance(R_PhysicsObj obj)
         {
             var setupID = obj.PhysicsObj.PartArray.Setup._dat.Id;

@@ -26,6 +26,7 @@ namespace DatExplorer.View
         public static MainWindow MainWindow { get => MainWindow.Instance; }
         public static FileInfo FileInfo { get => FileInfo.Instance; }
         public static MotionList MotionList { get => MotionList.Instance; }
+        public static ClothingTableList ClothingTableList { get => ClothingTableList.Instance; }
 
         public static GameView GameView { get => GameView.Instance; }
         public static WorldViewer WorldViewer { get => WorldViewer.Instance; }
@@ -108,10 +109,23 @@ namespace DatExplorer.View
 
             PortalMode = selected.ID != 0xFFFF && selected.ID != 0xFFFE && selected.ID != 0x100;
 
-            if (selected.ID >> 24 != 0x34)
+            switch (selected.ID)
             {
-                ScriptList.Instance.Visibility = Visibility.Hidden;
-                MotionList.Instance.Visibility = Visibility.Visible;
+                case 0x10: // ClothingTable
+                    ScriptList.Instance.Visibility = Visibility.Hidden;
+                    ClothingTableList.Instance.Visibility = Visibility.Visible;
+                    MotionList.Instance.Visibility = Visibility.Hidden;
+                    break;
+                case 0x34: // PhysicsScriptTable
+                    ScriptList.Instance.Visibility = Visibility.Hidden;
+                    ClothingTableList.Instance.Visibility = Visibility.Hidden;
+                    MotionList.Instance.Visibility = Visibility.Visible;
+                    break;
+                default:
+                    ScriptList.Instance.Visibility = Visibility.Hidden;
+                    ClothingTableList.Instance.Visibility = Visibility.Hidden;
+                    MotionList.Instance.Visibility = Visibility.Visible;
+                    break;
             }
 
             // strings
@@ -288,6 +302,10 @@ namespace DatExplorer.View
                 case 0x10:
                     var clothing = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.ClothingTable>(fileID);
                     FileInfo.SetInfo(new FileTypes.ClothingTable(clothing).BuildTree());
+                    ClothingTableList.OnClickClothingBase(clothing, fileID);
+                    GameView.ViewMode = ViewMode.Model;
+                    ClothingTableList.LoadModelWithClothingBase();
+                    //ModelViewer.LoadModel(fileID);
                     break;
                 case 0x11:
                     var degradeInfo = DatManager.PortalDat.ReadFromDat<GfxObjDegradeInfo>(fileID);

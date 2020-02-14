@@ -228,6 +228,9 @@
     <Compile Include="View\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ClothingTableList.xaml.cs">
+      <DependentUpon>ClothingTableList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\FileExplorer.xaml.cs">
       <DependentUpon>FileExplorer.xaml</DependentUpon>
     </Compile>
@@ -260,6 +263,10 @@
     </Compile>
     <Compile Include="WorldViewer.cs" />
     <Page Include="View\About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ClothingTableList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

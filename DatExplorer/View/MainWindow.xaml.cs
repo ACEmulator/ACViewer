@@ -24,5 +24,6 @@ namespace DatExplorer.View
 
             //WpfGame.UseASingleSharedGraphicsDevice = true;
         }
+
     }
 }
