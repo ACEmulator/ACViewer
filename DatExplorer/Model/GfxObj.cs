@@ -78,24 +78,28 @@ namespace DatExplorer.Model
                 Textures.Add(TextureCache.Get(surfaceID));
             }
         }
-        public void LoadTextures(List<ACE.DatLoader.Entity.CloTextureEffect> cloTextureEffects)
+        public void LoadTextures(List<ACE.DatLoader.Entity.CloTextureEffect> cloTextureEffects, Dictionary<int, uint> customPaletteColors)
         {
+            // TODO -- Figure out why some textures are getting cached and DO NOT CACHE THEM!
+            TextureCache.Textures.Clear();
+
             Textures = new List<Texture2D>();
             Surfaces = new List<Surface>();
 
             foreach (var surfaceID in _gfxObj.Surfaces)
             {
                 var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
-                foreach(var texEffect in cloTextureEffects)
-                {
-                    if(surface.OrigTextureId == texEffect.OldTexture)
+                if(cloTextureEffects != null)
+                    foreach(var texEffect in cloTextureEffects)
                     {
-                        surface.OrigTextureId = texEffect.NewTexture;
+                        if(surface.OrigTextureId == texEffect.OldTexture)
+                        {
+                            surface.OrigTextureId = texEffect.NewTexture;
+                        }
                     }
-                }
                 Surfaces.Add(surface);
 
-                Textures.Add(TextureCache.Get(surfaceID));
+                Textures.Add(TextureCache.Get(surfaceID, customPaletteColors, false));
             }
         }
     }

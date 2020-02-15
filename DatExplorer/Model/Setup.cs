@@ -64,7 +64,32 @@ namespace DatExplorer.Model
             foreach(var objEffect in cbe)
                 clothingBaseParts.Add((int)objEffect.Index, objEffect);
 
-            for(var i = 0; i < _setup.Parts.Count; i++)
+            // To hold our Custom Palette (palette swaps)
+            Dictionary<int, uint> CustomPaletteColors = new Dictionary<int, uint>();
+
+            // Load all the custom palette colors...
+            var subPalEffect = clothingBase.ClothingSubPalEffects[palTemplate];
+            foreach(var subPals in subPalEffect.CloSubPalettes)
+            {
+                var palSet = DatManager.PortalDat.ReadFromDat<PaletteSet>(subPals.PaletteSet);
+                uint palId = palSet.GetPaletteID(shade);
+                // Load our palette dictated by the shade in the palset
+                var palette = DatManager.PortalDat.ReadFromDat<Palette>(palId);
+                foreach(var range in subPals.Ranges)
+                {
+                    int offset = (int)(range.Offset);
+                    int numColors = (int)(range.NumColors);
+                    // add the appropriate colors to our custom palette
+                    for(int i = 0; i < numColors; i++)
+                        CustomPaletteColors.Add(i+offset, palette.Colors[i+offset]);
+                }
+            }
+
+
+            // Lazy fix...something is caching some parts somewhere in the chain
+            GfxObjCache.Cache.Clear(); 
+            
+            for (var i = 0; i < _setup.Parts.Count; i++)
             {
                 uint gfxObjID;
                 GfxObj gfxObj;
@@ -72,13 +97,15 @@ namespace DatExplorer.Model
                 {
                     gfxObjID = clothingBaseParts[i].ModelId;
                     gfxObj = new GfxObj(gfxObjID, false);
-                    gfxObj.LoadTextures(clothingBaseParts[i].CloTextureEffects);
+                    gfxObj.LoadTextures(clothingBaseParts[i].CloTextureEffects, CustomPaletteColors);
                     gfxObj.BuildPolygons();
                 }
                 else
                 {
                     gfxObjID = _setup.Parts[i];
-                    gfxObj = new GfxObj(gfxObjID);
+                    gfxObj = new GfxObj(gfxObjID, false);
+                    gfxObj.LoadTextures(null, null);
+                    gfxObj.BuildPolygons();
                 }
 
                 Parts.Add(gfxObj);

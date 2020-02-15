@@ -66,7 +66,6 @@ namespace DatExplorer
         {
             // can be either a gfxobj or setup id
             // if gfxobj, create a simple setup
-            MainWindow.Status.WriteLine($"Loading {id:X8} with ClothingBase {clothingBase.Id:X8}, PaletteTemplate {palTemplate}, and Shade {shade}");
             GfxObjMode = false;
 
             Setup = new SetupInstance(id, clothingBase, palTemplate, shade);
@@ -75,6 +74,7 @@ namespace DatExplorer
             Render.Camera.InitModel(Setup.Setup.BoundingBox);
 
             ModelType = ModelType.Setup;
+            MainWindow.Status.WriteLine($"Loading {id:X8} with ClothingBase {clothingBase.Id:X8}, PaletteTemplate {palTemplate}, and Shade {shade}");
         }
 
         public void LoadEnvironment(uint envID)

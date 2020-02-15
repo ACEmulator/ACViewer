@@ -81,22 +81,23 @@ namespace DatExplorer.View
             PaletteTemplates.SelectedIndex = 0;
         }
 
-        private void SetupIDs_OnClick(object sender, MouseButtonEventArgs e)
+        private void SetupIDs_OnClick(object sender, SelectionChangedEventArgs e)
         {
             if (CurrentClothingItem == null) return;
             LoadModelWithClothingBase();
         }
-        private void PaletteTemplates_OnClick(object sender, MouseButtonEventArgs e)
+        private void PaletteTemplates_OnClick(object sender, SelectionChangedEventArgs e)
         {
             ResetShadesSlider();
 
             if (CurrentClothingItem == null) return;
-            
-            var selectedItem = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
+
+            ListBoxItem selectedItem = PaletteTemplates.SelectedItem as ListBoxItem;
             if (selectedItem == null)
                 return;
 
             uint palTemp = (uint)selectedItem.DataContext;
+            //uint palTemp = 0;
             if (CurrentClothingItem.ClothingSubPalEffects.ContainsKey(palTemp) == false)
                 return;
 
@@ -138,7 +139,9 @@ namespace DatExplorer.View
             float shade = 0;
             if (Shades.IsEnabled)
             {
-
+                shade = (float)(Shades.Value / Shades.Maximum);
+                if (float.IsNaN(shade)) 
+                    shade = 0;
             }
 
             var selectedSetup = SetupIds.SelectedItem as ListBoxItem;
@@ -158,14 +161,6 @@ namespace DatExplorer.View
             LoadModelWithClothingBase();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name=""></param>
-        private void LoadPaletteSet(uint subPal)
-        {
-            
-        }
         /*
                public void BuildMotionCommands()
                {

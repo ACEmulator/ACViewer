@@ -12,8 +12,8 @@
             <RowDefinition Height=".4*"/>
             <RowDefinition Height=".1*"/>
         </Grid.RowDefinitions>
-        <ListBox Name="SetupIds" Width="170" Margin="7.5,7.5,0,0" PreviewMouseDown="SetupIDs_OnClick" />
-        <ListBox Name="PaletteTemplates" Grid.Row="1" Width="170" Margin="7.5,7.5,0,0" PreviewMouseDown="PaletteTemplates_OnClick" />
+        <ListBox Name="SetupIds" Width="170" Margin="7.5,7.5,0,0" SelectionChanged="SetupIDs_OnClick" />
+        <ListBox Name="PaletteTemplates" Grid.Row="1" Width="170" Margin="7.5,7.5,0,0" SelectionChanged="PaletteTemplates_OnClick" />
         <Slider Name="Shades" Grid.Row="2" Width="170" Margin="7.5,7.5,0,0" IsEnabled="False" ValueChanged="Shades_ValueChanged" SmallChange="1" IsSnapToTickEnabled="True" />
     </Grid>
     </UserControl>
