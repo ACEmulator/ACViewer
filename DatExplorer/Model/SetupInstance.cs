@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using DatExplorer.Render;
+using System.Collections.Generic;
 
 namespace DatExplorer.Model
 {
@@ -45,9 +46,9 @@ namespace DatExplorer.Model
         /// <param name="clothingBase"></param>
         /// <param name="palTemplate"></param>
         /// <param name="shade"></param>
-        public SetupInstance(uint setupID, ACE.DatLoader.FileTypes.ClothingTable clothingBase, uint palTemplate, float shade)
+        public SetupInstance(uint setupID, FileTypes.ObjDesc objDesc, Dictionary<int, uint> customPaletteColors)
         {
-            Setup = new Setup(setupID, clothingBase, palTemplate, shade);
+            Setup = new Setup(setupID, objDesc, customPaletteColors);
             
             Position = Vector3.Zero;
             Rotation = Quaternion.Identity;

@@ -44,9 +44,9 @@ namespace DatExplorer.Model
             BuildBoundingBox();
         }
 
-        public Setup(uint setupID, ClothingTable clothingBase, uint palTemplate, float shade)
+        public Setup(uint setupID, FileTypes.ObjDesc objDesc, Dictionary<int, uint> customPaletteColors)
         {
-            // make simple setup if gfxobj
+            // make simple setup if gfxobj. These don't have 
             if (setupID >> 24 == 0x1)
             {
                 MakeSimpleSetup(setupID);
@@ -57,47 +57,20 @@ namespace DatExplorer.Model
             _setup = DatManager.PortalDat.ReadFromDat<SetupModel>(setupID);
 
             Parts = new List<GfxObj>();
-
-            // store these in a dictionary to more easily reference...
-            var clothingBaseParts = new Dictionary<int, ACE.DatLoader.Entity.CloObjectEffect>();
-            var cbe = clothingBase.ClothingBaseEffects[setupID].CloObjectEffects;
-            foreach(var objEffect in cbe)
-                clothingBaseParts.Add((int)objEffect.Index, objEffect);
-
-            // To hold our Custom Palette (palette swaps)
-            Dictionary<int, uint> CustomPaletteColors = new Dictionary<int, uint>();
-
-            // Load all the custom palette colors...
-            var subPalEffect = clothingBase.ClothingSubPalEffects[palTemplate];
-            foreach(var subPals in subPalEffect.CloSubPalettes)
-            {
-                var palSet = DatManager.PortalDat.ReadFromDat<PaletteSet>(subPals.PaletteSet);
-                uint palId = palSet.GetPaletteID(shade);
-                // Load our palette dictated by the shade in the palset
-                var palette = DatManager.PortalDat.ReadFromDat<Palette>(palId);
-                foreach(var range in subPals.Ranges)
-                {
-                    int offset = (int)(range.Offset);
-                    int numColors = (int)(range.NumColors);
-                    // add the appropriate colors to our custom palette
-                    for(int i = 0; i < numColors; i++)
-                        CustomPaletteColors.Add(i+offset, palette.Colors[i+offset]);
-                }
-            }
-
-
-            // Lazy fix...something is caching some parts somewhere in the chain
-            GfxObjCache.Cache.Clear(); 
-            
             for (var i = 0; i < _setup.Parts.Count; i++)
             {
                 uint gfxObjID;
                 GfxObj gfxObj;
-                if (clothingBaseParts.ContainsKey(i))
+
+                var apChange = objDesc.AnimPartChanges.Where(s => s.PartIndex == i).FirstOrDefault();
+                if (apChange != null)
                 {
-                    gfxObjID = clothingBaseParts[i].ModelId;
+                    gfxObjID = apChange.PartID;
                     gfxObj = new GfxObj(gfxObjID, false);
-                    gfxObj.LoadTextures(clothingBaseParts[i].CloTextureEffects, CustomPaletteColors);
+                    List<ACE.DatLoader.Entity.TextureMapChange> tmChanges = objDesc.TextureChanges.FindAll(s => s.PartIndex == i);
+
+
+                    gfxObj.LoadTextures(tmChanges, customPaletteColors);
                     gfxObj.BuildPolygons();
                 }
                 else
