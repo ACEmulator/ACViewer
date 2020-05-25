@@ -579,7 +579,7 @@ namespace DatExplorer.Render
             if (useCache && Textures.TryGetValue(textureID, out var cached))
                 return cached;
 
-            var texture = LoadTexture(textureID, useCache);
+            var texture = LoadTexture(textureID);
             if(useCache)
                 Textures.Add(textureID, texture);
             return texture;
