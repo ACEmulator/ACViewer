@@ -8,7 +8,7 @@ using ACE.Entity.Enum;
 using DatExplorer.Model;
 using DatExplorer.Render;
 using DatExplorer.View;
-
+using System.Collections.Generic;
 
 namespace DatExplorer
 {
@@ -61,6 +61,66 @@ namespace DatExplorer
             Render.Camera.InitModel(Setup.Setup.BoundingBox);
 
             ModelType = ModelType.Setup;
+        }
+        public void LoadModel(uint id, ClothingTable clothingBase, uint palTemplate, float shade)
+        {
+            // can be either a gfxobj or setup id
+            // if gfxobj, create a simple setup
+            GfxObjMode = false;
+
+            // create the objDesc, describing the "Changed" items to the base setup.
+            // We won't bother loading the palette stuff, we'll just create that dictionary directly
+            FileTypes.ObjDesc objDesc = new FileTypes.ObjDesc();
+
+            var cbe = clothingBase.ClothingBaseEffects[id].CloObjectEffects;
+            foreach (var objEffect in cbe)
+            {
+                ACE.DatLoader.Entity.AnimationPartChange apChange = new ACE.DatLoader.Entity.AnimationPartChange();
+                apChange.PartID = objEffect.ModelId;
+                apChange.PartIndex = (byte)objEffect.Index;
+
+                objDesc.AnimPartChanges.Add(apChange);
+                foreach(var texEffect in objEffect.CloTextureEffects)
+                {
+                    ACE.DatLoader.Entity.TextureMapChange tmChange = new ACE.DatLoader.Entity.TextureMapChange();
+                    tmChange.PartIndex = apChange.PartIndex;
+                    tmChange.OldTexture = texEffect.OldTexture;
+                    tmChange.NewTexture = texEffect.NewTexture;
+
+                    objDesc.TextureChanges.Add(tmChange);
+                }
+
+            }
+
+            // To hold our Custom Palette (palette swaps)
+            Dictionary<int, uint> customPaletteColors = new Dictionary<int, uint>();
+
+            // Load all the custom palette colors...
+            var subPalEffect = clothingBase.ClothingSubPalEffects[palTemplate];
+            foreach (var subPals in subPalEffect.CloSubPalettes)
+            {
+                var palSet = DatManager.PortalDat.ReadFromDat<PaletteSet>(subPals.PaletteSet);
+                uint palId = palSet.GetPaletteID(shade);
+                // Load our palette dictated by the shade in the palset
+                var palette = DatManager.PortalDat.ReadFromDat<Palette>(palId);
+                foreach (var range in subPals.Ranges)
+                {
+                    int offset = (int)(range.Offset);
+                    int numColors = (int)(range.NumColors);
+                    // add the appropriate colors to our custom palette
+                    for (int i = 0; i < numColors; i++)
+                        customPaletteColors.Add(i + offset, palette.Colors[i + offset]);
+                }
+            }
+
+
+            Setup = new SetupInstance(id, objDesc, customPaletteColors);
+            InitObject(id);
+
+            Render.Camera.InitModel(Setup.Setup.BoundingBox);
+
+            ModelType = ModelType.Setup;
+            MainWindow.Status.WriteLine($"Loading {id:X8} with ClothingBase {clothingBase.Id:X8}, PaletteTemplate {palTemplate}, and Shade {shade}");
         }
 
         public void LoadEnvironment(uint envID)

@@ -23,5 +23,6 @@
         <local:FileInfo Grid.Row="3" Margin="7.5,7.5,0,0" />
         <local:MotionList Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" />
         <local:ScriptList Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Visibility="Hidden" />
+        <local:ClothingTableList Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Visibility="Hidden" />
     </Grid>
 </UserControl>

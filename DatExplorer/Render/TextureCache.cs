@@ -145,7 +145,7 @@ namespace DatExplorer.Render
             return tex;
         }
 
-        private static Texture2D LoadTexture(Surface surface, uint textureID, bool useDummy = false)
+        private static Texture2D LoadTexture(Surface surface, uint textureID, bool useDummy = false, Dictionary<int, uint> customPaletteColors = null)
         {
             MainWindow.Instance.Status.WriteLine($"Loading texture {textureID:X8}");
 
@@ -154,6 +154,9 @@ namespace DatExplorer.Render
             var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
             if (texture.SourceData == null)
                 texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
+
+            if (customPaletteColors != null)
+                texture.CustomPaletteColors = customPaletteColors;
 
             var surfaceFormat = SurfaceFormat.Color;
             switch (texture.Format)
@@ -459,7 +462,7 @@ namespace DatExplorer.Render
         // 0x05 - SurfaceTexture - contains a list of 0x06 textures
         // 0x06 - Texture - image format and data
 
-        public static Texture2D Get(uint fileID)
+        public static Texture2D Get(uint fileID, List<ACE.DatLoader.Entity.TextureMapChange> textureMapChanges = null, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
         {
             if (fileID >> 24 == 0x01)
             {
@@ -467,8 +470,7 @@ namespace DatExplorer.Render
                 var gfxObj = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.GfxObj>(fileID);
 
                 var surfaceID = gfxObj.Surfaces[0];
-
-                var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
+                Surface surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
 
                 if (surface.ColorValue != 0)
                 {
@@ -482,7 +484,15 @@ namespace DatExplorer.Render
                     return swatch;
                 }
 
-                var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(surface.OrigTextureId);
+                uint textureId = surface.OrigTextureId;
+                if (textureMapChanges != null)
+                {
+                    var tmChange = textureMapChanges.Where(t => t.OldTexture == surface.OrigTextureId).FirstOrDefault();
+                    if (tmChange != null)
+                        textureId = tmChange.NewTexture;
+                }
+                
+                var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(textureId);
 
                 return GetTexture(surface, surfaceTexture.Textures[0]);
             }
@@ -501,12 +511,12 @@ namespace DatExplorer.Render
             {
                 // surface texture
                 var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(fileID);
-                return GetTexture(surfaceTexture);
+                return GetTexture(surfaceTexture, customPaletteColors, useCache);
             }
             else if (fileID >> 24 == 0x06)
             {
                 // texture
-                return GetTexture(fileID);
+                return GetTexture(fileID, customPaletteColors, useCache);
             }
 
             else if (fileID >> 24 == 0x08)
@@ -527,35 +537,67 @@ namespace DatExplorer.Render
                     return swatch;
                 }
 
-                var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(surface.OrigTextureId);
+                uint textureId = surface.OrigTextureId;
+                if (textureMapChanges != null)
+                {
+                    var tmChange = textureMapChanges.Where(t => t.OldTexture == surface.OrigTextureId).FirstOrDefault();
+                    if (tmChange != null)
+                        textureId = tmChange.NewTexture;
+                }
+                var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(textureId);
 
-                return GetTexture(surface, surfaceTexture.Textures[0]);
+                return GetTexture(surface, surfaceTexture.Textures[0], customPaletteColors, useCache);
             }
             return null;
         }
 
-        private static Texture2D GetTexture(uint textureID)
+        /// <summary>
+        /// Helper function to determine if we use the "clean" surface from the portal.dat, or the customized one with a texture swap.
+        /// </summary>
+        /// <param name="surfaceID"></param>
+        /// <param name="surfaces"></param>
+        /// <returns></returns>
+        private static FileTypes.Surface GetCorrectSurface(uint surfaceID, List<FileTypes.Surface> surfaces = null)
         {
-            if (Textures.TryGetValue(textureID, out var cached))
+            var datSurface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
+            FileTypes.Surface surface = new FileTypes.Surface(datSurface);
+
+            if (surfaces != null && surfaces.Count > 0)
+            {
+                foreach (var s in surfaces)
+                {
+                    if (s._surface.Id == surfaceID)
+                        surface = s;
+                }
+            }
+
+            return surface;
+        }
+
+        private static Texture2D GetTexture(uint textureID, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
+        {
+            if (useCache && Textures.TryGetValue(textureID, out var cached))
                 return cached;
 
             var texture = LoadTexture(textureID);
-            Textures.Add(textureID, texture);
+            if(useCache)
+                Textures.Add(textureID, texture);
             return texture;
         }
 
-        private static Texture2D GetTexture(SurfaceTexture surfaceTexture)
+        private static Texture2D GetTexture(SurfaceTexture surfaceTexture, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
         {
-            return GetTexture(surfaceTexture.Textures[0]);
+            return GetTexture(surfaceTexture.Textures[0], customPaletteColors, useCache);
         }
 
-        private static Texture2D GetTexture(Surface surface, uint textureID)
+        private static Texture2D GetTexture(Surface surface, uint textureID, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
         {
-            if (Textures.TryGetValue(textureID, out var cached))
+            if (useCache && Textures.TryGetValue(textureID, out var cached))
                 return cached;
 
-            var texture = LoadTexture(surface, textureID);
-            Textures.Add(textureID, texture);
+            var texture = LoadTexture(surface, textureID, false, customPaletteColors);
+            if(useCache)
+                Textures.Add(textureID, texture);
             return texture;
         }
 

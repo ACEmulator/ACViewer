@@ -11,6 +11,11 @@ namespace DatExplorer.FileTypes
     public class Surface
     {
         public ACE.DatLoader.FileTypes.Surface _surface;
+        
+        /// <summary>
+        /// Used to store a NewTextureId when replaced via Clothing Table.
+        /// </summary>
+        public uint NewTextureId;
 
         public Surface(ACE.DatLoader.FileTypes.Surface surface)
         {

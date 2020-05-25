@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using DatExplorer.Render;
+using System.Collections.Generic;
 
 namespace DatExplorer.Model
 {
@@ -31,6 +32,24 @@ namespace DatExplorer.Model
         {
             Setup = SetupCache.Get(setupID);
 
+            Position = Vector3.Zero;
+            Rotation = Quaternion.Identity;
+            Scale = Vector3.One;
+
+            BuildWorldTransform();
+        }
+
+        /// <summary>
+        /// For loading a SetupInstance with a Clothing Base
+        /// </summary>
+        /// <param name="setupID"></param>
+        /// <param name="clothingBase"></param>
+        /// <param name="palTemplate"></param>
+        /// <param name="shade"></param>
+        public SetupInstance(uint setupID, FileTypes.ObjDesc objDesc, Dictionary<int, uint> customPaletteColors)
+        {
+            Setup = new Setup(setupID, objDesc, customPaletteColors);
+            
             Position = Vector3.Zero;
             Rotation = Quaternion.Identity;
             Scale = Vector3.One;

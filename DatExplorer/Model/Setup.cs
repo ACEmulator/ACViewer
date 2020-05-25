@@ -44,6 +44,54 @@ namespace DatExplorer.Model
             BuildBoundingBox();
         }
 
+        public Setup(uint setupID, FileTypes.ObjDesc objDesc, Dictionary<int, uint> customPaletteColors)
+        {
+            // make simple setup if gfxobj. These don't have 
+            if (setupID >> 24 == 0x1)
+            {
+                MakeSimpleSetup(setupID);
+                BuildBoundingBox();
+                return;
+            }
+
+            _setup = DatManager.PortalDat.ReadFromDat<SetupModel>(setupID);
+
+            Parts = new List<GfxObj>();
+            for (var i = 0; i < _setup.Parts.Count; i++)
+            {
+                uint gfxObjID;
+                GfxObj gfxObj;
+
+                var apChange = objDesc.AnimPartChanges.Where(s => s.PartIndex == i).FirstOrDefault();
+                if (apChange != null)
+                {
+                    gfxObjID = apChange.PartID;
+                    gfxObj = new GfxObj(gfxObjID, false);
+                    List<ACE.DatLoader.Entity.TextureMapChange> tmChanges = objDesc.TextureChanges.FindAll(s => s.PartIndex == i);
+
+
+                    gfxObj.LoadTextures(tmChanges, customPaletteColors);
+                    gfxObj.BuildPolygons();
+                }
+                else
+                {
+                    gfxObjID = _setup.Parts[i];
+                    gfxObj = new GfxObj(gfxObjID, false);
+                    gfxObj.LoadTextures(null, null);
+                    gfxObj.BuildPolygons();
+                }
+
+                Parts.Add(gfxObj);
+            }
+
+            PlacementFrames = new List<Matrix>();
+
+            foreach (var placementFrame in _setup.PlacementFrames[0].AnimFrame.Frames)
+                PlacementFrames.Add(placementFrame.ToXna());
+
+            BuildBoundingBox();
+        }
+
         public void MakeSimpleSetup(uint gfxObjID)
         {
             _setup = SetupModel.CreateSimpleSetup();
