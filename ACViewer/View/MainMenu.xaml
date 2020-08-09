@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="ACViewer.View.MainMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ACViewer.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="1154">
+    <Grid>
+        <Menu Grid.Row="0" Grid.ColumnSpan="2">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Click="OpenFile_Click">
+                    <MenuItem.Icon>
+                        <Image Source="../Icons/OpenFile_16x.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Edit">
+                <MenuItem Header="_Options" Click="Options_Click" />
+            </MenuItem>
+            <MenuItem Header="_View">
+                <MenuItem Header="_World Map" Click="WorldMap_Click" />
+                <MenuItem x:Name="optionShowHUD" Header="Show _HUD" Click="ShowHUD_Click" />
+                <MenuItem Header="Show _Location" Click="ShowLocation_Click" />
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_View Help" Click="Guide_Click" />
+                <MenuItem Header="_About" Click="About_Click"/>
+            </MenuItem>
+        </Menu>            
+    </Grid>
+</UserControl>
