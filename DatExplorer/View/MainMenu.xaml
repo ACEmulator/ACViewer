@@ -20,6 +20,8 @@
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_World Map" Click="WorldMap_Click" />
+                <MenuItem x:Name="optionShowHUD" Header="Show _HUD" Click="ShowHUD_Click" />
+                <MenuItem Header="Show _Location" Click="ShowLocation_Click" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_View Help" Click="Guide_Click" />

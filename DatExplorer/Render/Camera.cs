@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Linq;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop.Input;
+
 using DatExplorer.Model;
 using DatExplorer.Render;
+
+using ACE.Server.Physics.Common;
 
 namespace DatExplorer
 {
@@ -296,6 +301,57 @@ namespace DatExplorer
             //Mouse.SetPosition(GameView.Instance.GraphicsDevice.Viewport.Width / 2, GameView.Instance.GraphicsDevice.Viewport.Height / 2);
             //Mouse.SetCursor((int)StartPos.X, (int)StartPos.Y);
             //PrevMouseState = Mouse.GetState();
+        }
+
+        public string GetPosition()
+        {
+            // 255 landblocks across * 192 meters for each landblock = 48,960 meters across Dereth
+            if (Position.X < 0.0f || Position.Y < 0.0f || Position.X > 48960.0f || Position.Y > 48960.0f)
+                return null;
+            
+            var lbx = (int)(Position.X / 192.0f);
+            var lby = (int)(Position.Y / 192.0f);
+
+            var x = Position.X % 192.0f;
+            var y = Position.Y % 192.0f;
+
+            var cellX = (int)(x / 24.0f);
+            var cellY = (int)(y / 24.0f);
+
+            var cell = cellX * 8 + cellY + 1;
+            
+            var objCellId = (uint)(lbx << 24 | lby << 16 | cell);
+
+            var yaw = Math.Atan2(-Dir.X, Dir.Y);
+
+            var q = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)yaw);
+
+            // test if we are in any loaded indoor cells
+            foreach (var landblock in LScape.Landblocks.Values)
+            {
+                // find origin in terms of this landblock
+                var blockX = landblock.ID >> 24;
+                var blockY = landblock.ID >> 16 & 0xFF;
+
+                var blockX_start = blockX * 192.0f;
+                var blockY_start = blockY * 192.0f;
+
+                var blockPosX = Position.X - blockX_start;
+                var blockPosY = Position.Y - blockY_start;
+
+                var origin = new System.Numerics.Vector3(blockPosX, blockPosY, Position.Z);
+
+                var envCells = landblock.get_envcells();
+
+                foreach (var envCell in envCells)
+                {
+                    if (envCell.point_in_cell(origin))
+                        return $"0x{envCell.ID:X8} [{blockPosX} {blockPosY} {Position.Z}] {q.W} {q.X} {q.Y} {q.Z}";
+                }
+            }
+
+            // return outdoor location
+            return $"0x{objCellId:X8} [{x} {y} {Position.Z}] {q.W} {q.X} {q.Y} {q.Z}";
         }
     }
 }
