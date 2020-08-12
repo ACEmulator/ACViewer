@@ -50,6 +50,8 @@ namespace DatExplorer
             Buffer.ClearBuffer();
             TextureCache.Init();
 
+            LScape.unload_landblocks_all();
+
             var landblock = LScape.get_landblock(landblockID);
             if (landblock.IsDungeon)
                 radius = 0;
@@ -78,7 +80,7 @@ namespace DatExplorer
                     timer.Stop();
 
                     r_landblock = new R_Landblock(landblock);
-                    LScape.unload_landblock(lbid);
+                    //LScape.unload_landblock(lbid);
 
                     if (landblockID == lbid)
                         centerBlock = r_landblock;
@@ -106,6 +108,8 @@ namespace DatExplorer
         {
             Buffer.ClearBuffer();
             TextureCache.Init();
+            
+            LScape.unload_landblocks_all();
 
             DungeonMode = false;
 
@@ -141,7 +145,7 @@ namespace DatExplorer
                     timer.Stop();
 
                     r_landblock = new R_Landblock(landblock);
-                    LScape.unload_landblock(lbid);
+                    //LScape.unload_landblock(lbid);
 
                     if (lbid == landblockID)
                         centerBlock = r_landblock;
@@ -181,6 +185,16 @@ namespace DatExplorer
                 GameView.ViewMode = ViewMode.Map;
             }
 
+            if (keyboardState.IsKeyDown(Keys.H) && !PrevKeyboardState.IsKeyDown(Keys.H))
+            {
+                MainMenu.ToggleHUD();
+            }
+
+            if (keyboardState.IsKeyDown(Keys.L) && !PrevKeyboardState.IsKeyDown(Keys.L))
+            {
+                ShowLocation();
+            }
+
             PrevKeyboardState = keyboardState;
 
             if (Camera != null)
@@ -189,10 +203,19 @@ namespace DatExplorer
             DrawCount.Update();
         }
 
+        public void ShowLocation()
+        {
+            var pos = Camera.GetPosition() ?? "unknown";
+            MainWindow.Status.WriteLine($"Location: {pos}");
+        }
+
         public void Draw(GameTime time)
         {
             //Render.Draw(Landblocks);
             Render.Draw(null);
+
+            if (MainMenu.ShowHUD)
+                Render.DrawHUD();
         }
     }
 }

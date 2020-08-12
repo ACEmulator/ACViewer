@@ -90,6 +90,11 @@ namespace ACE.Server.Physics.Common
             return Landblocks.TryRemove(landblockID, out _);
         }
 
+        public static void unload_landblocks_all()
+        {
+            Landblocks.Clear();
+        }
+
         public static ObjCell get_landcell(uint blockCellID)
         {
             //Console.WriteLine($"get_landcell({blockCellID:X8}");

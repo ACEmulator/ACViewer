@@ -20,9 +20,14 @@ namespace DatExplorer.View
 
         public static Options Options;
 
+        public static bool ShowHUD;
+
+        public static MainMenu Instance;
+
         public MainMenu()
         {
             InitializeComponent();
+            Instance = this;
         }
 
         private async void OpenFile_Click(object sender, RoutedEventArgs e)
@@ -73,6 +78,25 @@ namespace DatExplorer.View
                 return;
 
             GameView.ViewMode = ViewMode.Map;
+        }
+
+        private void ShowHUD_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleHUD();
+        }
+
+        public static bool ToggleHUD()
+        {
+            ShowHUD = !ShowHUD;
+            Instance.optionShowHUD.IsChecked = ShowHUD;
+
+            return ShowHUD;
+        }
+
+        private void ShowLocation_Click(object sender, RoutedEventArgs e)
+        {
+            if (WorldViewer.Instance != null)
+                WorldViewer.Instance.ShowLocation();
         }
 
         private void About_Click(object sender, RoutedEventArgs e)

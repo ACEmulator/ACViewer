@@ -20,6 +20,11 @@ namespace DatExplorer.Render
 
         public Buffer Buffer;
 
+        // text rendering
+        public SpriteBatch SpriteBatch => GameView.SpriteBatch;
+
+        public SpriteFont Font;
+
         public Render()
         {
             Init();
@@ -35,6 +40,8 @@ namespace DatExplorer.Render
             Effect.Parameters["xProjection"].SetValue(Camera.ProjectionMatrix);
 
             Buffer = new Buffer();
+
+            Font = GameView.Content.Load<SpriteFont>("Fonts/Consolas");
         }
 
         public void Draw()
@@ -162,6 +169,20 @@ namespace DatExplorer.Render
 
             //landblock.Draw();
             Buffer.Draw();
+        }
+
+        private static readonly Vector2 TextPos = new Vector2(10, 10);
+        
+        public void DrawHUD()
+        {
+            var cameraPos = GameView.Camera.GetPosition();
+
+            if (cameraPos != null)
+            {
+                SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearClamp);
+                SpriteBatch.DrawString(Font, $"Location: {cameraPos}", TextPos, Color.White);
+                SpriteBatch.End();
+            }
         }
     }
 }
