@@ -1,0 +1,33 @@
+version: 1.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+  - master
+skip_tags: true
+image: Visual Studio 2017
+configuration:
+- Release
+- Debug
+platform: x64
+before_build:
+- cmd: >-
+    git submodule update --init --recursive
+
+    nuget restore
+build:
+  project: ACViewer.sln
+  verbosity: minimal
+artifacts:
+- path: ACViewer\bin\x64\$(configuration)
+  name: ACViewer-v$(appveyor_build_version)-$(configuration)
+deploy:
+- provider: GitHub
+  tag: v$(appveyor_build_version)
+  release: ACViewer v$(appveyor_build_version)
+  description: <h1> ACViewer v$(appveyor_build_version) </h1> <blockquote>The following commit is included in this release:</<blockquote> <h1></h1>$(APPVEYOR_REPO_COMMIT_MESSAGE) <p>$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)<h1><h6>automated release build - $(APPVEYOR_REPO_COMMIT_TIMESTAMP)
+  auth_token:
+    secure: k8Q9MwG7UgKbocfdJvD4iBwL1K2AsdjZs6B34/vFqkoukW9p3tJ3uRacb1Zmclyp
+  artifact: /.*\.zip/
+  draft: false
+  force_update: true
