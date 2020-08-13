@@ -78,7 +78,17 @@ namespace ACViewer.View
                 new Entity.FileType(0x0A, "Sound", typeof(Wave)),
                 new Entity.FileType(0x0D, "Environment", typeof(ACE.DatLoader.FileTypes.Environment)),
                 new Entity.FileType(0x0E000002, "CharGen", typeof(ACE.DatLoader.FileTypes.CharGen)),
+                new Entity.FileType(0x0E000003, "VitalTable", typeof(ACE.DatLoader.FileTypes.SecondaryAttributeTable)),
+                new Entity.FileType(0x0E000004, "SkillTable", typeof(ACE.DatLoader.FileTypes.SkillTable)),
+                new Entity.FileType(0x0E000007, "ChatPoseTable", typeof(ACE.DatLoader.FileTypes.ChatPoseTable)),
+                new Entity.FileType(0x0E00000D, "GeneratorTable", typeof(ACE.DatLoader.FileTypes.GeneratorTable)),
+                new Entity.FileType(0x0E00000E, "SpellTable", typeof(ACE.DatLoader.FileTypes.SpellTable)),
+                new Entity.FileType(0x0E00000F, "SpellComponents", typeof(ACE.DatLoader.FileTypes.SpellComponentsTable)),
+                new Entity.FileType(0x0E000018, "XpTable", typeof(ACE.DatLoader.FileTypes.XpTable)),
                 new Entity.FileType(0x0E00001A, "BadData", typeof(ACE.DatLoader.FileTypes.BadData)),
+                new Entity.FileType(0x0E00001D, "ContractTable", typeof(ACE.DatLoader.FileTypes.ContractTable)),
+                /*new Entity.FileType(0x0E00001E, "TabooTable", typeof(ACE.DatLoader.FileTypes.TabooTable)),*/
+                new Entity.FileType(0x0E000020, "NameFilters", typeof(ACE.DatLoader.FileTypes.NameFilterTable)),
                 new Entity.FileType(0x0F, "PaletteSet", typeof(ACE.DatLoader.FileTypes.PaletteSet)),
                 new Entity.FileType(0x10, "Clothing", typeof(ACE.DatLoader.FileTypes.ClothingTable)),
                 new Entity.FileType(0x11, "DegradeInfo", typeof(GfxObjDegradeInfo)),
@@ -285,10 +295,60 @@ namespace ACViewer.View
                         var charGen = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.CharGen>(fileID);
                         FileInfo.SetInfo(new FileTypes.CharGen(charGen).BuildTree());
                     }
+                    else if (fileID == 0x0E000003)
+                    {
+                        var vitalTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.SecondaryAttributeTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.SecondaryAttributeTable(vitalTable).BuildTree());
+                    }
+                    else if (fileID == 0x0E000004)
+                    {
+                        var skillTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.SkillTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.SkillTable(skillTable).BuildTree());
+                    }
+                    else if (fileID == 0x0E000007)
+                    {
+                        var chatPoseTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.ChatPoseTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.ChatPoseTable(chatPoseTable).BuildTree());
+                    }
+                    else if (fileID == 0x0E00000D)
+                    {
+                        var generatorTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.GeneratorTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.GeneratorTable(generatorTable).BuildTree());
+                    }
+                    else if (fileID == 0x0E00000E)
+                    {
+                        var spellTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.SpellTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.SpellTable(spellTable).BuildTree());
+                    }
+                    else if (fileID == 0x0E00000F)
+                    {
+                        var spellComponentsTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.SpellComponentsTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.SpellComponentsTable(spellComponentsTable).BuildTree());
+                    }
+                    else if (fileID == 0x0E000018)
+                    {
+                        var xpTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.XpTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.XpTable(xpTable).BuildTree());
+                    }
                     else if (fileID == 0x0E00001A)
                     {
                         var badData = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.BadData>(fileID);
                         FileInfo.SetInfo(new FileTypes.BadData(badData).BuildTree());
+                    }
+                    else if (fileID == 0x0E00001D)
+                    {
+                        var contractTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.ContractTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.ContractTable(contractTable).BuildTree());
+                    }
+                    else if (fileID == 0x0E00001E)
+                    {
+                        var tabooTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.TabooTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.TabooTable(tabooTable).BuildTree());
+                    }
+                    else if (fileID == 0x0E000020)
+                    {
+                        var nameFilterTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.NameFilterTable>(fileID);
+                        FileInfo.SetInfo(new FileTypes.NameFilterTable(nameFilterTable).BuildTree());
                     }
                     break;
                 case 0x0F:
