@@ -77,7 +77,7 @@ namespace ACViewer.Model
                 {
                     gfxObjID = _setup.Parts[i];
                     gfxObj = new GfxObj(gfxObjID, false);
-                    gfxObj.LoadTextures(null, null);
+                    gfxObj.LoadTextures(null, customPaletteColors);
                     gfxObj.BuildPolygons();
                 }
 
