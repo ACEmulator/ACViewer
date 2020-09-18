@@ -52,7 +52,23 @@ namespace ACViewer.FileTypes
                 specializedSkillXpList.Items.Add(specializedSkillXpNode);
             }
 
-            treeView.Items.AddRange(new List<TreeNode>() { attributeXpList, vitalXpList, trainedSkillXpList, specializedSkillXpList });
+            var characterLevelXpList = new TreeNode("CharacterLevelXpList");
+
+            for (var i = 0; i < _xpTable.CharacterLevelXPList.Count; i++)
+            {
+                var characterLevelXpNode = new TreeNode($"{i}: {_xpTable.CharacterLevelXPList[i]:N0}");
+                characterLevelXpList.Items.Add(characterLevelXpNode);
+            }
+
+            var characterLevelSkillCreditList = new TreeNode("CharacterLevelSkillCreditList");
+
+            for (var i = 0; i < _xpTable.CharacterLevelSkillCreditList.Count; i++)
+            {
+                var characterLevelSkillCreditNode = new TreeNode($"{i}: {_xpTable.CharacterLevelSkillCreditList[i]:N0}");
+                characterLevelSkillCreditList.Items.Add(characterLevelSkillCreditNode);
+            }
+
+            treeView.Items.AddRange(new List<TreeNode>() { attributeXpList, vitalXpList, trainedSkillXpList, specializedSkillXpList, characterLevelXpList, characterLevelSkillCreditList });
 
             return treeView;
         }
