@@ -27,7 +27,7 @@ deploy:
   release: ACViewer v$(appveyor_build_version)
   description: <h1> ACViewer v$(appveyor_build_version) </h1> <blockquote>The following commit is included in this release:</<blockquote> <h1></h1>$(APPVEYOR_REPO_COMMIT_MESSAGE) <p>$(APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED)<h1><h6>automated release build - $(APPVEYOR_REPO_COMMIT_TIMESTAMP)
   auth_token:
-    secure: k8Q9MwG7UgKbocfdJvD4iBwL1K2AsdjZs6B34/vFqkoukW9p3tJ3uRacb1Zmclyp
+    secure: lGLpqex+Weod6ZiPw34RwTv999QvoSZ+imTcmYhiJWQL6XkfkVUYcqOO6pJDuAYt
   artifact: /.*\.zip/
   draft: false
   force_update: true
