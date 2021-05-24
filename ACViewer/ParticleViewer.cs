@@ -138,8 +138,8 @@ namespace ACViewer
         public void DrawParticles()
         {
             var rs = new RasterizerState();
-            rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.CullClockwiseFace;
-            //rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.None;
+            //rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.CullClockwiseFace;
+            rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.None;
             rs.FillMode = FillMode.Solid;
             GraphicsDevice.RasterizerState = rs;
 
