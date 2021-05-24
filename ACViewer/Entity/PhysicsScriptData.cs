@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
+using ACViewer.Entity.AnimationHooks;
 
 namespace ACViewer.Entity
 {
@@ -18,9 +16,12 @@ namespace ACViewer.Entity
         public List<TreeNode> BuildTree()
         {
             var startTime = new TreeNode($"StartTime: {_scriptData.StartTime}");
-            var hook = new TreeNode($"{new AnimationHook(_scriptData.Hook).ToString()}");
 
-            return new List<TreeNode>() { startTime, hook };
+            var hook = AnimationHook.Create(_scriptData.Hook);
+
+            var hookNode = new TreeNode($"Hook:", hook.BuildTree());
+
+            return new List<TreeNode>() { startTime, hookNode };
         }
     }
 }

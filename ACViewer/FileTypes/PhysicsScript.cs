@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ACViewer.Entity;
+﻿using ACViewer.Entity;
+using ACViewer.Entity.AnimationHooks;
 
 namespace ACViewer.FileTypes
 {
@@ -24,10 +20,15 @@ namespace ACViewer.FileTypes
 
             for (var i = 0; i < _playScript.ScriptData.Count; i++)
             {
-                var script = new TreeNode($"{i}");
-                script.Items.AddRange(new PhysicsScriptData(_playScript.ScriptData[i]).BuildTree());
+                var scriptData = new PhysicsScriptData(_playScript.ScriptData[i]);
 
-                scripts.Items.Add(script);
+                var scriptNode = new TreeNode($"HookType: {scriptData._scriptData.Hook.HookType}, StartTime: {scriptData._scriptData.StartTime}");
+
+                var animationHook = AnimationHook.Create(scriptData._scriptData.Hook);
+
+                scriptNode.Items.AddRange(animationHook.BuildTree());
+
+                scripts.Items.Add(scriptNode);
             }
             treeView.Items.AddRange(scripts.Items);
             return treeView;

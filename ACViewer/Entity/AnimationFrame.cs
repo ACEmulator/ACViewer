@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
+using ACViewer.Entity.AnimationHooks;
 
 namespace ACViewer.Entity
 {
@@ -27,11 +25,33 @@ namespace ACViewer.Entity
 
             if (_animationFrame.Hooks.Count > 0)
             {
-                var hooks = new TreeNode("Hooks:");
-                foreach (var hook in _animationFrame.Hooks)
-                    hooks.Items.Add(new TreeNode(new AnimationHook(hook).ToString()));
+                if (_animationFrame.Hooks.Count == 1)
+                {
+                    var _hook = _animationFrame.Hooks[0];
+                    
+                    var hookNode = new TreeNode($"HookType: {_hook.HookType}");
 
-                treeNode.Add(hooks);
+                    var hook = AnimationHook.Create(_hook);
+                    hookNode.Items.AddRange(hook.BuildTree());
+
+                    treeNode.Add(hookNode);
+                }
+                else
+                {
+                    var hooks = new TreeNode("Hooks");
+
+                    foreach (var _hook in _animationFrame.Hooks)
+                    {
+                        var hookNode = new TreeNode($"HookType: {_hook.HookType}");
+
+                        var hook = AnimationHook.Create(_hook);
+                        hookNode.Items.AddRange(hook.BuildTree());
+
+                        hooks.Items.Add(hookNode);
+                    }
+
+                    treeNode.Add(hooks);
+                }
             }
             return treeNode;
         }
