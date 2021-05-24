@@ -11,10 +11,10 @@ namespace ACViewer.Entity
         public string Name { get; set; }
         public List<TreeNode> Items { get; set; }
 
-        public TreeNode(string name = "")
+        public TreeNode(string name = "", List<TreeNode> items = null)
         {
             Name = name;
-            Items = new List<TreeNode>();
+            Items = items ?? new List<TreeNode>();
         }
     }
 }
