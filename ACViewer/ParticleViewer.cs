@@ -138,8 +138,8 @@ namespace ACViewer
         public void DrawParticles()
         {
             var rs = new RasterizerState();
-            rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.CullClockwiseFace;
-            //rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.None;
+            //rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.CullClockwiseFace;
+            rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.None;
             rs.FillMode = FillMode.Solid;
             GraphicsDevice.RasterizerState = rs;
 
@@ -196,6 +196,9 @@ namespace ACViewer
 
         public void DrawGfxObj(GfxObj gfxObj, PhysicsPart part, Texture2D texture)
         {
+            if (gfxObj.VertexBuffer == null)
+                gfxObj.BuildVertexBuffer();
+            
             GraphicsDevice.SetVertexBuffer(gfxObj.VertexBuffer);
 
             var translateWorld = Matrix.CreateScale(part.GfxObjScale.ToXna()) * Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna()) * Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna());
@@ -214,17 +217,21 @@ namespace ACViewer
                         GraphicsDevice.BlendState = BlendState.NonPremultiplied;
                     //GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
-                    //GraphicsDevice.Indices = poly.IndexBuffer;
+                    if (poly.IndexBuffer == null)
+                        poly.BuildIndexBuffer();
+                    
+                    GraphicsDevice.Indices = poly.IndexBuffer;
                     Effect.Parameters["xTextures"].SetValue(poly.Texture);
                     pass.Apply();
 
-                    //var indexCnt = poly.IndexArray.Count;
-                    //GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, indexCnt / 3);
-                    if (poly == null || poly._polygon == null || poly._polygon.Vertices == null)
-                        continue;
+                    var indexCnt = poly.Indices.Count;
+                    GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, indexCnt / 3);
+
+                    /*if (poly._polygon.Vertices == null)
+                        poly._polygon.LoadVertices(gfxObj._gfxObj.VertexArray);
 
                     var vertexCnt = poly._polygon.Vertices.Count;
-                    GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexCnt / 3);
+                    GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexCnt / 3);*/
                 }
             }
         }
