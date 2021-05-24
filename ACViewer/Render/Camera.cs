@@ -138,6 +138,12 @@ namespace ACViewer
             //var box = setup.BoundingBox;
             var size = box.Size;
 
+            if (float.IsInfinity(size.X))
+            {
+                InitParticle();
+                return;
+            }
+
             var facing = box.GetTargetFace();
             var face = box.Faces[(int)facing];
             var center = face.Center;
