@@ -1,14 +1,19 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using MonoGame.Framework.WpfInterop.Input;
+
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
 using ACE.Entity.Enum;
+using ACE.Server.Physics.Animation;
+
 using ACViewer.Model;
 using ACViewer.Render;
 using ACViewer.View;
-using System.Collections.Generic;
 
 namespace ACViewer
 {
@@ -43,6 +48,12 @@ namespace ACViewer
 
         public ModelType ModelType;
 
+        public List<uint> EmitterInfoIDs;
+
+        public static GameView GameView => GameView.Instance;
+
+        public static Player Player => GameView.Player;
+
         public ModelViewer()
         {
             Instance = this;
@@ -62,6 +73,7 @@ namespace ACViewer
 
             ModelType = ModelType.Setup;
         }
+
         public void LoadModel(uint id, ClothingTable clothingBase, uint palTemplate, float shade)
         {
             // can be either a gfxobj or setup id
@@ -140,9 +152,30 @@ namespace ACViewer
             ModelType = ModelType.EnvCell;
         }
 
+        public void LoadScript(uint scriptID)
+        {
+            EmitterInfoIDs = ParticleViewer.Instance.GetEmitterInfoIDs(scriptID, 1.0f);
+
+            foreach (var emitterInfoID in EmitterInfoIDs)
+            {
+                var emitterInfo = DatManager.PortalDat.ReadFromDat<ParticleEmitterInfo>(emitterInfoID);
+
+                // link to object frame?
+                var frame = new AFrame();
+                Player.PhysicsObj.create_particle_emitter(emitterInfoID, 0, frame, 0);
+            }
+        }
+
         public void InitObject(uint setupID)
         {
             ViewObject = new ViewObject(setupID);
+
+            Player.PhysicsObj.ParticleManager.ParticleTable.Clear();
+            
+            EmitterInfoIDs = null;
+
+            if (Setup.Setup._setup.DefaultScript != 0)
+                LoadScript(Setup.Setup._setup.DefaultScript);
         }
 
         public void DoStance(MotionStance stance)
@@ -192,8 +225,12 @@ namespace ACViewer
 
         public void DrawModel()
         {
-            if (Setup != null)
-                Setup.Draw(PolyIdx);
+            if (Setup == null) return;
+
+            Setup.Draw(PolyIdx);
+
+            if (EmitterInfoIDs != null)
+                ParticleViewer.Instance.DrawParticles();
         }
 
         public void DrawEnvironment()
