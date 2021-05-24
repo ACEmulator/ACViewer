@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop.Input;
 
 using ACE.DatLoader;
+using ACE.DatLoader.Entity.AnimationHooks;
 using ACE.DatLoader.FileTypes;
 using ACE.Entity.Enum;
 using ACE.Server.Physics.Animation;
@@ -14,6 +15,8 @@ using ACE.Server.Physics.Animation;
 using ACViewer.Model;
 using ACViewer.Render;
 using ACViewer.View;
+
+using Frame = ACE.DatLoader.Entity.Frame;
 
 namespace ACViewer
 {
@@ -48,7 +51,7 @@ namespace ACViewer
 
         public ModelType ModelType;
 
-        public List<uint> EmitterInfoIDs;
+        public List<CreateParticleHook> CreateParticleHooks;
 
         public static GameView GameView => GameView.Instance;
 
@@ -154,15 +157,24 @@ namespace ACViewer
 
         public void LoadScript(uint scriptID)
         {
-            EmitterInfoIDs = ParticleViewer.Instance.GetEmitterInfoIDs(scriptID, 1.0f);
+            CreateParticleHooks = ParticleViewer.Instance.GetCreateParticleHooks(scriptID, 0.0f);
 
-            foreach (var emitterInfoID in EmitterInfoIDs)
+            foreach (var createParticleHook in CreateParticleHooks)
             {
-                var emitterInfo = DatManager.PortalDat.ReadFromDat<ParticleEmitterInfo>(emitterInfoID);
+                // passing partIndex to create_particle_emitter doesn't seem to affect the renderer atm,
+                // so linking the partFrame to the emitterOffset here
 
-                // link to object frame?
-                var frame = new AFrame();
-                Player.PhysicsObj.create_particle_emitter(emitterInfoID, 0, frame, 0);
+                var partFrame = new AFrame();
+
+                if (Setup.Setup._setup.PlacementFrames.TryGetValue((int)Placement.Resting, out var placementType) || Setup.Setup._setup.PlacementFrames.TryGetValue((int)Placement.Default, out placementType))
+                {
+                    if (placementType.AnimFrame.Frames.Count > 0 && createParticleHook.PartIndex < placementType.AnimFrame.Frames.Count)
+                        partFrame = new AFrame(placementType.AnimFrame.Frames[(int)createParticleHook.PartIndex]);
+                }
+
+                var emitterOffset = AFrame.Combine(partFrame, new AFrame(createParticleHook.Offset));
+
+                Player.PhysicsObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, emitterOffset, (int)createParticleHook.EmitterId);
             }
         }
 
@@ -172,7 +184,7 @@ namespace ACViewer
 
             Player.PhysicsObj.ParticleManager.ParticleTable.Clear();
             
-            EmitterInfoIDs = null;
+            CreateParticleHooks = null;
 
             if (Setup.Setup._setup.DefaultScript != 0)
                 LoadScript(Setup.Setup._setup.DefaultScript);
@@ -229,7 +241,7 @@ namespace ACViewer
 
             Setup.Draw(PolyIdx);
 
-            if (EmitterInfoIDs != null)
+            if (CreateParticleHooks != null)
                 ParticleViewer.Instance.DrawParticles();
         }
 

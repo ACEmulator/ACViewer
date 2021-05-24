@@ -1,17 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+using MonoGame.Framework.WpfInterop.Input;
+
 using ACE.DatLoader;
 using ACE.DatLoader.Entity.AnimationHooks;
 using ACE.Entity.Enum;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Animation;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Framework.WpfInterop.Input;
+
 using ACViewer.Model;
 using ACViewer.Render;
 using ACViewer.View;
+
+using Frame = ACE.DatLoader.Entity.Frame;
 
 namespace ACViewer
 {
@@ -46,7 +52,7 @@ namespace ACViewer
             return mods[0];
         }
 
-        public List<uint> GetEmitterInfoIDs(uint pEffectTableID, PlayScript playScript, float mod = 0.0f)
+        public List<CreateParticleHook> GetCreateParticleHooks(uint pEffectTableID, PlayScript playScript, float mod = 0.0f)
         {
             var pEffectTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.PhysicsScriptTable>(pEffectTableID);
             var scripts = pEffectTable.ScriptTable[(uint)playScript].Scripts;
@@ -55,12 +61,12 @@ namespace ACViewer
 
             var scriptModDataEntry = scripts.Where(s => s.Mod == modIdx).FirstOrDefault();
 
-            return GetEmitterInfoIDs(scriptModDataEntry.ScriptId);
+            return GetCreateParticleHooks(scriptModDataEntry.ScriptId);
         }
 
-        public List<uint> GetEmitterInfoIDs(uint scriptID, float mod = 0.0f)
+        public List<CreateParticleHook> GetCreateParticleHooks(uint scriptID, float mod = 0.0f)
         {
-            var emitterInfoIDs = new List<uint>();
+            var createParticleHooks = new List<CreateParticleHook>();
 
             var script = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.PhysicsScript>(scriptID);
 
@@ -68,45 +74,43 @@ namespace ACViewer
             {
                 // AnimationHook
                 if (scriptDataEntry.Hook.HookType == AnimationHookType.CreateParticle)
-                {
-                    var particleHook = scriptDataEntry.Hook as CreateParticleHook;
-                    var emitterInfoID = particleHook.EmitterInfoId;
-                    emitterInfoIDs.Add(emitterInfoID);
-                }
+                    createParticleHooks.Add(scriptDataEntry.Hook as CreateParticleHook);
             }
-            return emitterInfoIDs;
+            return createParticleHooks;
         }
 
-        public void InitEmitter(List<uint> emitterInfoIDs, float mod = 0.0f)
+        public void InitEmitter(List<CreateParticleHook> createParticleHooks, float mod = 0.0f)
         {
             GameView.ViewMode = ViewMode.Particle;
 
-            foreach (var emitterInfoID in emitterInfoIDs)
+            foreach (var createParticleHook in createParticleHooks)
             {
-                var emitterInfo = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.ParticleEmitterInfo>(emitterInfoID);
-                MainWindow.Status.WriteLine($"ParticleEmitterInfo.ID: {emitterInfoID:X8}");
+                //var emitterInfo = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.ParticleEmitterInfo>(createParticleHook.EmitterInfoId);
+                MainWindow.Status.WriteLine($"ParticleEmitterInfo.ID: {createParticleHook.EmitterInfoId:X8}");
 
-                var frame = new AFrame();
-                Player.PhysicsObj.create_particle_emitter(emitterInfoID, 0, frame, 0);
+                Player.PhysicsObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, new AFrame(createParticleHook.Offset), (int)createParticleHook.EmitterId);
             }
         }
 
-        public void InitEmitter(uint scriptID, float mod = 0.0f)
+        public void InitEmitter(uint fileID, float mod = 0.0f)
         {
-            if (scriptID >> 24 == 0x32)
+            if (fileID >> 24 == 0x32)
             {
-                InitEmitter(new List<uint>() { scriptID }, mod);
+                GameView.ViewMode = ViewMode.Particle;
+
+                Player.PhysicsObj.create_particle_emitter(fileID, 0, new AFrame(), 0);
                 return;
             }
 
-            var emitterInfoIDs = GetEmitterInfoIDs(scriptID, mod);
-            InitEmitter(emitterInfoIDs, mod);
+            var createParticleHooks = GetCreateParticleHooks(fileID, mod);
+            InitEmitter(createParticleHooks, mod);
         }
 
         public void InitEmitter(uint pEffectTableID, PlayScript playScript, float mod = 0.0f)
         {
-            var emitterInfoIDs = GetEmitterInfoIDs(pEffectTableID, playScript, mod);
-            InitEmitter(emitterInfoIDs, mod);
+            var createParticleHooks = GetCreateParticleHooks(pEffectTableID, playScript, mod);
+
+            InitEmitter(createParticleHooks, mod);
         }
 
         public void Update(GameTime gameTime)
