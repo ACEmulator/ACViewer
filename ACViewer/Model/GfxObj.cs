@@ -65,7 +65,7 @@ namespace ACViewer.Model
             VertexBuffer.SetData(VertexArray.ToArray());
         }
 
-        public void LoadTextures()
+        public void LoadTextures(List<ACE.DatLoader.Entity.TextureMapChange> textureChanges = null, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
         {
             Textures = new List<Texture2D>();
             Surfaces = new List<Surface>();
@@ -75,19 +75,7 @@ namespace ACViewer.Model
                 var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
                 Surfaces.Add(surface);
 
-                Textures.Add(TextureCache.Get(surfaceID));
-            }
-        }
-        public void LoadTextures(List<ACE.DatLoader.Entity.TextureMapChange> textureChanges, Dictionary<int, uint> customPaletteColors)
-        {
-            Textures = new List<Texture2D>();
-            Surfaces = new List<Surface>();
-
-            foreach (var surfaceID in _gfxObj.Surfaces)
-            {
-                var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
-
-                Textures.Add(TextureCache.Get(surfaceID, textureChanges, customPaletteColors, false));
+                Textures.Add(TextureCache.Get(surfaceID, textureChanges, customPaletteColors, useCache));
             }
         }
     }

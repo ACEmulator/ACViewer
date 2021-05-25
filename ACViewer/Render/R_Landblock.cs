@@ -198,7 +198,7 @@ namespace ACViewer.Render
 
                 var mipData = baseTexture.GetMipData(numColors);
 
-                var overlays = new Texture2D(GraphicsDevice, baseTexture.Width, baseTexture.Height, true, SurfaceFormat.Color, 5);
+                var overlays = new Texture2D(GraphicsDevice, baseTexture.Width, baseTexture.Height, TextureCache.UseMipMaps, SurfaceFormat.Color, 5);
                 //overlays.SetData(0, 0, null, data, 0, numColors);
                 for (var j = 0; j < numLevels; j++)
                     overlays.SetData(j, 0, null, mipData[j], 0, mipData[j].Length);

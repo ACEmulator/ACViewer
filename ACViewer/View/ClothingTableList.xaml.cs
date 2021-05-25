@@ -46,7 +46,7 @@ namespace ACViewer.View
             CurrentClothingItem = clothing;
             SetupIds.Items.Clear();
             PaletteTemplates.Items.Clear();
-            ResetShadesSlider();
+            ResetShadesSlider();    // triggers Shades_ValueChanged -> LoadModelWithClothingBase automatically...
 
             // Nothing to do if there is no ClothingBaseEffects... Does this even exist in the data?
             if (CurrentClothingItem.ClothingBaseEffects.Count == 0)
@@ -64,9 +64,7 @@ namespace ACViewer.View
 
             // If no SubPalEffects, we are done adding items. Select the first setup.
             if (CurrentClothingItem.ClothingSubPalEffects.Count == 0)
-            {
                 return;
-            }
 
             foreach (var subPal in CurrentClothingItem.ClothingSubPalEffects.Keys.OrderBy(i => i))
             {
@@ -86,6 +84,7 @@ namespace ACViewer.View
             if (CurrentClothingItem == null) return;
             LoadModelWithClothingBase();
         }
+
         private void PaletteTemplates_OnClick(object sender, SelectionChangedEventArgs e)
         {
             ResetShadesSlider();
@@ -105,7 +104,7 @@ namespace ACViewer.View
             for(var i = 0; i < CurrentClothingItem.ClothingSubPalEffects[palTemp].CloSubPalettes.Count; i++)
             {
                 var palSetID = CurrentClothingItem.ClothingSubPalEffects[palTemp].CloSubPalettes[i].PaletteSet;
-                var clothing = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.PaletteSet>(palSetID);
+                var clothing = DatManager.PortalDat.ReadFromDat<PaletteSet>(palSetID);
                 if (clothing.PaletteList.Count > maxPals)
                     maxPals = clothing.PaletteList.Count;
             }
@@ -160,69 +159,5 @@ namespace ACViewer.View
 
             LoadModelWithClothingBase();
         }
-
-        /*
-               public void BuildMotionCommands()
-               {
-                   MotionStances.Items.Clear();
-
-                   foreach (var motionStance in Enum.GetValues(typeof(MotionStance)))
-                       MotionStances.Items.Add(motionStance);
-
-                   MotionCommands.Items.Clear();
-
-                   foreach (var motionCommand in Enum.GetValues(typeof(MotionCommand)))
-                       MotionCommands.Items.Add(motionCommand);
-               }
-
-               public void SetStances(List<MotionStance> stances)
-               {
-                   MotionStances.Items.Clear();
-
-                   foreach (var stance in stances.OrderBy(s => s))
-                       MotionStances.Items.Add(stance);
-               }
-
-               public void SetCommands(List<MotionCommand> motionCommands)
-               {
-                   MotionCommands.Items.Clear();
-
-                   foreach (var motionCommand in motionCommands.OrderBy(m => m))
-                       MotionCommands.Items.Add(motionCommand);
-               }
-
-               private void MotionStances_OnClick(object sender, MouseButtonEventArgs e)
-               {
-                   if (MotionTable == null) return;
-
-                   var selected = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
-                   if (selected == null)
-                       return;
-
-                   var motionStance = (MotionStance)selected.Content;
-
-                   MainWindow.Status.WriteLine($"Executing stance {motionStance}");
-
-                   var motionCmds = MotionTable.GetMotionCommands(motionStance);
-                   SetCommands(motionCmds);
-
-                   ModelViewer.DoStance(motionStance);
-               }
-
-               private void MotionCommands_OnClick(object sender, MouseButtonEventArgs e)
-               {
-                   if (MotionTable == null) return;
-
-                   var selected = ItemsControl.ContainerFromElement(sender as ListBox, e.OriginalSource as DependencyObject) as ListBoxItem;
-                   if (selected == null)
-                       return;
-
-                   var motionCommand = (MotionCommand)selected.Content;
-
-                   MainWindow.Status.WriteLine($"Playing motion {motionCommand}");
-
-                   ModelViewer.DoMotion(motionCommand);
-               }
-               */
     }
 }
