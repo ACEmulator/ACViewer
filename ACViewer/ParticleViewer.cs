@@ -136,10 +136,10 @@ namespace ACViewer
             Effect.Parameters["xView"].SetValue(Camera.ViewMatrix);
             Effect.Parameters["xProjection"].SetValue(Camera.ProjectionMatrix);
 
-            DrawParticles();
+            DrawParticles(Player.PhysicsObj);
         }
 
-        public void DrawParticles()
+        public void DrawParticles(PhysicsObj obj)
         {
             var rs = new RasterizerState();
             //rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.CullClockwiseFace;
@@ -147,7 +147,7 @@ namespace ACViewer
             rs.FillMode = FillMode.Solid;
             GraphicsDevice.RasterizerState = rs;
 
-            var particleManager = Player.PhysicsObj.ParticleManager;
+            var particleManager = obj.ParticleManager;
 
             if (particleManager == null || particleManager.ParticleTable.Count == 0)
                 return;
@@ -175,7 +175,7 @@ namespace ACViewer
             GraphicsDevice.SetVertexBuffer(Billboard.VertexBuffer);
             GraphicsDevice.Indices = Billboard.IndexBuffer;
 
-            var translateWorld = Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna()) * Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna());
+            var translateWorld = Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna());
 
             Effect.CurrentTechnique = Effect.Techniques["PointSprite"];
             Effect.Parameters["xWorld"].SetValue(translateWorld);
@@ -192,6 +192,7 @@ namespace ACViewer
                     GraphicsDevice.BlendState = BlendState.Additive;
                 else
                     GraphicsDevice.BlendState = BlendState.NonPremultiplied;
+
                 pass.Apply();
 
                 GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleStrip, 0, 0, 2);

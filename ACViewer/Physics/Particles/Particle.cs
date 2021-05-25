@@ -114,7 +114,7 @@ namespace ACE.Server.Physics
             part.GfxObjScale = new Vector3(StartScale, StartScale, StartScale);
             part.SetTranslucency(StartTrans);
 
-            Update(info.ParticleType, persistent, part, pFrame);
+            Update(info.ParticleType, persistent, part, StartFrame);
 
             return false;
         }

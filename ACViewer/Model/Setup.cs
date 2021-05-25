@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
+using ACE.Entity.Enum;
 
 namespace ACViewer.Model
 {
@@ -38,7 +39,10 @@ namespace ACViewer.Model
 
             PlacementFrames = new List<Matrix>();
 
-            foreach (var placementFrame in _setup.PlacementFrames[0].AnimFrame.Frames)
+            if (!_setup.PlacementFrames.TryGetValue((int)Placement.Resting, out var placementFrames))
+                _setup.PlacementFrames.TryGetValue((int)Placement.Default, out placementFrames);
+
+            foreach (var placementFrame in placementFrames.AnimFrame.Frames)
                 PlacementFrames.Add(placementFrame.ToXna());
 
             BuildBoundingBox();
@@ -86,7 +90,10 @@ namespace ACViewer.Model
 
             PlacementFrames = new List<Matrix>();
 
-            foreach (var placementFrame in _setup.PlacementFrames[0].AnimFrame.Frames)
+            if (!_setup.PlacementFrames.TryGetValue((int)Placement.Resting, out var placementFrames))
+                _setup.PlacementFrames.TryGetValue((int)Placement.Default, out placementFrames);
+
+            foreach (var placementFrame in placementFrames.AnimFrame.Frames)
                 PlacementFrames.Add(placementFrame.ToXna());
 
             BuildBoundingBox();
