@@ -1440,7 +1440,7 @@ namespace ACE.Server.Physics
 
         public void UpdateChild(PhysicsObj childObj, int partIdx, AFrame childFrame)
         {
-            var frame = partIdx >= PartArray.NumParts ?
+            var frame = partIdx == -1 || partIdx >= PartArray.NumParts ?
                 AFrame.Combine(Position.Frame, childFrame) : AFrame.Combine(PartArray.Parts[partIdx].Pos.Frame, childFrame);
 
             childObj.set_frame(frame);
