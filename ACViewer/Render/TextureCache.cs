@@ -24,6 +24,8 @@ namespace ACViewer.Render
 
         public static Dictionary<uint, Texture2D> Textures { get; set; }
 
+        public static List<Texture2D> Uncached { get; set; }
+
         public static bool UseMipMaps { get; set; }
 
         static TextureCache()
@@ -33,16 +35,26 @@ namespace ACViewer.Render
 
         public static void Init(bool dispose = true)
         {
-            if (dispose && Textures != null)
+            if (dispose)
             {
-                foreach (var texture in Textures.Values)
-                    texture.Dispose();
+                if (Textures != null)
+                {
+                    foreach (var texture in Textures.Values)
+                        texture.Dispose();
+                }
+                
+                if (Uncached != null)
+                {
+                    foreach (var texture in Uncached)
+                        texture.Dispose();
+                }
             }
 
             GfxObjCache.Init();
             SetupCache.Init();
 
             Textures = new Dictionary<uint, Texture2D>();
+            Uncached = new List<Texture2D>();
         }
 
         private static Texture2D LoadTexture(uint textureID, bool useDummy = false, Surface surface = null, Dictionary<int, uint> customPaletteColors = null)
@@ -435,6 +447,8 @@ namespace ACViewer.Render
 
             if (useCache)
                 Textures.Add(textureID, texture);
+            else
+                Uncached.Add(texture);
 
             return texture;
         }
