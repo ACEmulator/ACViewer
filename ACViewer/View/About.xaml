@@ -8,8 +8,8 @@
         Title="About" Height="170" Width="280" WindowStyle="ToolWindow" ResizeMode="NoResize">
     <Grid>
         <TextBlock HorizontalAlignment="Left" Margin="7.5,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
-            <Run FontWeight="Bold">ACViewer - build 2020.08.08</Run><LineBreak /><LineBreak />
-            Much thanks: the emulator teams, Pea, parad0x, and the AC community!<LineBreak />
+            <Run FontWeight="Bold">ACViewer - build 2021.05.25</Run><LineBreak /><LineBreak />
+            Much thanks: the emulator teams, Pea, parad0x, OptimShi, and the AC community!<LineBreak />
         </TextBlock>
         <Button Content="OK" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Width="75" Click="OK_Click"/>
     </Grid>
