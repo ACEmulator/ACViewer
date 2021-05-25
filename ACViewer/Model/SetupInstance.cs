@@ -104,7 +104,7 @@ namespace ACViewer.Model
             var curPolyIdx = 0;
             for (var i = 0; i < Setup.Parts.Count; i++)
             {
-                var placementFrame = Setup.PlacementFrames[i];
+                //var placementFrame = Setup.PlacementFrames[i];
                 var part = Setup.Parts[i];
 
                 var partFrame = physParts[i].Pos.Frame;

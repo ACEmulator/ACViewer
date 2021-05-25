@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,7 +8,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop.Input;
 
 using ACE.DatLoader;
-using ACE.DatLoader.Entity.AnimationHooks;
 using ACE.DatLoader.FileTypes;
 using ACE.Entity.Enum;
 using ACE.Server.Physics.Animation;
@@ -15,8 +15,6 @@ using ACE.Server.Physics.Animation;
 using ACViewer.Model;
 using ACViewer.Render;
 using ACViewer.View;
-
-using Frame = ACE.DatLoader.Entity.Frame;
 
 namespace ACViewer
 {
@@ -42,7 +40,7 @@ namespace ACViewer
         public static Effect Effect { get => ACViewer.Render.Render.Effect; }
         public static Camera Camera { get => GameView.Camera; }
 
-        public ViewObject ViewObject;
+        public ViewObject ViewObject { get; set; }
 
         public bool GfxObjMode = false;
 
@@ -50,8 +48,6 @@ namespace ACViewer
         public KeyboardState PrevKeyboardState;
 
         public ModelType ModelType;
-
-        public List<CreateParticleHook> CreateParticleHooks;
 
         public static GameView GameView => GameView.Instance;
 
@@ -157,34 +153,17 @@ namespace ACViewer
 
         public void LoadScript(uint scriptID)
         {
-            CreateParticleHooks = ParticleViewer.Instance.GetCreateParticleHooks(scriptID, 0.0f);
+            var createParticleHooks = ParticleViewer.Instance.GetCreateParticleHooks(scriptID, 1.0f);
 
-            foreach (var createParticleHook in CreateParticleHooks)
+            foreach (var createParticleHook in createParticleHooks)
             {
-                // passing partIndex to create_particle_emitter doesn't seem to affect the renderer atm,
-                // so linking the partFrame to the emitterOffset here
-
-                var partFrame = new AFrame();
-
-                if (Setup.Setup._setup.PlacementFrames.TryGetValue((int)Placement.Resting, out var placementType) || Setup.Setup._setup.PlacementFrames.TryGetValue((int)Placement.Default, out placementType))
-                {
-                    if (placementType.AnimFrame.Frames.Count > 0 && createParticleHook.PartIndex < placementType.AnimFrame.Frames.Count)
-                        partFrame = new AFrame(placementType.AnimFrame.Frames[(int)createParticleHook.PartIndex]);
-                }
-
-                var emitterOffset = AFrame.Combine(partFrame, new AFrame(createParticleHook.Offset));
-
-                Player.PhysicsObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, emitterOffset, (int)createParticleHook.EmitterId);
+                ViewObject.PhysicsObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, new AFrame(createParticleHook.Offset), (int)createParticleHook.EmitterId);
             }
         }
 
         public void InitObject(uint setupID)
         {
             ViewObject = new ViewObject(setupID);
-
-            Player.PhysicsObj.ParticleManager.ParticleTable.Clear();
-            
-            CreateParticleHooks = null;
 
             if (Setup.Setup._setup.DefaultScript != 0)
                 LoadScript(Setup.Setup._setup.DefaultScript);
@@ -241,8 +220,8 @@ namespace ACViewer
 
             Setup.Draw(PolyIdx);
 
-            if (CreateParticleHooks != null)
-                ParticleViewer.Instance.DrawParticles();
+            if (ViewObject.PhysicsObj.ParticleManager != null)
+                ParticleViewer.Instance.DrawParticles(ViewObject.PhysicsObj);
         }
 
         public void DrawEnvironment()

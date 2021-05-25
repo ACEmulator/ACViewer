@@ -2589,7 +2589,7 @@ namespace ACE.Server.Physics
         public static PhysicsObj makeParticleObject(int numParts, Sphere sortingSphere)
         {
             var particle = new PhysicsObj();
-            particle.State = PhysicsState.Static | PhysicsState.ReportCollisions;
+            particle.State = PhysicsState.Static | PhysicsState.ParticleEmitter;
             particle.PartArray = PartArray.CreateParticle(particle, numParts, sortingSphere);
             return particle;
         }

@@ -110,6 +110,9 @@ namespace ACViewer
             // update anim only?
             PhysicsObj.update_animation();
 
+            if (PhysicsObj.ParticleManager != null)
+                PhysicsObj.ParticleManager.UpdateParticles();
+
             var minterp = PhysicsObj.get_minterp();
             //if (minterp.motions_pending())
                 //Console.WriteLine("Motions pending");
