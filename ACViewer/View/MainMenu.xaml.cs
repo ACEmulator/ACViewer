@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
 using ACE.DatLoader;
+using ACViewer.Render;
 
 namespace ACViewer.View
 {
@@ -21,6 +22,12 @@ namespace ACViewer.View
         public static Options Options;
 
         public static bool ShowHUD;
+
+        public static bool UseMipMaps
+        {
+            get => TextureCache.UseMipMaps;
+            set => TextureCache.UseMipMaps = value;
+        }
 
         public static MainMenu Instance;
 
@@ -85,12 +92,25 @@ namespace ACViewer.View
             ToggleHUD();
         }
 
+        private void UseMipMaps_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleMipMaps();
+        }
+
         public static bool ToggleHUD()
         {
             ShowHUD = !ShowHUD;
             Instance.optionShowHUD.IsChecked = ShowHUD;
 
             return ShowHUD;
+        }
+
+        public static bool ToggleMipMaps()
+        {
+            UseMipMaps = !UseMipMaps;
+            Instance.optionUseMipMaps.IsChecked = UseMipMaps;
+
+            return UseMipMaps;
         }
 
         private void ShowLocation_Click(object sender, RoutedEventArgs e)

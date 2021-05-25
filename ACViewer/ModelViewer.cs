@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,31 +28,29 @@ namespace ACViewer
 
     public class ModelViewer
     {
-        public static MainWindow MainWindow { get => MainWindow.Instance; }
+        public static MainWindow MainWindow => MainWindow.Instance;
+        public static GameView GameView => GameView.Instance;
 
-        public static ModelViewer Instance;
+        public static ModelViewer Instance { get; set; }
 
         public SetupInstance Setup;
         public R_EnvCell EnvCell;
         public R_Environment Environment;
 
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
-        public Render.Render Render { get => GameView.Instance.Render; }
-        public static Effect Effect { get => ACViewer.Render.Render.Effect; }
-        public static Camera Camera { get => GameView.Camera; }
+        public static GraphicsDevice GraphicsDevice => GameView.GraphicsDevice;
+        public Render.Render Render => GameView.Render;
+        public static Effect Effect => ACViewer.Render.Render.Effect;
+        public static Camera Camera => GameView.Camera;
 
         public ViewObject ViewObject { get; set; }
 
         public bool GfxObjMode = false;
 
-        public WpfKeyboard Keyboard { get => GameView.Instance._keyboard; }
+        public WpfKeyboard Keyboard => GameView._keyboard;
+
         public KeyboardState PrevKeyboardState;
 
         public ModelType ModelType;
-
-        public static GameView GameView => GameView.Instance;
-
-        public static Player Player => GameView.Player;
 
         public ModelViewer()
         {
@@ -60,6 +59,8 @@ namespace ACViewer
 
         public void LoadModel(uint id)
         {
+            TextureCache.Init();
+
             // can be either a gfxobj or setup id
             // if gfxobj, create a simple setup
             MainWindow.Status.WriteLine($"Loading {id:X8}");
@@ -75,6 +76,8 @@ namespace ACViewer
 
         public void LoadModel(uint id, ClothingTable clothingBase, uint palTemplate, float shade)
         {
+            TextureCache.Init();
+
             // can be either a gfxobj or setup id
             // if gfxobj, create a simple setup
             GfxObjMode = false;
@@ -84,13 +87,15 @@ namespace ACViewer
             FileTypes.ObjDesc objDesc = new FileTypes.ObjDesc();
 
             var cbe = clothingBase.ClothingBaseEffects[id].CloObjectEffects;
+
             foreach (var objEffect in cbe)
             {
                 ACE.DatLoader.Entity.AnimationPartChange apChange = new ACE.DatLoader.Entity.AnimationPartChange();
                 apChange.PartID = objEffect.ModelId;
                 apChange.PartIndex = (byte)objEffect.Index;
 
-                objDesc.AnimPartChanges.Add(apChange);
+                objDesc.AnimPartChanges.Add(apChange.PartIndex, apChange);
+
                 foreach(var texEffect in objEffect.CloTextureEffects)
                 {
                     ACE.DatLoader.Entity.TextureMapChange tmChange = new ACE.DatLoader.Entity.TextureMapChange();
@@ -98,9 +103,13 @@ namespace ACViewer
                     tmChange.OldTexture = texEffect.OldTexture;
                     tmChange.NewTexture = texEffect.NewTexture;
 
-                    objDesc.TextureChanges.Add(tmChange);
+                    if (!objDesc.TextureChanges.TryGetValue(tmChange.PartIndex, out var tmChanges))
+                    {
+                        tmChanges = new List<ACE.DatLoader.Entity.TextureMapChange>();
+                        objDesc.TextureChanges.Add(tmChange.PartIndex, tmChanges);
+                    }
+                    tmChanges.Add(tmChange);
                 }
-
             }
 
             // To hold our Custom Palette (palette swaps)
@@ -124,13 +133,14 @@ namespace ACViewer
                 }
             }
 
-
             Setup = new SetupInstance(id, objDesc, customPaletteColors);
+
             InitObject(id);
 
             Render.Camera.InitModel(Setup.Setup.BoundingBox);
 
             ModelType = ModelType.Setup;
+
             MainWindow.Status.WriteLine($"Loading {id:X8} with ClothingBase {clothingBase.Id:X8}, PaletteTemplate {palTemplate}, and Shade {shade}");
         }
 

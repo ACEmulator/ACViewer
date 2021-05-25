@@ -168,9 +168,6 @@ namespace ACViewer
         {
             GraphicsDevice.Clear(new Color(0, 0, 0));
 
-            //if (Render != null)
-            //Render.Draw();
-
             switch (ViewMode)
             {
                 case ViewMode.Texture:

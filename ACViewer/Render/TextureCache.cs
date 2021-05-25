@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+using System.Runtime.InteropServices;
+
 using Microsoft.Xna.Framework.Graphics;
+
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
 using ACE.Entity.Enum;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
+
 using ACViewer.Model;
 using ACViewer.View;
 
@@ -20,9 +20,11 @@ namespace ACViewer.Render
     public class TextureCache
     {
         public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
-        public static SpriteBatch spriteBatch => GameView.Instance.SpriteBatch;
+        public static SpriteBatch SpriteBatch => GameView.Instance.SpriteBatch;
 
-        public static Dictionary<uint, Texture2D> Textures;
+        public static Dictionary<uint, Texture2D> Textures { get; set; }
+
+        public static bool UseMipMaps { get; set; }
 
         static TextureCache()
         {
@@ -32,8 +34,10 @@ namespace ACViewer.Render
         public static void Init(bool dispose = true)
         {
             if (dispose && Textures != null)
+            {
                 foreach (var texture in Textures.Values)
                     texture.Dispose();
+            }
 
             GfxObjCache.Init();
             SetupCache.Init();
@@ -41,115 +45,18 @@ namespace ACViewer.Render
             Textures = new Dictionary<uint, Texture2D>();
         }
 
-        private static Texture2D LoadTexture(uint textureID, bool useDummy = false)
+        private static Texture2D LoadTexture(uint textureID, bool useDummy = false, Surface surface = null, Dictionary<int, uint> customPaletteColors = null)
         {
+            //Console.WriteLine($"--> TextureCache.LoadTexture({textureID:X8})");
+
             if (textureID >> 24 == 0x04)
                 return LoadPalette(textureID);
             else if (textureID >> 24 == 0x0F)
                 return LoadPaletteSet(textureID);
 
+            var isClipMap = surface != null && surface.Type.HasFlag(SurfaceType.Base1ClipMap);
+
             MainWindow.Instance.Status.WriteLine($"Loading texture {textureID:X8}");
-
-            var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
-            if (texture.SourceData == null)
-                texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
-
-            var surfaceFormat = SurfaceFormat.Color;
-            switch (texture.Format)
-            {
-                case SurfacePixelFormat.PFID_DXT1:
-                    surfaceFormat = SurfaceFormat.Dxt1;
-                    break;
-                case SurfacePixelFormat.PFID_DXT3:
-                    surfaceFormat = SurfaceFormat.Dxt3;
-                    break;
-                case SurfacePixelFormat.PFID_DXT5:
-                    //if (!isClipMap)
-                    surfaceFormat = SurfaceFormat.Dxt5;
-                    break;
-                case SurfacePixelFormat.PFID_CUSTOM_LSCAPE_ALPHA:
-                case SurfacePixelFormat.PFID_A8:
-                case SurfacePixelFormat.PFID_P8:    // indexed color
-                    surfaceFormat = SurfaceFormat.Alpha8;
-                    break;
-            }
-
-            var width = texture.Width;
-            var height = texture.Height;
-
-            var data = new byte[texture.SourceData.Length];
-            Array.Copy(texture.SourceData, data, data.Length);  // fixme: multiple rgb reversals
-
-            if (surfaceFormat == SurfaceFormat.Color)
-            {
-                switch (texture.Format)
-                {
-                    case SurfacePixelFormat.PFID_R8G8B8:
-                    case SurfacePixelFormat.PFID_CUSTOM_LSCAPE_R8G8B8:
-                        data = AddAlpha(data);
-                        break;
-                    case SurfacePixelFormat.PFID_INDEX16:
-                        data = IndexToColor(texture);
-                        break;
-
-                    case SurfacePixelFormat.PFID_CUSTOM_RAW_JPEG:
-                    case SurfacePixelFormat.PFID_R5G6B5:
-                    case SurfacePixelFormat.PFID_A4R4G4B4:
-                        //case SurfacePixelFormat.PFID_DXT5:
-                        var bitmap = texture.GetBitmap();
-                        var _tex = GetTexture2DFromBitmap(GameView.Instance.GraphicsDevice, bitmap);
-
-                        //if (isClipMap)
-                        //AdjustClip(_tex);
-
-                        return _tex;
-
-                    case SurfacePixelFormat.PFID_A8R8G8B8:
-                        ConvertToABGR(data);
-                        break;
-                }
-            }
-
-            Texture2D tex;
-            if (useDummy)
-            {
-                if (surfaceFormat == SurfaceFormat.Alpha8)
-                {
-                    tex = new Texture2D(GameView.Instance.GraphicsDevice, 1, 1, false, SurfaceFormat.Alpha8);
-                    var alpha = new byte[1];
-                    alpha[0] = 255;
-                    tex.SetData(alpha);
-                }
-                else
-                {
-                    tex = new Texture2D(GameView.Instance.GraphicsDevice, 1, 1, false, SurfaceFormat.Color);
-                    var color = new Microsoft.Xna.Framework.Color[1];
-                    color[0].A = data[3];
-                    color[0].R = data[2];
-                    color[0].G = data[1];
-                    color[0].B = data[0];
-                    tex.SetData(color);
-                }
-            }
-            else
-            {
-                if (surfaceFormat == SurfaceFormat.Color && texture.Width == texture.Height)
-                    tex = GenerateMipMaps(data, texture.Width);
-                else
-                {
-                    tex = new Texture2D(GameView.Instance.GraphicsDevice, texture.Width, texture.Height, false, surfaceFormat);
-                    tex.SetData(data);
-                }
-            }
-
-            return tex;
-        }
-
-        private static Texture2D LoadTexture(Surface surface, uint textureID, bool useDummy = false, Dictionary<int, uint> customPaletteColors = null)
-        {
-            MainWindow.Instance.Status.WriteLine($"Loading texture {textureID:X8}");
-
-            var isClipMap = surface.Type.HasFlag(SurfaceType.Base1ClipMap);
 
             var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
             if (texture.SourceData == null)
@@ -202,10 +109,8 @@ namespace ACViewer.Render
                         //case SurfacePixelFormat.PFID_DXT5:
                         var bitmap = texture.GetBitmap();
                         var _tex = GetTexture2DFromBitmap(GameView.Instance.GraphicsDevice, bitmap);
-
                         //if (isClipMap)
                         //AdjustClip(_tex);
-
                         return _tex;
 
                     case SurfacePixelFormat.PFID_A8R8G8B8:
@@ -214,7 +119,7 @@ namespace ACViewer.Render
                 }
             }
 
-            Texture2D tex;
+            Texture2D tex = null;
             if (useDummy)
             {
                 if (surfaceFormat == SurfaceFormat.Alpha8)
@@ -237,7 +142,7 @@ namespace ACViewer.Render
             }
             else
             {
-                if (surfaceFormat == SurfaceFormat.Color && texture.Width == texture.Height)
+                if (UseMipMaps && surfaceFormat == SurfaceFormat.Color && texture.Width == texture.Height)
                     tex = GenerateMipMaps(data, texture.Width);
                 else
                 {
@@ -245,45 +150,7 @@ namespace ACViewer.Render
                     tex.SetData(data);
                 }
             }
-
             return tex;
-        }
-
-        private static void AdjustClip(Texture2D texture)
-        {
-            var colors = new Microsoft.Xna.Framework.Color[texture.Width * texture.Height];
-            texture.GetData(colors);
-            for (var i = 0; i < colors.Length; i++)
-            {
-                if (colors[i].A < 8)
-                    colors[i] = new Microsoft.Xna.Framework.Color(0, 0, 0, 0);
-            }
-            texture.SetData(colors);
-        }
-
-        private static SurfaceFormat GetSurfaceFormat(SurfacePixelFormat spf)
-        {
-            switch (spf)
-            {
-                case SurfacePixelFormat.PFID_INDEX16:
-                    return SurfaceFormat.Color;
-
-                case SurfacePixelFormat.PFID_A8:
-                case SurfacePixelFormat.PFID_L8:
-                    return SurfaceFormat.Alpha8;
-
-                case SurfacePixelFormat.PFID_DXT1:
-                    return SurfaceFormat.Dxt1;
-
-                case SurfacePixelFormat.PFID_DXT3:
-                    return SurfaceFormat.Dxt3;
-
-                case SurfacePixelFormat.PFID_DXT5:
-                    return SurfaceFormat.Dxt5;
-
-                default:
-                    return SurfaceFormat.Color;
-            }
         }
 
         private static Texture2D LoadPalette(uint paletteID)
@@ -305,6 +172,7 @@ namespace ACViewer.Render
             var numPalettes = paletteSet.PaletteList.Count;
 
             var colors = new List<Microsoft.Xna.Framework.Color>();
+
             for (var i = 0; i < paletteSet.PaletteList.Count; i++)
             {
                 var paletteID = paletteSet.PaletteList[i];
@@ -313,16 +181,16 @@ namespace ACViewer.Render
                 if (i < paletteSet.PaletteList.Count - 1)
                     colors.AddRange(Padding);
             }
-
             var setWidth = 64;
             var setHeight = colors.Count / setWidth;
 
             var texture = new Texture2D(GameView.Instance.GraphicsDevice, setWidth, setHeight, false, SurfaceFormat.Color);
             texture.SetData(colors.ToArray());
+
             return texture;
         }
 
-        private static int PaletteWidth = 64;
+        private static readonly int PaletteWidth = 64;
 
         private static Microsoft.Xna.Framework.Color[] LoadPaletteColors(uint paletteID, out int width, out int height)
         {
@@ -365,11 +233,11 @@ namespace ACViewer.Render
         {
             Texture2D tex = new Texture2D(device, bitmap.Width, bitmap.Height, false, SurfaceFormat.Color);
 
-            BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            BitmapData data = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
 
             int bufferSize = data.Height * data.Stride;
 
-            //create data buffer 
+            // create data buffer 
             byte[] bytes = new byte[bufferSize];
 
             // copy bitmap data into buffer
@@ -412,6 +280,7 @@ namespace ACViewer.Render
         private static byte[] IndexToColor(ACE.DatLoader.FileTypes.Texture texture, bool isClipMap = false)
         {
             var colors = GetColors(texture);
+            
             var palette = DatManager.PortalDat.ReadFromDat<Palette>((uint)texture.DefaultPaletteId);
 
             // Apply any custom palette colors, if any, to our loaded palette (note, this may be all of them!)
@@ -423,6 +292,7 @@ namespace ACViewer.Render
             var output = new byte[texture.Width * texture.Height * 4];
 
             for (int i = 0; i < texture.Height; i++)
+            {
                 for (int j = 0; j < texture.Width; j++)
                 {
                     int idx = (i * texture.Width) + j;
@@ -442,7 +312,7 @@ namespace ACViewer.Render
                     output[idx * 4 + 2] = b;
                     output[idx * 4 + 3] = a;
                 }
-
+            }
             return output;
         }
 
@@ -464,6 +334,8 @@ namespace ACViewer.Render
 
         public static Texture2D Get(uint fileID, List<ACE.DatLoader.Entity.TextureMapChange> textureMapChanges = null, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
         {
+            //Console.WriteLine($"TextureCache.Get({fileID:X8})");
+            
             if (fileID >> 24 == 0x01)
             {
                 // gfxobj
@@ -491,10 +363,10 @@ namespace ACViewer.Render
                     if (tmChange != null)
                         textureId = tmChange.NewTexture;
                 }
-                
+
                 var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(textureId);
 
-                return GetTexture(surface, surfaceTexture.Textures[0]);
+                return GetTexture(surfaceTexture.Textures[0], surface);
             }
             else if (fileID >> 24 == 0x04)
             {
@@ -511,12 +383,13 @@ namespace ACViewer.Render
             {
                 // surface texture
                 var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(fileID);
-                return GetTexture(surfaceTexture, customPaletteColors, useCache);
+
+                return GetTexture(surfaceTexture.Textures[0], null, customPaletteColors, useCache);
             }
             else if (fileID >> 24 == 0x06)
             {
                 // texture
-                return GetTexture(fileID, customPaletteColors, useCache);
+                return GetTexture(fileID, null, customPaletteColors, useCache);
             }
 
             else if (fileID >> 24 == 0x08)
@@ -546,58 +419,23 @@ namespace ACViewer.Render
                 }
                 var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(textureId);
 
-                return GetTexture(surface, surfaceTexture.Textures[0], customPaletteColors, useCache);
+                return GetTexture(surfaceTexture.Textures[0], surface, customPaletteColors, useCache);
             }
             return null;
         }
 
-        /// <summary>
-        /// Helper function to determine if we use the "clean" surface from the portal.dat, or the customized one with a texture swap.
-        /// </summary>
-        /// <param name="surfaceID"></param>
-        /// <param name="surfaces"></param>
-        /// <returns></returns>
-        private static FileTypes.Surface GetCorrectSurface(uint surfaceID, List<FileTypes.Surface> surfaces = null)
+        private static Texture2D GetTexture(uint textureID, Surface surface = null, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
         {
-            var datSurface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
-            FileTypes.Surface surface = new FileTypes.Surface(datSurface);
+            //Console.WriteLine($"-> GetTexture({textureID:X8})");
 
-            if (surfaces != null && surfaces.Count > 0)
-            {
-                foreach (var s in surfaces)
-                {
-                    if (s._surface.Id == surfaceID)
-                        surface = s;
-                }
-            }
-
-            return surface;
-        }
-
-        private static Texture2D GetTexture(uint textureID, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
-        {
             if (useCache && Textures.TryGetValue(textureID, out var cached))
                 return cached;
 
-            var texture = LoadTexture(textureID);
-            if(useCache)
+            var texture = LoadTexture(textureID, false, surface, customPaletteColors);
+
+            if (useCache)
                 Textures.Add(textureID, texture);
-            return texture;
-        }
 
-        private static Texture2D GetTexture(SurfaceTexture surfaceTexture, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
-        {
-            return GetTexture(surfaceTexture.Textures[0], customPaletteColors, useCache);
-        }
-
-        private static Texture2D GetTexture(Surface surface, uint textureID, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
-        {
-            if (useCache && Textures.TryGetValue(textureID, out var cached))
-                return cached;
-
-            var texture = LoadTexture(surface, textureID, false, customPaletteColors);
-            if(useCache)
-                Textures.Add(textureID, texture);
             return texture;
         }
 
@@ -624,18 +462,22 @@ namespace ACViewer.Render
             };
 
             for (var i = 0; i < miplevel.Count; i++)
+            {
                 texture.SetData(i + 1, null, miplevel[i], 0, miplevel[i].Length);
-
+            }
             return texture;
         }
 
         public static RenderTarget2D GenerateMipMap(Texture2D source, int size)
         {
             var renderTarget = new RenderTarget2D(GraphicsDevice, size, size);
+
             GraphicsDevice.SetRenderTarget(renderTarget);
-            spriteBatch.Begin();
-            spriteBatch.Draw(source, new Microsoft.Xna.Framework.Rectangle(0, 0, size, size), Microsoft.Xna.Framework.Color.White);
-            spriteBatch.End();
+
+            SpriteBatch.Begin();
+            SpriteBatch.Draw(source, new Microsoft.Xna.Framework.Rectangle(0, 0, size, size), Microsoft.Xna.Framework.Color.White);
+            SpriteBatch.End();
+
             GraphicsDevice.SetRenderTarget(null);
             return renderTarget;
         }

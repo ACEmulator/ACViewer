@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using ACE.DatLoader;
@@ -57,31 +58,32 @@ namespace ACViewer.Model
                 BuildBoundingBox();
                 return;
             }
-
             _setup = DatManager.PortalDat.ReadFromDat<SetupModel>(setupID);
 
             Parts = new List<GfxObj>();
-            for (var i = 0; i < _setup.Parts.Count; i++)
+
+            for (byte i = 0; i < _setup.Parts.Count; i++)
             {
-                uint gfxObjID;
                 GfxObj gfxObj;
 
-                var apChange = objDesc.AnimPartChanges.Where(s => s.PartIndex == i).FirstOrDefault();
-                if (apChange != null)
+                if (objDesc.AnimPartChanges.TryGetValue(i, out var apChange))
                 {
-                    gfxObjID = apChange.PartID;
+                    var gfxObjID = apChange.PartID;
                     gfxObj = new GfxObj(gfxObjID, false);
-                    List<ACE.DatLoader.Entity.TextureMapChange> tmChanges = objDesc.TextureChanges.FindAll(s => s.PartIndex == i);
 
+                    objDesc.TextureChanges.TryGetValue(i, out var tmChanges);
+                   
+                    gfxObj.LoadTextures(tmChanges, customPaletteColors, false);
 
-                    gfxObj.LoadTextures(tmChanges, customPaletteColors);
                     gfxObj.BuildPolygons();
                 }
                 else
                 {
-                    gfxObjID = _setup.Parts[i];
+                    var gfxObjID = _setup.Parts[i];
                     gfxObj = new GfxObj(gfxObjID, false);
+
                     gfxObj.LoadTextures(null, customPaletteColors);
+
                     gfxObj.BuildPolygons();
                 }
 

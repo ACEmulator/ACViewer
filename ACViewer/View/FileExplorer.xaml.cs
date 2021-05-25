@@ -362,10 +362,8 @@ namespace ACViewer.View
                 case 0x10:
                     var clothing = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.ClothingTable>(fileID);
                     FileInfo.SetInfo(new FileTypes.ClothingTable(clothing).BuildTree());
-                    ClothingTableList.OnClickClothingBase(clothing, fileID);
                     GameView.ViewMode = ViewMode.Model;
-                    ClothingTableList.LoadModelWithClothingBase();
-                    //ModelViewer.LoadModel(fileID);
+                    ClothingTableList.OnClickClothingBase(clothing, fileID);
                     break;
                 case 0x11:
                     var degradeInfo = DatManager.PortalDat.ReadFromDat<GfxObjDegradeInfo>(fileID);
