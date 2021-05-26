@@ -38,8 +38,11 @@ namespace ACViewer
 
         public bool IsDragging = false;
 
+        public bool DragCompleted = false;
+
         public Vector2 StartPos;
         public Vector2 EndPos;
+
         public Microsoft.Xna.Framework.Rectangle HighlightRect;
 
         public MapViewer()
@@ -60,6 +63,13 @@ namespace ACViewer
             Highlight.SetData(new Microsoft.Xna.Framework.Color[1] { Microsoft.Xna.Framework.Color.Red });
         }
 
+        public void Init()
+        {
+            GameView.ViewMode = ViewMode.Map;
+
+            DragCompleted = false;
+        }
+
         public static float Speed = 8.0f;
         public static float ScaleStep = 0.85f;
 
@@ -69,24 +79,28 @@ namespace ACViewer
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
 
-            if (keyboardState.IsKeyDown(Keys.Left))
-                Pos.X += Speed;
-            if (keyboardState.IsKeyDown(Keys.Right))
-                Pos.X -= Speed;
-            if (keyboardState.IsKeyDown(Keys.Up))
-                Pos.Y += Speed;
-            if (keyboardState.IsKeyDown(Keys.Down))
-                Pos.Y -= Speed;
+            var offset = Vector2.Zero;
 
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+                offset.X += Speed;
+            if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+                offset.X -= Speed;
+            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+                offset.Y += Speed;
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+                offset.Y -= Speed;
+
+            Pos += offset;
+            
             Translate = Matrix.CreateTranslation(Pos.X, Pos.Y, 0);
 
-            if (mouseState.Position != PrevMouseState.Position)
+            if (mouseState.Position != PrevMouseState.Position || offset != Vector2.Zero)
                 OnMouseMove(mouseState);
 
             if (IsDragging && keyboardState.IsKeyDown(Keys.Escape))
                 IsDragging = false;
 
-            if (mouseState.LeftButton == ButtonState.Pressed)
+            if (mouseState.LeftButton == ButtonState.Pressed && !DragCompleted)
             {
                 if (!IsDragging)
                 {
@@ -118,6 +132,7 @@ namespace ACViewer
             {
                 OnMouseMove(mouseState);
                 IsDragging = false;
+                DragCompleted = true;
 
                 GetMinMax(out var min, out var max);
                 var startBlock = GetLandblock(min) / 8;
@@ -179,6 +194,9 @@ namespace ACViewer
 
         public void OnMouseMove(MouseState mouseState)
         {
+            if (mouseState.LeftButton != ButtonState.Pressed && IsDragging || DragCompleted)
+                return;
+            
             var curPos = new Vector2(mouseState.Position.X, mouseState.Position.Y);
 
             if (curPos.X >= 0 && curPos.Y >= 0 && curPos.X < GraphicsDevice.Viewport.Width && curPos.Y < GraphicsDevice.Viewport.Height)
@@ -273,7 +291,7 @@ namespace ACViewer
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null, BlockTranslate * Scale * Translate);
 
-            if (!IsDragging)
+            if (!IsDragging && !DragCompleted)
             {
                 foreach (var side in Highlight_Sides)
                     spriteBatch.Draw(Highlight, side, Microsoft.Xna.Framework.Color.White);

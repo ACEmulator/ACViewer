@@ -181,8 +181,7 @@ namespace ACViewer
 
             if (keyboardState.IsKeyDown(Keys.M) && !PrevKeyboardState.IsKeyDown(Keys.M))
             {
-                Console.WriteLine("Map");
-                GameView.ViewMode = ViewMode.Map;
+                MapViewer.Instance.Init();
             }
 
             if (keyboardState.IsKeyDown(Keys.H) && !PrevKeyboardState.IsKeyDown(Keys.H))
