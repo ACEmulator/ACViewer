@@ -150,14 +150,14 @@ namespace ACViewer.View
             else if (selected.ID == 0xFFFF)
             {
                 FileIDs = DatManager.CellDat.AllFiles.Keys.Where(i => (i & 0xFFFF) == selected.ID).OrderBy(i => i).Select(i => i.ToString("X8")).ToList();
-                GameView.ViewMode = ViewMode.Map;
+                MapViewer.Instance.Init();
             }
 
             // landblock info
             else if (selected.ID == 0xFFFE)
             {
                 FileIDs = DatManager.CellDat.AllFiles.Keys.Where(i => (i & 0xFFFF) == selected.ID).OrderBy(i => i).Select(i => i.ToString("X8")).ToList();
-                GameView.ViewMode = ViewMode.Map;
+                MapViewer.Instance.Init();
             }
             // envcell
             else if (selected.ID == 0x100)

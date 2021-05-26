@@ -84,7 +84,7 @@ namespace ACViewer.View
             if (DatManager.CellDat == null || DatManager.PortalDat == null)
                 return;
 
-            GameView.ViewMode = ViewMode.Map;
+            MapViewer.Instance.Init();
         }
 
         private void ShowHUD_Click(object sender, RoutedEventArgs e)

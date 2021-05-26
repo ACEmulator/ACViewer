@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Linq;
+using System.Windows.Input;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -26,9 +26,11 @@ namespace ACViewer
         public WpfKeyboard Keyboard;
         public WpfMouse Mouse;
         public MouseState PrevMouseState;
+
         public int PrevScrollWheelValue;
 
         public float Speed { get; set; } = Model_Speed;
+
         public float SpeedMod = 1.5f;
 
         public static float NearPlane_Model = 0.1f;
@@ -279,16 +281,26 @@ namespace ACViewer
 
             if (mouseState.RightButton == ButtonState.Pressed)
             {
-                // yaw / x-rotation
-                Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Up,
-                    -MathHelper.PiOver4 / 160 * (mouseState.X - PrevMouseState.X)));
+                if (PrevMouseState.RightButton == ButtonState.Pressed)
+                {
+                    // yaw / x-rotation
+                    Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Up,
+                        -MathHelper.PiOver4 / 160 * (mouseState.X - centerX)));
 
-                // pitch / y-rotation
-                Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Vector3.Cross(Up, Dir),
-                    MathHelper.PiOver4 / 160 * (mouseState.Y - PrevMouseState.Y)));
-
-                //SetMouse();
-
+                    // pitch / y-rotation
+                    Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Vector3.Cross(Up, Dir),
+                        MathHelper.PiOver4 / 160 * (mouseState.Y - centerY)));
+                }
+                else
+                {
+                    System.Windows.Input.Mouse.OverrideCursor = Cursors.None;
+                }
+                // there is a delay here, so Mouse.GetState() won't be immediately affected
+                Mouse.SetCursor(centerX, centerY);
+            }
+            else if (PrevMouseState.RightButton == ButtonState.Pressed)
+            {
+                System.Windows.Input.Mouse.OverrideCursor = Cursors.Arrow;
             }
 
             PrevMouseState = mouseState;
@@ -301,13 +313,8 @@ namespace ACViewer
             //Console.WriteLine("Camera dir: " + GameView.Instance.Render.Camera.Dir);
         }
 
-        public void SetMouse()
-        {
-            // set mouse position to center of window
-            //Mouse.SetPosition(GameView.Instance.GraphicsDevice.Viewport.Width / 2, GameView.Instance.GraphicsDevice.Viewport.Height / 2);
-            //Mouse.SetCursor((int)StartPos.X, (int)StartPos.Y);
-            //PrevMouseState = Mouse.GetState();
-        }
+        private int centerX => Game.GraphicsDevice.Viewport.Width / 2;
+        private int centerY => Game.GraphicsDevice.Viewport.Height / 2;
 
         public string GetPosition()
         {
