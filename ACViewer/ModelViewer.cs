@@ -135,9 +135,12 @@ namespace ACViewer
 
             Setup = new SetupInstance(id, objDesc, customPaletteColors);
 
-            InitObject(id);
+            if (ViewObject == null || ViewObject.PhysicsObj.PartArray.Setup._dat.Id != id)
+            {
+                InitObject(id);
 
-            Render.Camera.InitModel(Setup.Setup.BoundingBox);
+                Render.Camera.InitModel(Setup.Setup.BoundingBox);
+            }
 
             ModelType = ModelType.Setup;
 

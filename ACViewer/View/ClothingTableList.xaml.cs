@@ -82,6 +82,7 @@ namespace ACViewer.View
         private void SetupIDs_OnClick(object sender, SelectionChangedEventArgs e)
         {
             if (CurrentClothingItem == null) return;
+
             LoadModelWithClothingBase();
         }
 
@@ -118,6 +119,7 @@ namespace ACViewer.View
 
             LoadModelWithClothingBase();
         }
+
         /// <summary>
         /// Helper function to reset the Shades slider
         /// </summary>
@@ -149,7 +151,7 @@ namespace ACViewer.View
             var selectedPalTemp = PaletteTemplates.SelectedItem as ListBoxItem;
             uint palTemplate = (uint)selectedPalTemp.DataContext;
 
-            ModelViewer.LoadModel(setupId, CurrentClothingItem, palTemplate, shade) ;
+            ModelViewer.LoadModel(setupId, CurrentClothingItem, palTemplate, shade);
         }
 
         private void Shades_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
