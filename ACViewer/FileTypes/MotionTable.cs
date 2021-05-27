@@ -52,7 +52,7 @@ namespace ACViewer.FileTypes
 
             foreach (var cycle in _motionTable.Cycles.Keys)
             {
-                if (stance != MotionStance.Invalid && (cycle >> 16) != ((uint)stance & 0xFFFF))
+                if ((cycle >> 16) != ((uint)stance & 0xFFFF))
                     continue;
 
                 var rawCommand = (ushort)(cycle & 0xFFFF);
@@ -61,6 +61,25 @@ namespace ACViewer.FileTypes
                 if (!commands.Contains(motionCommand))
                     commands.Add(motionCommand);
             }
+
+            foreach (var kvp in _motionTable.Links)
+            {
+                var stanceMotion = kvp.Key;
+                var links = kvp.Value;
+
+                if ( (stanceMotion >> 16) != ((uint)stance & 0xFFFF))
+                    continue;
+
+                foreach (var link in links.Keys)
+                {
+                    var rawCommand = (ushort)(link & 0xFFFF);
+                    var motionCommand = RawToInterpreted[rawCommand];
+
+                    if (!commands.Contains(motionCommand))
+                        commands.Add(motionCommand);
+                }
+            }
+
             return commands.ToList();
         }
 

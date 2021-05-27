@@ -69,7 +69,8 @@ namespace ACViewer
         public void DoStance(MotionStance stance)
         {
             var rawState = new RawMotionState();
-            rawState.ForwardCommand = (uint)stance;
+            rawState.CurrentStyle = (uint)stance;
+            rawState.ForwardCommand = (uint)MotionCommand.Ready;
             rawState.CurrentHoldKey = HoldKey.Run;
 
             var motionInterp = PhysicsObj.get_minterp();
