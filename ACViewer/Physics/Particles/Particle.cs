@@ -155,10 +155,10 @@ namespace ACE.Server.Physics
                     part.Pos.Frame.Rotate(lifetime * C);
                     break;
                 case ParticleType.Swarm:
-                    var swarm = (lifetime * A) + C + parent.Origin + Offset;
-                    part.Pos.Frame.Origin.X = (float)Math.Cos(lifetime * B.X) + swarm.X;
-                    part.Pos.Frame.Origin.Y = (float)Math.Sin(lifetime * B.Y) + swarm.Y;
-                    part.Pos.Frame.Origin.Z = (float)Math.Cos(lifetime * B.Z) + swarm.Z;
+                    var swarm = (lifetime * A) + parent.Origin + Offset;
+                    part.Pos.Frame.Origin.X = (float)Math.Cos(lifetime * B.X) * C.X + swarm.X;
+                    part.Pos.Frame.Origin.Y = (float)Math.Sin(lifetime * B.Y) * C.Y + swarm.Y;
+                    part.Pos.Frame.Origin.Z = (float)Math.Cos(lifetime * B.Z) * C.Z + swarm.Z;
                     break;
                 case ParticleType.Explode:
                     part.Pos.Frame.Origin = (lifetime * B + C * A.X) * lifetime + Offset + parent.Origin;
