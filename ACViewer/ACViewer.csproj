@@ -460,7 +460,6 @@
     <Compile Include="Physics\Extensions\QuaternionExtensions.cs" />
     <Compile Include="Physics\Extensions\QueueExtensions.cs" />
     <Compile Include="Physics\Extensions\Vector3Extensions.cs" />
-    <Compile Include="Physics\Hooks\AnimDoneHook.cs" />
     <Compile Include="Physics\Hooks\AnimHook.cs" />
     <Compile Include="Physics\Hooks\FPHook.cs" />
     <Compile Include="Physics\Hooks\PhysicsHookType.cs" />
