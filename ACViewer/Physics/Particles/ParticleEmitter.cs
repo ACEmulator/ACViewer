@@ -54,6 +54,12 @@ namespace ACE.Server.Physics
                 return false;
 
             PhysicsObj.RemovePartFromShadowCells(Parts[i]);
+
+            // added -- couldn't find where this was done in original, but this links to PartStorage,
+            // which persists even though Parts[i] is nulled below, and is reused for BirthratePerSec emitters.
+            // for BirthRatePerSec moving particles, Pos needs to be reset for each reused PartStorage
+            Parts[i].Pos.Clear();
+                                              
             Parts[i] = null;
             NumParticles--;
             return true;

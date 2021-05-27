@@ -141,6 +141,8 @@ namespace ACViewer
 
                 Render.Camera.InitModel(Setup.Setup.BoundingBox);
             }
+            else
+                ViewObject.PhysicsObj.destroy_particle_manager();
 
             ModelType = ModelType.Setup;
 
@@ -168,6 +170,8 @@ namespace ACViewer
         {
             var createParticleHooks = ParticleViewer.Instance.GetCreateParticleHooks(scriptID, 1.0f);
 
+            ViewObject.PhysicsObj.destroy_particle_manager();
+            
             foreach (var createParticleHook in createParticleHooks)
             {
                 ViewObject.PhysicsObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, new AFrame(createParticleHook.Offset), (int)createParticleHook.EmitterId);

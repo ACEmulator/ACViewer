@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ACE.DatLoader;
@@ -77,6 +78,17 @@ namespace ACViewer.Model
 
                 Textures.Add(TextureCache.Get(surfaceID, textureChanges, customPaletteColors, useCache));
             }
+        }
+
+        public List<Vector3> GetVertices()
+        {
+            return VertexArray.Select(v => v.Position).ToList();
+        }
+
+        public void BuildBoundingBox()
+        {
+            var verts = GetVertices();
+            BoundingBox = new BoundingBox(verts);
         }
     }
 }

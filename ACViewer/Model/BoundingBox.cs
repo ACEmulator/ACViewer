@@ -24,6 +24,9 @@ namespace ACViewer.Model
         public Vector3 Maxs;
 
         public Vector3 Size;
+        
+        public float MaxSize;
+
         public Vector3 Center;
 
         public List<Vector3> Verts;
@@ -88,6 +91,8 @@ namespace ACViewer.Model
 
             Size = new Vector3(Maxs.X - Mins.X, Maxs.Y - Mins.Y, Maxs.Z - Mins.Z);
 
+            MaxSize = Math.Max(Math.Max(Size.X, Size.Y), Size.Z);
+
             var halfSize = Size * 0.5f;
             Center = new Vector3(Mins.X + halfSize.X, Mins.Y + halfSize.Y, Mins.Z + halfSize.Z);
 
@@ -150,7 +155,7 @@ namespace ACViewer.Model
             {
                 var secondMostArea = sorted[1];
                 var ratio = secondMostArea.Area / mostArea.Area;
-                if (ratio > 0.5f)
+                if (ratio > 0.5f)     // should we still be using top? it was originally designed for screenshot mode, and can be confusing w/ camera
                     return sorted[1].Facing;
             }
 

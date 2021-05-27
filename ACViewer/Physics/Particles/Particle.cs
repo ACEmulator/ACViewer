@@ -51,11 +51,10 @@ namespace ACE.Server.Physics
                     A = StartFrame.LocalToGlobalVec(a);
                     break;
                 case ParticleType.ParabolicLVGA:
-                    B = StartFrame.LocalToGlobalVec(b);
+                    A = StartFrame.LocalToGlobalVec(a);
+                    B = b.Copy();
                     break;
                 case ParticleType.ParabolicLVGAGR:
-                    C = StartFrame.LocalToGlobalVec(c);
-                    break;
                 case ParticleType.Swarm:
                     A = StartFrame.LocalToGlobalVec(a);
                     B = b.Copy();
@@ -146,7 +145,7 @@ namespace ACE.Server.Physics
                 case ParticleType.ParabolicLVGA:
                 case ParticleType.ParabolicLVLA:
                 case ParticleType.ParabolicGVGA:
-                    part.Pos.Frame.Origin += (lifetime * lifetime * B / 2.0f) + (lifetime * A) + Offset;
+                    part.Pos.Frame.Origin = (lifetime * lifetime * B / 2.0f) + (lifetime * A) + parent.Origin + Offset;
                     break;
                 case ParticleType.ParabolicLVGAGR:
                 case ParticleType.ParabolicLVLALR:

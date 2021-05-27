@@ -17,8 +17,6 @@ using ACViewer.Model;
 using ACViewer.Render;
 using ACViewer.View;
 
-using Frame = ACE.DatLoader.Entity.Frame;
-
 namespace ACViewer
 {
     public class ParticleViewer
@@ -35,7 +33,6 @@ namespace ACViewer
 
         public static GraphicsDevice GraphicsDevice => GameView.GraphicsDevice;
         public static Effect Effect => Render.Render.Effect;
-
 
         public ParticleViewer()
         {
@@ -83,6 +80,8 @@ namespace ACViewer
         {
             GameView.ViewMode = ViewMode.Particle;
 
+            Player.PhysicsObj.destroy_particle_manager();
+
             foreach (var createParticleHook in createParticleHooks)
             {
                 //var emitterInfo = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.ParticleEmitterInfo>(createParticleHook.EmitterInfoId);
@@ -98,7 +97,10 @@ namespace ACViewer
             {
                 GameView.ViewMode = ViewMode.Particle;
 
-                Player.PhysicsObj.create_particle_emitter(fileID, 0, new AFrame(), 0);
+                Player.PhysicsObj.destroy_particle_manager();
+
+                Player.PhysicsObj.create_particle_emitter(fileID, -1, new AFrame(), 0);
+
                 return;
             }
 
@@ -170,20 +172,27 @@ namespace ACViewer
             }
         }
 
+        private static readonly float pointSpriteSize = 1.8f;   // guessing
+
         public void DrawPointSprite(GfxObj gfxObj, PhysicsPart part, Texture2D texture)
         {
             GraphicsDevice.SetVertexBuffer(Billboard.VertexBuffer);
             GraphicsDevice.Indices = Billboard.IndexBuffer;
 
             var translateWorld = Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna());
+            //var translateWorld = Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna()) * Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna());
+            
+            // get initial scale from gfxobj vertices
+            if (gfxObj.BoundingBox == null)
+                gfxObj.BuildBoundingBox();
 
             Effect.CurrentTechnique = Effect.Techniques["PointSprite"];
             Effect.Parameters["xWorld"].SetValue(translateWorld);
             Effect.Parameters["xTextures"].SetValue(texture);
             Effect.Parameters["xCamPos"].SetValue(Camera.Position);
             Effect.Parameters["xCamUp"].SetValue(Camera.Up);
-            Effect.Parameters["xPointSpriteSizeX"].SetValue(part.GfxObjScale.X);
-            Effect.Parameters["xPointSpriteSizeY"].SetValue(part.GfxObjScale.Y);
+            Effect.Parameters["xPointSpriteSizeX"].SetValue(part.GfxObjScale.X * gfxObj.BoundingBox.MaxSize * pointSpriteSize);
+            Effect.Parameters["xPointSpriteSizeY"].SetValue(part.GfxObjScale.Y * gfxObj.BoundingBox.MaxSize * pointSpriteSize);
             Effect.Parameters["xOpacity"].SetValue(1.0f - part.CurTranslucency);
 
             foreach (EffectPass pass in Effect.CurrentTechnique.Passes)

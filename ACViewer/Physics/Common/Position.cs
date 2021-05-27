@@ -52,6 +52,13 @@ namespace ACE.Server.Physics.Common
             Frame = new AFrame();
         }
 
+        public void Clear()
+        {
+            ObjCellID = 0;
+            Frame.Origin = Vector3.Zero;
+            Frame.Orientation = Quaternion.Identity;
+        }
+
         public Vector3 LocalToLocal(Position pos, Vector3 offset)
         {
             var cellOffset = pos.Frame.LocalToGlobal(offset);
