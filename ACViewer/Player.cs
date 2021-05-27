@@ -52,7 +52,8 @@ namespace ACViewer
             if (!GameView.IsActive)
                 return;
 
-            PhysicsObj.ParticleManager.UpdateParticles();
+            if (PhysicsObj.ParticleManager != null)
+                PhysicsObj.ParticleManager.UpdateParticles();
 
             //QueryParticleManager();
         }

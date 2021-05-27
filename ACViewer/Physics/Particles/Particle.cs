@@ -51,11 +51,10 @@ namespace ACE.Server.Physics
                     A = StartFrame.LocalToGlobalVec(a);
                     break;
                 case ParticleType.ParabolicLVGA:
-                    B = StartFrame.LocalToGlobalVec(b);
+                    A = StartFrame.LocalToGlobalVec(a);
+                    B = b.Copy();
                     break;
                 case ParticleType.ParabolicLVGAGR:
-                    C = StartFrame.LocalToGlobalVec(c);
-                    break;
                 case ParticleType.Swarm:
                     A = StartFrame.LocalToGlobalVec(a);
                     B = b.Copy();
@@ -146,7 +145,7 @@ namespace ACE.Server.Physics
                 case ParticleType.ParabolicLVGA:
                 case ParticleType.ParabolicLVLA:
                 case ParticleType.ParabolicGVGA:
-                    part.Pos.Frame.Origin += (lifetime * lifetime * B / 2.0f) + (lifetime * A) + Offset;
+                    part.Pos.Frame.Origin = (lifetime * lifetime * B / 2.0f) + (lifetime * A) + parent.Origin + Offset;
                     break;
                 case ParticleType.ParabolicLVGAGR:
                 case ParticleType.ParabolicLVLALR:
@@ -156,10 +155,10 @@ namespace ACE.Server.Physics
                     part.Pos.Frame.Rotate(lifetime * C);
                     break;
                 case ParticleType.Swarm:
-                    var swarm = (lifetime * A) + C + parent.Origin + Offset;
-                    part.Pos.Frame.Origin.X = (float)Math.Cos(lifetime * B.X) + swarm.X;
-                    part.Pos.Frame.Origin.Y = (float)Math.Sin(lifetime * B.Y) + swarm.Y;
-                    part.Pos.Frame.Origin.Z = (float)Math.Cos(lifetime * B.Z) + swarm.Z;
+                    var swarm = (lifetime * A) + parent.Origin + Offset;
+                    part.Pos.Frame.Origin.X = (float)Math.Cos(lifetime * B.X) * C.X + swarm.X;
+                    part.Pos.Frame.Origin.Y = (float)Math.Sin(lifetime * B.Y) * C.Y + swarm.Y;
+                    part.Pos.Frame.Origin.Z = (float)Math.Cos(lifetime * B.Z) * C.Z + swarm.Z;
                     break;
                 case ParticleType.Explode:
                     part.Pos.Frame.Origin = (lifetime * B + C * A.X) * lifetime + Offset + parent.Origin;
