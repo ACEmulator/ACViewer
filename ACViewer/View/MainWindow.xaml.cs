@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using MonoGame.Framework.WpfInterop;
+using System.Windows.Input;
 
 namespace ACViewer.View
 {
@@ -13,16 +11,15 @@ namespace ACViewer.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        public GameView GameView { get => GameView.Instance; }
-
         public static MainWindow Instance;
 
-        public static ParticleExplorer Particle { get => ParticleExplorer.Instance; }
+        public GameView GameView => GameView.Instance;
 
         public MainWindow()
         {
             InitializeComponent();
             Instance = this;
+            DataContext = this;
 
             //WpfGame.UseASingleSharedGraphicsDevice = true;
         }
@@ -61,5 +58,11 @@ namespace ACViewer.View
 
             lastUpdateTime = DateTime.Now;
         }
+
+        public ICommand FindCommand { get; } = new ActionCommand(() =>
+        {
+            var finder = new Finder();
+            finder.ShowDialog();
+        });
     }
 }

@@ -18,11 +18,18 @@
             <MenuItem Header="_Edit">
                 <MenuItem Header="_Options" Click="Options_Click" />
             </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Find DID" Click="FindDID_Click">
+                    <MenuItem.Icon>
+                        <Image Source="../Icons/Search_16x.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_World Map" Click="WorldMap_Click" />
-                <MenuItem x:Name="optionShowHUD" Header="Show _HUD" Click="ShowHUD_Click" />
-                <MenuItem Header="Show _Location" Click="ShowLocation_Click" />
                 <MenuItem x:Name="optionUseMipMaps" Header="Use _Mipmaps" Click="UseMipMaps_Click" />
+                <MenuItem Header="Show _Location" Click="ShowLocation_Click" />
+                <MenuItem x:Name="optionShowHUD" Header="Show _HUD" Click="ShowHUD_Click" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_View Help" Click="Guide_Click" />
