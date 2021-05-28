@@ -65,6 +65,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ActionCommand.cs" />
     <Compile Include="Data\DIDTable.cs" />
     <Compile Include="Data\DIDTables.cs" />
     <Compile Include="Entity\AmbientSoundDesc.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="Entity\TexMerge.cs" />
     <Compile Include="Entity\TimeOfDay.cs" />
     <Compile Include="Entity\TMTerrainDesc.cs" />
+    <Compile Include="Enum\DatType.cs" />
     <Compile Include="Extensions\PositionExtensions.cs" />
     <Compile Include="Extensions\TextureExtensions.cs" />
     <Compile Include="Extensions\Vector2Extensions.cs" />
@@ -282,6 +284,9 @@
     <Compile Include="View\FileInfo.xaml.cs">
       <DependentUpon>FileInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Finder.xaml.cs">
+      <DependentUpon>Finder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
@@ -320,6 +325,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FileInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Finder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -546,6 +555,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\OpenFile_16x.png" />
+    <Resource Include="Icons\Search_16x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Images\highres.png">

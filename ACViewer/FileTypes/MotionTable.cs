@@ -18,7 +18,7 @@ namespace ACViewer.FileTypes
         {
             RawToInterpreted = new Dictionary<ushort, MotionCommand>();
 
-            var interpretedCommands = Enum.GetValues(typeof(MotionCommand));
+            var interpretedCommands = System.Enum.GetValues(typeof(MotionCommand));
             foreach (var interpretedCommand in interpretedCommands)
                 RawToInterpreted.Add((ushort)(uint)interpretedCommand, (MotionCommand)interpretedCommand);
         }
@@ -138,7 +138,7 @@ namespace ACViewer.FileTypes
 
             if (RawToInterpreted.TryGetValue(stanceKey, out var stance) && RawToInterpreted.TryGetValue(motionKey, out var motion))
                 return $"{stance} - {motion}";
-            else if (Enum.IsDefined(typeof(MotionCommand), combined))
+            else if (System.Enum.IsDefined(typeof(MotionCommand), combined))
                 return $"{(MotionCommand)combined}";
             else
                 return $"{combined:X8}";

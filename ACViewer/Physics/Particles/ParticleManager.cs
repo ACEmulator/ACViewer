@@ -40,7 +40,7 @@ namespace ACE.Server.Physics
                 currentID = NextEmitterId++;
 
             emitter.ID = currentID;
-            ParticleTable.Add(currentID, emitter);
+            ParticleTable[currentID] = emitter;
             return currentID;
         }
 

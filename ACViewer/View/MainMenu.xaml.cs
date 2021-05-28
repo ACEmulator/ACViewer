@@ -13,23 +13,21 @@ namespace ACViewer.View
     /// </summary>
     public partial class MainMenu : UserControl
     {
-        public static MainWindow MainWindow { get => MainWindow.Instance; }
+        public static MainWindow MainWindow => MainWindow.Instance;
 
-        public static ParticleExplorer Particle { get => ParticleExplorer.Instance; }
+        public static MainMenu Instance { get; set; }
 
-        public static GameView GameView { get => GameView.Instance; }
+        public static GameView GameView => GameView.Instance;
 
-        public static Options Options;
+        public static Options Options { get; set; }
 
-        public static bool ShowHUD;
+        public static bool ShowHUD { get; set; }
 
         public static bool UseMipMaps
         {
             get => TextureCache.UseMipMaps;
             set => TextureCache.UseMipMaps = value;
         }
-
-        public static MainMenu Instance;
 
         public MainMenu()
         {
@@ -128,6 +126,12 @@ namespace ACViewer.View
         private void Guide_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(@"docs\index.html");
+        }
+
+        private void FindDID_Click(object sender, RoutedEventArgs e)
+        {
+            var findDID = new Finder();
+            findDID.ShowDialog();
         }
     }
 }

@@ -69,12 +69,12 @@ namespace ACViewer.View
         {
             MotionStances.Items.Clear();
 
-            foreach (var motionStance in Enum.GetValues(typeof(MotionStance)))
+            foreach (var motionStance in System.Enum.GetValues(typeof(MotionStance)))
                 MotionStances.Items.Add(motionStance);
 
             MotionCommands.Items.Clear();
 
-            foreach (var motionCommand in Enum.GetValues(typeof(MotionCommand)))
+            foreach (var motionCommand in System.Enum.GetValues(typeof(MotionCommand)))
                 MotionCommands.Items.Add(motionCommand);
         }
 

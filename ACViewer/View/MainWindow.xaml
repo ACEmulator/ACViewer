@@ -4,15 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ACViewer.View"
-        xmlns:scenes="clr-namespace:ACViewer"
+        xmlns:scenes="clr-namespace:ACViewer" d:DataContext="{d:DesignInstance Type=local:MainWindow}"
         mc:Ignorable="d"
         Title="ACViewer" Width="1342" Height="798">
+    
     <Grid x:Name="LayoutRoot">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height=".1*" />
-            <RowDefinition Height="63" />
+            <RowDefinition Height="67" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="360" />
@@ -23,13 +24,19 @@
         <local:MainMenu Grid.Row="0" Grid.ColumnSpan="3"/>
 
         <!--<local:Particle Grid.Row="1"/>-->
-        <local:FileExplorer Grid.Row="1" Margin="0,0,0,10"/>
+        <local:FileExplorer Grid.Row="1" Margin="0,0,0,7.5"/>
 
-        <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="5"/>
+        <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="4"/>
 
-        <scenes:GameView Grid.Row="1" Grid.Column="2" Margin="0,22,10,10" />
+        <scenes:GameView Grid.Row="1" Grid.Column="2" Margin="0,22,10,7.5" />
 
-        <TextBox Name="Status" TextWrapping="Wrap" Margin="7.5,0,7.5,7.5" Padding="3" Grid.Row="2" Grid.ColumnSpan="3" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+        <GridSplitter Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="3.75" ResizeDirection="Rows" />
+
+        <TextBox Name="Status" TextWrapping="Wrap" Margin="7.5,7.5,7.5,7.5" Padding="3" Grid.Row="2" Grid.ColumnSpan="3" ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
     </Grid>
+
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding FindCommand}" Gesture="Ctrl+F" />
+    </Window.InputBindings>
 </Window>
