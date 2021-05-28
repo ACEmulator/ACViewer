@@ -278,7 +278,8 @@ namespace ACE.Server.Physics
                 var animData = new Animation.AnimData();
                 animData.AnimID = Setup._dat.DefaultAnimation;
                 animData.LowFrame = 0;
-                animData.HighFrame = Int32.MaxValue;
+                animData.HighFrame = -1;
+                animData.Framerate = 30.0f;
                 Sequence.append_animation(animData);
                 WeenieDesc.Destroy(animData);
             }

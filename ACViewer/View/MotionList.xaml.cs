@@ -45,12 +45,17 @@ namespace ACViewer.View
             MotionStances.Items.Clear();
             MotionCommands.Items.Clear();
 
+            uint mtableID = 0;
             var didTable = DIDTables.Get(fileID);
             if (didTable == null)
-                return;
-            var mtableID = didTable.MotionTableID;
-            if (mtableID == 0)
-                return;
+            {
+                // maybe it's stored in Setup.DefaultMotionTable?
+                mtableID = ModelViewer.Setup?.Setup?._setup?.DefaultMotionTable ?? 0;
+            }
+            else
+                mtableID = didTable.MotionTableID;
+
+            if (mtableID == 0) return;
 
             MainWindow.Status.WriteLine($"Motion table: {mtableID:X8}");
 

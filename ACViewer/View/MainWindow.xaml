@@ -26,7 +26,7 @@
         <!--<local:Particle Grid.Row="1"/>-->
         <local:FileExplorer Grid.Row="1" Margin="0,0,0,7.5"/>
 
-        <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="4"/>
+        <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="4.5"/>
 
         <scenes:GameView Grid.Row="1" Grid.Column="2" Margin="0,22,10,7.5" />
 
