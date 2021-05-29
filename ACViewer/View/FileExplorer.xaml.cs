@@ -235,9 +235,9 @@ namespace ACViewer.View
                 case 0x02:
                     var setup = DatManager.PortalDat.ReadFromDat<SetupModel>(fileID);
                     FileInfo.SetInfo(new Setup(setup).BuildTree());
-                    MotionList.OnClickSetup(fileID);
                     GameView.ViewMode = ViewMode.Model;
                     ModelViewer.LoadModel(fileID);
+                    MotionList.OnClickSetup(fileID);
                     break;
                 case 0x03:
                     var anim = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Animation>(fileID);

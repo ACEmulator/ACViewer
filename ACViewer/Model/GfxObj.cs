@@ -62,6 +62,10 @@ namespace ACViewer.Model
 
         public void BuildVertexBuffer()
         {
+            // bad data 02001C50
+            if (VertexArray.Count == 0)
+                return;
+            
             VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), VertexArray.Count, BufferUsage.WriteOnly);
             VertexBuffer.SetData(VertexArray.ToArray());
         }
