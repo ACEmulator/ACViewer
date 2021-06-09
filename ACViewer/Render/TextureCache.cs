@@ -293,7 +293,13 @@ namespace ACViewer.Render
         {
             var colors = GetColors(texture);
             
-            var palette = DatManager.PortalDat.ReadFromDat<Palette>((uint)texture.DefaultPaletteId);
+            // Load a fresh version of the palette. If we call "ReadFromDat", it will modify the value in the FileCache
+            var datReader = DatManager.PortalDat.GetReaderForFile((uint)texture.DefaultPaletteId);
+            var palette = new Palette();
+            using (var memoryStream = new MemoryStream(datReader.Buffer))
+            using (var reader = new BinaryReader(memoryStream))
+                palette.Unpack(reader);
+
 
             // Apply any custom palette colors, if any, to our loaded palette (note, this may be all of them!)
             if (texture.CustomPaletteColors.Count > 0)
