@@ -295,11 +295,14 @@ namespace ACViewer.Render
             
             var palette = DatManager.PortalDat.ReadFromDat<Palette>((uint)texture.DefaultPaletteId);
 
+            // Make a copy of the Palette Colors, so we don't inadvertently save them back to the dat File Cache
+            List<uint> paletteColors = palette.Colors.ToList();
+
             // Apply any custom palette colors, if any, to our loaded palette (note, this may be all of them!)
             if (texture.CustomPaletteColors.Count > 0)
                 foreach (var entry in texture.CustomPaletteColors)
-                    if (entry.Key <= palette.Colors.Count)
-                        palette.Colors[entry.Key] = entry.Value;
+                    if (entry.Key <= paletteColors.Count)
+                        paletteColors[entry.Key] = entry.Value;
 
             var output = new byte[texture.Width * texture.Height * 4];
 
@@ -309,7 +312,7 @@ namespace ACViewer.Render
                 {
                     int idx = (i * texture.Width) + j;
                     var color = colors[idx];
-                    var paletteColor = palette.Colors[color];
+                    var paletteColor = paletteColors[color];
 
                     byte a = Convert.ToByte((paletteColor & 0xFF000000) >> 24);
                     byte r = Convert.ToByte((paletteColor & 0xFF0000) >> 16);
