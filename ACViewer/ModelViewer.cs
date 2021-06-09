@@ -141,8 +141,6 @@ namespace ACViewer
 
                 Render.Camera.InitModel(Setup.Setup.BoundingBox);
             }
-            else
-                ViewObject.PhysicsObj.destroy_particle_manager();
 
             ModelType = ModelType.Setup;
 
