@@ -404,13 +404,11 @@ namespace ACViewer.View
                 case 0x32:
                     var emitterInfo = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.ParticleEmitterInfo>(fileID);
                     FileInfo.SetInfo(new FileTypes.ParticleEmitterInfo(emitterInfo).BuildTree());
-                    ParticleViewer.Player.PhysicsObj.ParticleManager.ParticleTable.Clear();
                     ParticleViewer.Instance.InitEmitter(fileID, 1.0f);
                     break;
                 case 0x33:
                     var playScript = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.PhysicsScript>(fileID);
                     FileInfo.SetInfo(new FileTypes.PhysicsScript(playScript).BuildTree());
-                    ParticleViewer.Player.PhysicsObj.ParticleManager.ParticleTable.Clear();
                     ParticleViewer.Instance.InitEmitter(fileID, 1.0f);
                     break;
                 case 0x34:
