@@ -122,7 +122,7 @@ namespace ACViewer
             if (keyboardState.IsKeyDown(Keys.C) && !PrevKeyboardState.IsKeyDown(Keys.C))
             {
                 // cancel all emitters in progress
-                Player.PhysicsObj.ParticleManager.ParticleTable.Clear();
+                Player.PhysicsObj.destroy_particle_manager();
             }
 
             Player.Update(gameTime);
