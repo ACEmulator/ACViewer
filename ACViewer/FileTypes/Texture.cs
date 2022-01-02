@@ -28,6 +28,9 @@ namespace ACViewer.FileTypes
 
             treeView.Items.AddRange(new List<TreeNode>() { unknown, width, height, format, size });
 
+            if (_texture.DefaultPaletteId != null)
+                treeView.Items.Add(new TreeNode($"DefaultPalette: {_texture.DefaultPaletteId:X8}"));
+
             return treeView;
         }
     }

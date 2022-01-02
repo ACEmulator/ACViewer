@@ -124,8 +124,12 @@ namespace ACViewer.Render
                 var part = setup.Parts[i];
                 var vertices = part.VertexArray;
 
-                var frame = obj.PartArray.Parts[i].PhysicsPart.Pos;
+                var frame = setup._setup.Id != 0 ? obj.PartArray.Parts[i].PhysicsPart.Pos : obj.PhysicsObj.Position;
+
                 var transform = frame.ToXna();
+
+                if (i < setup._setup.DefaultScale.Count)
+                    transform = Matrix.CreateScale(setup._setup.DefaultScale[i].ToXna()) * transform;
 
                 foreach (var polygon in part.Polygons)
                 {

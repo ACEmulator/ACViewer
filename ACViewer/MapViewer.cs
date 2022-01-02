@@ -61,6 +61,8 @@ namespace ACViewer
 
             Highlight = new Texture2D(GraphicsDevice, 1, 1);
             Highlight.SetData(new Microsoft.Xna.Framework.Color[1] { Microsoft.Xna.Framework.Color.Red });
+
+            Font = GameView.Instance.Content.Load<SpriteFont>("Fonts/Consolas");
         }
 
         public void Init()
@@ -261,6 +263,8 @@ namespace ACViewer
             spriteBatch.End();
 
             DrawHighlight();
+
+            DrawHUD();
         }
 
         public static Microsoft.Xna.Framework.Rectangle[] Highlight_Sides = new Microsoft.Xna.Framework.Rectangle[4]
@@ -303,6 +307,26 @@ namespace ACViewer
             }
 
             spriteBatch.End();
+        }
+
+        // text rendering
+
+        public SpriteFont Font;
+
+        public void DrawHUD()
+        {
+            var landblock = ImagePos / 8;
+
+            if (landblock.X >= 0 && landblock.X < 255 && landblock.Y >= 0 && landblock.Y < 255)
+            {
+                landblock.Y = 255 - landblock.Y;
+
+                var textPos = new Vector2(GraphicsDevice.Viewport.Width - 42, 10);
+
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearClamp);
+                spriteBatch.DrawString(Font, $"{(int)landblock.X:X2}{(int)landblock.Y:X2}", textPos, Microsoft.Xna.Framework.Color.White);
+                spriteBatch.End();
+            }
         }
     }
 }
