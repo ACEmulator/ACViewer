@@ -1,11 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
+
 using Microsoft.Xna.Framework.Graphics;
+
 using ACE.DatLoader.Entity;
 
 namespace ACViewer
-{ 
+{
     public static class VertexArrayExtensions
     {
         public static List<VertexPositionNormalTexture> ToXna(this CVertexArray vertexArray)

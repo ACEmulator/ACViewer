@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ACE.Server.Physics.Common;
-using ACE.Server.Physics.Collision;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+using ACE.Server.Physics.Collision;
 
 namespace ACViewer.Render
 {
     public class R_GfxObj
     {
-        public GfxObj GfxObj;
+        public GfxObj GfxObj { get; set; }
 
-        public VertexPositionColor[] Vertices;
-        public int[] Indices;
-        public Vector3 Scale;
+        public VertexPositionColor[] Vertices { get; set; }
+        public int[] Indices { get; set; }
+        public Vector3 Scale { get; set; }
 
         public R_GfxObj(GfxObj gfxObj, Vector3 scale)
         {

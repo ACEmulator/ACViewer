@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ACViewer.Data
 {
     public static class DIDTables
     {
-        public static Dictionary<uint, DIDTable> Setups;
+        public static Dictionary<uint, DIDTable> Setups { get; set; }
 
         static DIDTables()
         {

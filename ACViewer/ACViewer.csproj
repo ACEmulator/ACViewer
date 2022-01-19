@@ -158,6 +158,9 @@
     <Compile Include="Entity\TimeOfDay.cs" />
     <Compile Include="Entity\TMTerrainDesc.cs" />
     <Compile Include="Enum\DatType.cs" />
+    <Compile Include="Enum\Facing.cs" />
+    <Compile Include="Enum\ModelType.cs" />
+    <Compile Include="Enum\ViewMode.cs" />
     <Compile Include="Extensions\PositionExtensions.cs" />
     <Compile Include="Extensions\TextureExtensions.cs" />
     <Compile Include="Extensions\Vector2Extensions.cs" />

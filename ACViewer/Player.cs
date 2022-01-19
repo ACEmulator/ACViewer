@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using Microsoft.Xna.Framework;
+
 using ACE.Server.Physics;
 using ACE.Server.Physics.Common;
 using ACE.Server.WorldObjects;
-using Microsoft.Xna.Framework;
 
 namespace ACViewer
 {
     public class Player
     {
-        public GameView GameView { get => GameView.Instance; }
-
-        public PhysicsObj PhysicsObj;
+        public PhysicsObj PhysicsObj { get; set; }
 
         public Player()
         {
@@ -33,6 +30,7 @@ namespace ACViewer
             worldObj.Name = "Player";
             worldObj.RunSkill = runSkill;
             worldObj.IsCreature = true;
+
             var weenie = new WeenieObject(worldObj);
             PhysicsObj.set_weenie_obj(weenie);
 
@@ -49,8 +47,7 @@ namespace ACViewer
 
         public void UpdatePhysics(GameTime time)
         {
-            if (!GameView.IsActive)
-                return;
+            if (!GameView.Instance.IsActive) return;
 
             if (PhysicsObj.ParticleManager != null)
                 PhysicsObj.ParticleManager.UpdateParticles();

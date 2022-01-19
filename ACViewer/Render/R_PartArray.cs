@@ -1,29 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ACE.Server.Physics;
-using Microsoft.Xna.Framework;
+﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework.Graphics;
+
+using ACE.Server.Physics;
 
 namespace ACViewer.Render
 {
     public class R_PartArray
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public PartArray PartArray;
-        public List<R_PhysicsPart> Parts;
+        public PartArray PartArray { get; set; }
+        public List<R_PhysicsPart> Parts { get; set; }
 
-        public VertexPositionColor[] Vertices;
-        public int[] Indices;
+        public VertexPositionColor[] Vertices { get; set; }
+        public int[] Indices { get; set; }
 
-        public List<int> VertexOffsets;
-        public List<int> IndexOffsets;
+        public List<int> VertexOffsets { get; set; }
+        public List<int> IndexOffsets { get; set; }
 
-        public VertexBuffer VertexBuffer;
-        public IndexBuffer IndexBuffer;
+        public VertexBuffer VertexBuffer { get; set; }
+        public IndexBuffer IndexBuffer { get; set; }
 
         public R_PartArray(PartArray partArray)
         {

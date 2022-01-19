@@ -5,9 +5,9 @@ namespace ACViewer
 {
     public struct VertexPositionNormalTextures : IVertexType
     {
-        public Vector3 Position;
-        public Vector3 Normal;
-        public Vector3 TextureCoord;
+        public Vector3 Position { get; set; }
+        public Vector3 Normal { get; set; }
+        public Vector3 TextureCoord { get; set; }
 
         public readonly static VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
@@ -23,6 +23,6 @@ namespace ACViewer
             TextureCoord = new Vector3(uv.X, uv.Y, textureIdx);
         }
 
-        VertexDeclaration IVertexType.VertexDeclaration { get => VertexDeclaration; }
+        VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
     }
 }

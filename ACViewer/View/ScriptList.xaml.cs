@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
 using ACE.Entity.Enum;
@@ -23,10 +14,11 @@ namespace ACViewer.View
     /// </summary>
     public partial class ScriptList : UserControl
     {
-        public static MainWindow MainWindow { get => MainWindow.Instance; }
-        public static ParticleViewer ParticleViewer { get => ParticleViewer.Instance; }
+        public static ScriptList Instance { get; set; }
 
-        public static ScriptList Instance;
+        public static MainWindow MainWindow => MainWindow.Instance;
+        public static ParticleViewer ParticleViewer => ParticleViewer.Instance;
+
         public ScriptList()
         {
             InitializeComponent();

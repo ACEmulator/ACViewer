@@ -49,8 +49,6 @@ namespace ACViewer.View
 
                 await Task.Run(() => ReadDATFile(file));
 
-                //Particle.ReadFiles();
-
                 //var cellFiles = DatManager.CellDat.AllFiles.Count;
                 //var portalFiles = DatManager.PortalDat.AllFiles.Count;
 

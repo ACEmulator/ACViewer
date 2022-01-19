@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using ACE.Server.Physics.Common;
 
 namespace ACViewer.Model
@@ -13,12 +15,12 @@ namespace ACViewer.Model
         /// <summary>
         /// The list of vertices comprising the mesh
         /// </summary>
-        public List<VertexPositionColor> Vertices;
+        public List<VertexPositionColor> Vertices { get; set; }
 
         /// <summary>
         /// A list of indices into the vertex array
         /// </summary>
-        public List<short> Indices;
+        public List<short> Indices { get; set; }
 
         /// <summary>
         /// Default constructor

@@ -23,7 +23,6 @@
 
         <local:MainMenu Grid.Row="0" Grid.ColumnSpan="3"/>
 
-        <!--<local:Particle Grid.Row="1"/>-->
         <local:FileExplorer Grid.Row="1" Margin="0,0,0,7.5"/>
 
         <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="4.5"/>

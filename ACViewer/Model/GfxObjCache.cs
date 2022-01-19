@@ -5,7 +5,7 @@ namespace ACViewer.Model
 {
     public static class GfxObjCache
     {
-        public static Dictionary<uint, GfxObj> Cache;
+        public static Dictionary<uint, GfxObj> Cache { get; set; }
 
         static GfxObjCache()
         {

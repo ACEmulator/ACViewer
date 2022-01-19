@@ -5,8 +5,8 @@ namespace ACViewer.Render
 {
     public class TextureSet: IEquatable<TextureSet>
     {
-        public uint Environment;
-        public List<uint> SurfaceIDs;
+        public uint Environment { get; set; }
+        public List<uint> SurfaceIDs { get; set; }
 
         public TextureSet(R_EnvCell envCell)
         {

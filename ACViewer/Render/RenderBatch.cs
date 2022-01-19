@@ -1,23 +1,25 @@
 ﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using ACViewer.Model;
 
 namespace ACViewer.Render
 {
     public class RenderBatch
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public static Effect Effect { get => Render.Effect; }
+        public static Effect Effect => Render.Effect;
 
-        public EffectParameters EffectParameters;
+        public EffectParameters EffectParameters { get; set; }
 
-        public List<VertexPositionNormalTexture> Vertices;
+        public List<VertexPositionNormalTexture> Vertices { get; set; }
 
-        public VertexBuffer VertexBuffer;
+        public VertexBuffer VertexBuffer { get; set; }
 
-        public int NumItems;
+        public int NumItems { get; set; }
 
         public RenderBatch()
         {

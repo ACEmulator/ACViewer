@@ -1,81 +1,77 @@
 ﻿using System;
 using System.Windows;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using MonoGame.Framework.WpfInterop;
 using MonoGame.Framework.WpfInterop.Input;
-using ACViewer.View;
+
+using ACViewer.Enum;
 
 namespace ACViewer
 {
-    public enum ViewMode
-    {
-        None,
-        Texture,
-        Model,
-        World,
-        Map,
-        Particle,
-    };
-
     public class GameView : WpfGame
     {
-        public WpfGraphicsDeviceService _graphicsDeviceManager;
-        public SpriteBatch SpriteBatch;
+        public static GameView Instance { get; set; }
 
-        public WpfKeyboard _keyboard;
-        public WpfMouse _mouse;
+        public WpfGraphicsDeviceService _graphicsDeviceManager { get; set; }
+        public SpriteBatch SpriteBatch { get; set; }
 
-        public KeyboardState PrevKeyboardState;
+        public WpfKeyboard _keyboard { get; set; }
+        public WpfMouse _mouse { get; set; }
 
-        public static GameView Instance;
+        public KeyboardState PrevKeyboardState { get; set; }
+        public MouseState PrevMouseState { get; set; }
 
-        public new Render.Render Render;
-        public static Camera Camera;
+        public new Render.Render Render { get; set; }
+        
+        public static Camera Camera { get; set; }
 
-        public Player Player;
+        public Player Player { get; set; }
 
-        public static MainWindow Window { get => MainWindow.Instance; }
+        public static WorldViewer WorldViewer { get; set; }
+        public static MapViewer MapViewer { get; set; }
+        public static ModelViewer ModelViewer { get; set; }
+        public static TextureViewer TextureViewer { get; set; }
+        public static ParticleViewer ParticleViewer { get; set; }
 
-        public static WorldViewer WorldViewer;
-        public static MapViewer MapViewer;
-        public static ModelViewer ModelViewer;
-        public static TextureViewer TextureViewer;
-        public static ParticleViewer ParticleViewer;
-
-        private static ViewMode _viewMode;
+        private static ViewMode _viewMode { get; set; }
 
         public static ViewMode ViewMode
         {
             get => _viewMode;
             set
             {
-                if (_viewMode != value)
+                if (_viewMode == value) return;
+                
+                _viewMode = value;
+
+                if (_viewMode == ViewMode.Model)
                 {
-                    _viewMode = value;
-                    if (_viewMode == ViewMode.Model)
-                    {
-                        Camera.Position = new Vector3(-10, -10, 10);
-                        Camera.Dir = Vector3.Normalize(-Camera.Position);
-                        Camera.Speed = Camera.Model_Speed;
-                        Camera.SetNearPlane(Camera.NearPlane_Model);
-                    }
-                    if (_viewMode == ViewMode.Particle)
-                    {
-                        Camera.InitParticle();
-                    }
-                    if (_viewMode == ViewMode.World)
-                    {
-                        Camera.SetNearPlane(Camera.NearPlane_World);
-                    }
+                    Camera.Position = new Vector3(-10, -10, 10);
+                    Camera.Dir = Vector3.Normalize(-Camera.Position);
+                    Camera.Speed = Camera.Model_Speed;
+                    Camera.SetNearPlane(Camera.NearPlane_Model);
+                }
+                else if (_viewMode == ViewMode.Particle)
+                {
+                    Camera.InitParticle();
+                }
+                else if (_viewMode == ViewMode.World)
+                {
+                    Camera.SetNearPlane(Camera.NearPlane_World);
                 }
             }
         }
 
-        public static bool UseMSAA = true;
+        public static bool UseMSAA { get; set; } = true;
 
-        public DateTime LastResizeEvent;
+        public DateTime LastResizeEvent { get; set; }
+
+        // text rendering
+        public SpriteFont Font { get; set; }
 
         protected override void Initialize()
         {
@@ -89,7 +85,7 @@ namespace ACViewer
             };
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             // wpf and keyboard need reference to the host control in order to receive input
             // this means every WpfGame control will have it's own keyboard & mouse manager which will only react if the mouse is in the control
             _keyboard = new WpfKeyboard(this);
@@ -101,6 +97,13 @@ namespace ACViewer
             base.Initialize();
 
             SizeChanged += new SizeChangedEventHandler(GameView_SizeChanged);
+        }
+
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+
+            Font = Content.Load<SpriteFont>("Fonts/Consolas");
         }
 
         public void PostInit()
@@ -124,12 +127,12 @@ namespace ACViewer
         protected override void Update(GameTime time)
         {
             // every update we can now query the keyboard & mouse for our WpfGame
-            var mouseState = _mouse.GetState();
             var keyboardState = _keyboard.GetState();
 
             if (keyboardState.IsKeyDown(Keys.C) && !PrevKeyboardState.IsKeyDown(Keys.C))
             {
                 // cancel all emitters in progress
+                // this handles both ParticleViewer and ModelViewer
                 Player.PhysicsObj.destroy_particle_manager();
             }
 
@@ -164,9 +167,11 @@ namespace ACViewer
             }
         }
 
+        private static readonly Color BackgroundColor = new Color(0, 0, 0);
+        
         protected override void Draw(GameTime time)
         {
-            GraphicsDevice.Clear(new Color(0, 0, 0));
+            GraphicsDevice.Clear(BackgroundColor);
 
             switch (ViewMode)
             {
@@ -194,6 +199,7 @@ namespace ACViewer
             {
                 _graphicsDeviceManager.PreferMultiSampling = false;
                 _graphicsDeviceManager.ApplyChanges();
+
                 LastResizeEvent = DateTime.Now;
             }
         }

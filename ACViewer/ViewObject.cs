@@ -1,33 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+
 using ACE.Entity.Enum;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
 using ACE.Server.WorldObjects;
-using Microsoft.Xna.Framework;
+
 using ACViewer.Data;
-using ACViewer.Render;
-using ACE.DatLoader;
-using ACE.DatLoader.FileTypes;
 
 namespace ACViewer
 {
     public class ViewObject
     {
-        public GameView GameView { get => GameView.Instance; }
-
-        public PhysicsObj PhysicsObj;
-        public R_Environment Environment;
-
-        public static uint NextGuid = 1;
+        public PhysicsObj PhysicsObj { get; set; }
+        
+        public static uint NextGuid { get; set; } = 1;
 
         public ViewObject(uint setupID)
         {
             PhysicsObj = new PhysicsObj();
+
             var guid = new ACE.Entity.ObjectGuid(NextGuid++);
             PhysicsObj.set_object_guid(guid);
 
@@ -51,10 +43,12 @@ namespace ACViewer
             worldObj.Name = $"Obj {setupID:X8}";
             worldObj.RunSkill = runSkill;
             worldObj.IsCreature = true;
+
             var weenie = new WeenieObject(worldObj);
             PhysicsObj.set_weenie_obj(weenie);
 
             var didTable = DIDTables.Get(setupID);
+
             if (didTable != null)
             {
                 var mTableID = didTable.MotionTableID;
@@ -105,8 +99,7 @@ namespace ACViewer
 
         public void UpdatePhysics(GameTime time)
         {
-            if (!GameView.IsActive)
-                return;
+            if (!GameView.Instance.IsActive) return;
 
             // update anim only?
             PhysicsObj.update_animation();
@@ -114,9 +107,9 @@ namespace ACViewer
             if (PhysicsObj.ParticleManager != null)
                 PhysicsObj.ParticleManager.UpdateParticles();
 
-            var minterp = PhysicsObj.get_minterp();
-            //if (minterp.motions_pending())
-                //Console.WriteLine("Motions pending");
+            /*var minterp = PhysicsObj.get_minterp();
+            if (minterp.motions_pending())
+                Console.WriteLine("Motions pending");*/
         }
     }
 }

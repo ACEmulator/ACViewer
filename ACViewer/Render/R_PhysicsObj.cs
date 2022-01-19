@@ -1,19 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using ACE.Server.Physics;
+
 using ACViewer.Model;
 
 namespace ACViewer.Render
 {
     public class R_PhysicsObj
     {
-        public GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
-        public Effect Effect { get => Render.Effect; }
+        public GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
+        public Effect Effect => Render.Effect;
 
-        public PhysicsObj PhysicsObj;
-        public R_PartArray PartArray;
+        public PhysicsObj PhysicsObj { get; set; }
+        public R_PartArray PartArray { get; set; }
 
-        public SetupInstance Setup;
+        public SetupInstance Setup { get; set; }
 
         public R_PhysicsObj(PhysicsObj obj)
         {

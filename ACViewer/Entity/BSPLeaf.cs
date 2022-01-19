@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
 using ACE.Entity.Enum;
 
 namespace ACViewer.Entity
@@ -26,8 +23,8 @@ namespace ACViewer.Entity
             if (bspType == BSPType.Physics)
             {
                 var solid = new TreeNode($"Solid: {_bspLeaf.Solid}");
-                var sphere = new TreeNode($"Sphere: {new Sphere(_bspLeaf.Sphere).ToString()}");
-                var inPolys = new TreeNode($"InPolys: {String.Join(", ", _bspLeaf.InPolys)}");
+                var sphere = new TreeNode($"Sphere: {new Sphere(_bspLeaf.Sphere)}");
+                var inPolys = new TreeNode($"InPolys: {string.Join(", ", _bspLeaf.InPolys)}");
 
                 treeNode.AddRange(new List<TreeNode>() { solid, sphere, inPolys });
             }

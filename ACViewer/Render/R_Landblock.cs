@@ -1,44 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ACE.Server.Physics.Common;
+﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ACE.DatLoader;
-using ACE.DatLoader.FileTypes;
+
+using ACE.Server.Physics.Common;
 
 namespace ACViewer.Render
 {
     public class R_Landblock
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public static Effect Effect { get => Render.Effect; }
+        public static Effect Effect => Render.Effect;
 
-        public Landblock Landblock;
+        public Landblock Landblock { get; set; }
 
         //public List<VertexPositionColor> W_Vertices;
         //public List<short> Indices;
 
-        public List<LandVertex> Vertices;
+        public List<LandVertex> Vertices { get; set; }
 
-        public VertexBuffer VertexBuffer;
-        public IndexBuffer IndexBuffer;
+        public VertexBuffer VertexBuffer { get; set; }
+        public IndexBuffer IndexBuffer { get; set; }
 
-        public List<R_PhysicsObj> StaticObjs;
-        public List<R_PhysicsObj> Buildings;
-        public List<R_PhysicsObj> Scenery;
+        public List<R_PhysicsObj> StaticObjs { get; set; }
+        public List<R_PhysicsObj> Buildings { get; set; }
+        public List<R_PhysicsObj> Scenery { get; set; }
 
-        public List<R_EnvCell> EnvCells;
+        public List<R_EnvCell> EnvCells { get; set; }
 
-        public Matrix WorldTransform;
+        public Matrix WorldTransform { get; set; }
 
-        public static bool OutdoorEnvCells = true;
+        public static bool OutdoorEnvCells { get; set; } = true;
 
-        public static Dictionary<uint, Texture2D> LandOverlays;
-        public static Dictionary<uint, Texture2D> LandAlphas;
+        public static Dictionary<uint, Texture2D> LandOverlays { get; set; }
+        public static Dictionary<uint, Texture2D> LandAlphas { get; set; }
 
         static R_Landblock()
         {
@@ -277,7 +273,7 @@ namespace ACViewer.Render
             {
                 var envCellID = landblockID | (0x100 + i);
 
-                var envCell = (ACE.Server.Physics.Common.EnvCell)LScape.get_landcell(envCellID);
+                var envCell = (EnvCell)LScape.get_landcell(envCellID);
 
                 EnvCells.Add(new R_EnvCell(envCell));
             }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using ACE.Entity.Enum;
+
 using ACViewer.Entity.AnimationHooks;
 
 namespace ACViewer.Entity

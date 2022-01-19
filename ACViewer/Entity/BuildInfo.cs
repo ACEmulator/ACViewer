@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ACViewer.Entity
 {
@@ -18,7 +14,7 @@ namespace ACViewer.Entity
         public List<TreeNode> BuildTree()
         {
             var modelID = new TreeNode($"ModelID: {_buildInfo.ModelId:X8}");
-            var frame = new TreeNode($"Frame: {new Frame(_buildInfo.Frame).ToString()}");
+            var frame = new TreeNode($"Frame: {new Frame(_buildInfo.Frame)}");
             var numLeaves = new TreeNode($"NumLeaves: {_buildInfo.NumLeaves}");
 
             var portals = new TreeNode("Portals:");

@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ACViewer
-{ 
+﻿namespace ACViewer
+{
     public static class MatrixExtensions
     {
         public static System.Numerics.Matrix4x4 ToNumerics(this Microsoft.Xna.Framework.Matrix m)

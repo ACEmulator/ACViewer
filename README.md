@@ -18,7 +18,7 @@ For quick start, precompiled binaries:
 * Click [here](https://github.com/ACEmulator/ACViewer/releases/latest) to download the [latest release](https://github.com/ACEmulator/ACViewer/releases/latest) of ACViewer.
 * Download either the Release or Debug version as desired.
 * Extract the zip file.
-* Double click on DatExplorer.exe to start.
+* Double click on ACViewer.exe to start.
 
 ### **Visit the [Help](https://acemulator.github.io/ACViewer/) site for further information on usage**
 
@@ -28,7 +28,7 @@ For Developers To Build:
   - [.NET Core 2.1 x64 SDK; .NET Framework 4.7.2 Developer Pack Required](https://www.microsoft.com/net/download/visual-studio-sdks)
   - If using Visual Studio Community Edition, make sure the following two workloads are installed: .NET Core cross-platform development and .NET Desktop Development
 * Clone repo and submodules
-* Load DatExplorer.sln and build.
+* Load ACViewer.sln and build.
 
 ## Contributions
 

@@ -1,58 +1,55 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ACE.DatLoader;
-using ACE.DatLoader.FileTypes;
-using ACViewer.View;
-using ACViewer.Model;
-using ACViewer.Render;
-using ACE.Entity.Enum;
-using MonoGame.Framework.WpfInterop.Input;
 using Microsoft.Xna.Framework.Input;
+
+using MonoGame.Framework.WpfInterop.Input;
+
+using ACViewer.Render;
 
 namespace ACViewer
 {
     public class TextureViewer
     {
-        public static MainWindow MainWindow { get => MainWindow.Instance; }
+        public static TextureViewer Instance { get; set; }
 
-        public static TextureViewer Instance;
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
+        public SpriteBatch SpriteBatch => GameView.Instance.SpriteBatch;
 
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
-        public Render.Render Render { get => GameView.Instance.Render; }
-        public static Effect Effect { get => ACViewer.Render.Render.Effect; }
-        public static Camera Camera { get => GameView.Camera; }
+        public static Effect Effect => Render.Render.Effect;
 
-        public SpriteBatch SpriteBatch;
+        public static uint FileID { get; set; }
 
-        public static uint FileID;
-        public static Texture2D Texture;
+        public static Texture2D Texture { get; set; }
 
-        public WpfKeyboard Keyboard { get => GameView.Instance._keyboard; }
-        public WpfMouse Mouse { get => GameView.Instance._mouse; }
+        public WpfKeyboard Keyboard => GameView.Instance._keyboard;
+        public WpfMouse Mouse => GameView.Instance._mouse;
 
-        public KeyboardState PrevKeyboardState;
-        public MouseState PrevMouseState;
+        public KeyboardState PrevKeyboardState
+        {
+            get => GameView.Instance.PrevKeyboardState;
+            set => GameView.Instance.PrevKeyboardState = value;
+        }
+        public MouseState PrevMouseState
+        {
+            get => GameView.Instance.PrevMouseState;
+            set => GameView.Instance.PrevMouseState = value;
+        }
 
-        public Vector2 Pos;
-        public Matrix Translate = Matrix.Identity;
+        public Vector2 Pos { get; set; }
+        public Matrix Translate { get; set; } = Matrix.Identity;
 
-        public float CurScale = 1.0f;
-        public Matrix Scale = Matrix.Identity;
+        public float CurScale { get; set; } = 1.0f;
+        public Matrix Scale { get; set; } = Matrix.Identity;
 
-        public Vector2 ImagePos;
+        public Vector2 ImagePos { get; set; }
 
         public TextureViewer()
         {
             Instance = this;
 
             Effect.CurrentTechnique = Effect.Techniques["TexturedNoShading"];
-
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         public void LoadTexture(uint fileID)
@@ -66,22 +63,25 @@ namespace ACViewer
             Texture = TextureCache.Get(fileID);
         }
 
-        public static float Speed = 8.0f;
-        public static float ScaleStep = 0.85f;
+        public static float Speed { get; set; } = 8.0f;
 
         public void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
 
+            var offset = Vector2.Zero;
+
             if (keyboardState.IsKeyDown(Keys.Left))
-                Pos.X += Speed;
+                offset.X += Speed;
             if (keyboardState.IsKeyDown(Keys.Right))
-                Pos.X -= Speed;
+                offset.X -= Speed;
             if (keyboardState.IsKeyDown(Keys.Up))
-                Pos.Y += Speed;
+                offset.Y += Speed;
             if (keyboardState.IsKeyDown(Keys.Down))
-                Pos.Y -= Speed;
+                offset.Y -= Speed;
+
+            Pos += offset;
 
             if (mouseState.Position != PrevMouseState.Position)
                 OnMouseMove(mouseState);
@@ -130,6 +130,8 @@ namespace ACViewer
 
             return ImagePos = imagePos;
         }
+
+        public static float ScaleStep { get; set; } = 0.85f;
 
         public void OnZoom(float scrollWheel)
         {

@@ -1,49 +1,62 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 using MonoGame.Framework.WpfInterop.Input;
+
+using ACViewer.Enum;
 
 namespace ACViewer
 {
     public class MapViewer
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
-        public SpriteBatch spriteBatch;
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
+        public SpriteBatch spriteBatch => GameView.Instance.SpriteBatch;
 
-        public static MapViewer Instance;
+        public static MapViewer Instance { get; set; }
 
-        public Texture2D WorldMap;
+        public Texture2D WorldMap { get; set; }
 
-        public Vector2 Pos;
+        public Vector2 Pos { get; set; }
 
-        public WpfKeyboard Keyboard { get => GameView.Instance._keyboard; }
-        public WpfMouse Mouse { get => GameView.Instance._mouse; }
+        public WpfKeyboard Keyboard => GameView.Instance._keyboard;
+        public WpfMouse Mouse => GameView.Instance._mouse;
 
-        public KeyboardState PrevKeyboardState;
-        public MouseState PrevMouseState;
+        public KeyboardState PrevKeyboardState
+        {
+            get => GameView.Instance.PrevKeyboardState;
+            set => GameView.Instance.PrevKeyboardState = value;
+        }
+        
+        public MouseState PrevMouseState
+        {
+            get => GameView.Instance.PrevMouseState;
+            set => GameView.Instance.PrevMouseState = value;
+        }
 
-        public float CurScale = 1.0f;
+        public float CurScale { get; set; } = 1.0f;
 
-        public Matrix Scale = Matrix.Identity;
+        public Matrix Scale { get; set; } = Matrix.Identity;
 
-        public Matrix Translate = Matrix.Identity;
+        public Matrix Translate { get; set; } = Matrix.Identity;
 
-        public Vector2 ImagePos;
-        public Matrix BlockTranslate;
+        public Vector2 ImagePos { get; set; }
+        public Matrix BlockTranslate { get; set; }
 
-        public Texture2D Highlight;
+        public Texture2D Highlight { get; set; }
 
-        public bool IsDragging = false;
+        public bool IsDragging { get; set; }
 
-        public bool DragCompleted = false;
+        public bool DragCompleted { get; set; }
 
-        public Vector2 StartPos;
-        public Vector2 EndPos;
+        public Vector2 StartPos { get; set; }
+        public Vector2 EndPos { get; set; }
 
-        public Microsoft.Xna.Framework.Rectangle HighlightRect;
+        public Microsoft.Xna.Framework.Rectangle HighlightRect { get; set; }
 
         public MapViewer()
         {
@@ -54,15 +67,10 @@ namespace ACViewer
 
         public void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
             WorldMap = Image.GetTextureFromBitmap(GraphicsDevice, new Bitmap(new FileStream(@"Content\Images\highres.png", FileMode.Open)));
 
             Highlight = new Texture2D(GraphicsDevice, 1, 1);
             Highlight.SetData(new Microsoft.Xna.Framework.Color[1] { Microsoft.Xna.Framework.Color.Red });
-
-            Font = GameView.Instance.Content.Load<SpriteFont>("Fonts/Consolas");
         }
 
         public void Init()
@@ -72,12 +80,10 @@ namespace ACViewer
             DragCompleted = false;
         }
 
-        public static float Speed = 8.0f;
-        public static float ScaleStep = 0.85f;
+        public static float Speed { get; set; } = 8.0f;
 
         public void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
 
@@ -228,6 +234,8 @@ namespace ACViewer
             return new Vector2((int)Math.Min(254, Math.Round(imagePos.X) / 8) * 8, (int)Math.Min(254, Math.Round(imagePos.Y) / 8) * 8);
         }
 
+        public static float ScaleStep { get; set; } = 0.85f;
+
         public void OnZoom(float scrollWheel)
         {
             if (scrollWheel < 0)
@@ -267,7 +275,7 @@ namespace ACViewer
             DrawHUD();
         }
 
-        public static Microsoft.Xna.Framework.Rectangle[] Highlight_Sides = new Microsoft.Xna.Framework.Rectangle[4]
+        public static Microsoft.Xna.Framework.Rectangle[] Highlight_Sides { get; } = new Microsoft.Xna.Framework.Rectangle[4]
         {
             new Microsoft.Xna.Framework.Rectangle(0, 0, 8, 1),
             new Microsoft.Xna.Framework.Rectangle(0, 7, 8, 1),
@@ -275,7 +283,7 @@ namespace ACViewer
             new Microsoft.Xna.Framework.Rectangle(7, 0, 1, 8),
         };
 
-        public Microsoft.Xna.Framework.Rectangle[] Selection;
+        public Microsoft.Xna.Framework.Rectangle[] Selection { get; set; }
 
         public void BuildSelection()
         {
@@ -310,8 +318,7 @@ namespace ACViewer
         }
 
         // text rendering
-
-        public SpriteFont Font;
+        public SpriteFont Font => GameView.Instance.Font;
 
         public void DrawHUD()
         {

@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer.Model
 {
     public class Polygon
     {
-        public GfxObj GfxObj;
-        public ACE.DatLoader.Entity.Polygon _polygon;
+        public GfxObj GfxObj { get; set; }
 
-        public Dictionary<Tuple<ushort, ushort>, ushort> UVLookup;
+        public ACE.DatLoader.Entity.Polygon _polygon { get; set; }
 
-        public Texture2D Texture;
+        public Dictionary<Tuple<ushort, ushort>, ushort> UVLookup { get; set; }
 
-        public List<ushort> Indices;
-        public IndexBuffer IndexBuffer;
+        public Texture2D Texture { get; set; }
+
+        public List<ushort> Indices { get; set; }
+
+        public IndexBuffer IndexBuffer { get; set; }
 
         public Polygon(GfxObj gfxObj, ACE.DatLoader.Entity.Polygon polygon)
         {
@@ -61,8 +64,10 @@ namespace ACViewer.Model
                     continue;
                 }
                 if (i == 0)
+                {
                     firstIdx = idx;
-                if (i > 2)
+                }
+                else if (i > 2)
                 {
                     // make triangle fan
                     Indices.Add(firstIdx);
