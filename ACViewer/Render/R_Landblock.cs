@@ -73,7 +73,7 @@ namespace ACViewer.Render
                 WorldViewer.Instance.Buffer.AddOutdoor(this);
             }
 
-            if (landblock.IsDungeon || OutdoorEnvCells)
+            if (landblock.HasDungeon || OutdoorEnvCells)
             {
                 BuildEnvCells();
                 WorldViewer.Instance.Buffer.AddEnvCells(this);
@@ -296,7 +296,7 @@ namespace ACViewer.Render
                 DrawScenery();
             }
 
-            if (Landblock.IsDungeon || OutdoorEnvCells)
+            if (Landblock.HasDungeon || OutdoorEnvCells)
                 DrawEnvCells();
         }
 

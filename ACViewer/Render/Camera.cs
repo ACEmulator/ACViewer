@@ -7,6 +7,7 @@ using MonoGame.Framework.WpfInterop.Input;
 
 using ACViewer.Model;
 using ACViewer.Render;
+using ACViewer.View;
 
 using ACE.Server.Physics.Common;
 
@@ -82,6 +83,26 @@ namespace ACViewer
             NearPlane = nearPlane;
             CreateProjection();
             Render.Render.Effect.Parameters["xProjection"].SetValue(ProjectionMatrix);
+        }
+
+        public void InitTeleport(R_Landblock landblock, float zBump)
+        {
+            var origin = Teleport.Origin;
+            var orientation = Teleport.Orientation;
+
+            var lbx = landblock.Landblock.ID >> 24;
+            var lby = landblock.Landblock.ID >> 16 & 0xFF;
+
+            Position = new Vector3(lbx * 192.0f + origin.X, lby * 192.0f + origin.Y, origin.Z + zBump);
+
+            Dir = Vector3.Normalize(Vector3.Transform(Vector3.UnitY, Matrix.CreateFromQuaternion(orientation.ToXna())));
+
+            Up = Vector3.UnitZ;
+
+            Speed = World_Speed;
+
+            CreateLookAt();
+
         }
 
         public void InitDungeon(R_Landblock landblock, Model.BoundingBox box)
