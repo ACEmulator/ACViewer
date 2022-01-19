@@ -133,5 +133,11 @@ namespace ACViewer.View
             var findDID = new Finder();
             findDID.ShowDialog();
         }
+
+        private void Teleport_Click(object sender, RoutedEventArgs e)
+        {
+            var teleport = new Teleport();
+            teleport.ShowDialog();
+        }
     }
 }

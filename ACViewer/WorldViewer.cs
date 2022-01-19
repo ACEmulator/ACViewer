@@ -53,10 +53,10 @@ namespace ACViewer
             LScape.unload_landblocks_all();
 
             var landblock = LScape.get_landblock(landblockID);
-            if (landblock.IsDungeon)
+            if (landblock.HasDungeon)
                 radius = 0;
 
-            DungeonMode = landblock.IsDungeon;
+            DungeonMode = landblock.HasDungeon;
 
             var center_lbx = landblockID >> 24;
             var center_lby = landblockID >> 16 & 0xFF;
@@ -93,7 +93,14 @@ namespace ACViewer
 
             Buffer.BuildBuffers();
 
-            if (DungeonMode)
+            if (FileExplorer.Instance.TeleportMode)
+            {
+                var zBump = DungeonMode ? 1.775f : 2.775f;
+                
+                Camera.InitTeleport(centerBlock, zBump);
+                FileExplorer.Instance.TeleportMode = false;
+            }
+            else if (DungeonMode)
             {
                 BoundingBox = new Model.BoundingBox(Buffer.RB_EnvCell);
                 Camera.InitDungeon(r_landblock, BoundingBox);

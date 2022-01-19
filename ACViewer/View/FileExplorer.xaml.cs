@@ -42,6 +42,8 @@ namespace ACViewer.View
         public uint Selected_FileID;
         public static FileExplorer Instance;
 
+        public bool TeleportMode { get; set; }
+
         public List<string> FileIDs
         {
             get
@@ -116,6 +118,8 @@ namespace ACViewer.View
                 return;
 
             var selected = (Entity.FileType)FileType.SelectedItem;
+
+            if (selected == null) return;
 
             PortalMode = selected.ID != 0xFFFF && selected.ID != 0xFFFE && selected.ID != 0x100;
 

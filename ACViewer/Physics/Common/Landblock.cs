@@ -533,7 +533,8 @@ namespace ACE.Server.Physics.Common
         private bool? isDungeon;
 
         /// <summary>
-        /// Returns TRUE if this landblock is a dungeon
+        /// Returns TRUE if this landblock is a dungeon,
+        /// with no traversable overworld
         /// </summary>
         public bool IsDungeon
         {
@@ -542,6 +543,18 @@ namespace ACE.Server.Physics.Common
                 // return cached value
                 if (isDungeon != null)
                     return isDungeon.Value;
+
+                var lbx = ID >> 24;
+                var lby = (ID >> 16) & 0xFF;
+                
+                // hack for NW island
+                // did a worldwide analysis for adding watercells into the formula,
+                // but they are inconsistently defined for some of the edges of map unfortunately
+                if (lbx < 0x08 && lby > 0xF8)
+                {
+                    isDungeon = false;
+                    return isDungeon.Value;
+                }
 
                 // a dungeon landblock is determined by:
                 // - all heights being 0
@@ -557,6 +570,30 @@ namespace ACE.Server.Physics.Common
                 }
                 isDungeon = Info != null && Info.NumCells > 0 && Info.Buildings != null && Info.Buildings.Count == 0;
                 return isDungeon.Value;
+            }
+        }
+
+        private bool? hasDungeon;
+
+        /// <summary>
+        /// Returns TRUE if this landblock contains a dungeon
+        //
+        /// If a landblock contains both a dungeon + traversable overworld,
+        /// this field will return TRUE, whereas IsDungeon will return FALSE
+        /// 
+        /// This property should only be used in very specific scenarios,
+        /// such as determining if a landblock contains a mansion basement
+        /// </summary>
+        public bool HasDungeon
+        {
+            get
+            {
+                // return cached value
+                if (hasDungeon != null)
+                    return hasDungeon.Value;
+
+                hasDungeon = Info != null && Info.NumCells > 0 && Info.Buildings != null && Info.Buildings.Count == 0;
+                return hasDungeon.Value;
             }
         }
 

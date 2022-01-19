@@ -68,6 +68,8 @@
     <Compile Include="ActionCommand.cs" />
     <Compile Include="Data\DIDTable.cs" />
     <Compile Include="Data\DIDTables.cs" />
+    <Compile Include="Data\TeleportLocationType.cs" />
+    <Compile Include="Data\TeleportRow.cs" />
     <Compile Include="Entity\AmbientSoundDesc.cs" />
     <Compile Include="Entity\AmbientSoundTableDesc.cs" />
     <Compile Include="Entity\AnimationFrame.cs" />
@@ -311,6 +313,9 @@
     <Compile Include="View\ScriptList.xaml.cs">
       <DependentUpon>ScriptList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Teleport.xaml.cs">
+      <DependentUpon>Teleport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WorldViewer.cs" />
     <Page Include="View\About.xaml">
       <SubType>Designer</SubType>
@@ -361,6 +366,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ScriptList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Teleport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -558,6 +567,10 @@
     <Resource Include="Icons\Search_16x.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Data\Locations.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Icons\portal.png" />
     <None Include="Content\Images\highres.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

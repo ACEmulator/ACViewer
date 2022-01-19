@@ -64,5 +64,11 @@ namespace ACViewer.View
             var finder = new Finder();
             finder.ShowDialog();
         });
+
+        public ICommand TeleportCommand { get; } = new ActionCommand(() =>
+        {
+            var teleport = new Teleport();
+            teleport.ShowDialog();
+        });
     }
 }
