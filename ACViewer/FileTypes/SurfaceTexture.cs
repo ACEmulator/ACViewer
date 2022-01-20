@@ -22,7 +22,7 @@ namespace ACViewer.FileTypes
 
             var textures = new TreeNode("Textures:");
             foreach (var textureID in _surfaceTexture.Textures)
-                textures.Items.Add(new TreeNode($"{textureID:X8}"));
+                textures.Items.Add(new TreeNode($"{textureID:X8}", clickable: true));
 
             treeView.Items.AddRange(new List<TreeNode>() { unknown, unknownByte, textures });
 

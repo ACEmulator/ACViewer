@@ -13,7 +13,7 @@ namespace ACViewer.Entity
 
         public List<TreeNode> BuildTree()
         {
-            var modelID = new TreeNode($"ModelID: {_buildInfo.ModelId:X8}");
+            var modelID = new TreeNode($"ModelID: {_buildInfo.ModelId:X8}", clickable: true);
             var frame = new TreeNode($"Frame: {new Frame(_buildInfo.Frame)}");
             var numLeaves = new TreeNode($"NumLeaves: {_buildInfo.NumLeaves}");
 

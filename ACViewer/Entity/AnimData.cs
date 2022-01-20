@@ -13,7 +13,7 @@ namespace ACViewer.Entity
 
         public List<TreeNode> BuildTree()
         {
-            var animID = new TreeNode($"AnimID: {_animData.AnimId:X8}");
+            var animID = new TreeNode($"AnimID: {_animData.AnimId:X8}", clickable: true);
             var lowFrame = new TreeNode($"Low frame: {_animData.LowFrame}");
             var highFrame = new TreeNode($"High frame: {_animData.HighFrame}");
             var framerate = new TreeNode($"Framerate: {_animData.Framerate}");

@@ -68,5 +68,14 @@ namespace ACViewer.View
             var teleport = new Teleport();
             teleport.ShowDialog();
         });
+
+        public ICommand HistoryCommand { get; } = new ActionCommand(() =>
+        {
+            var prevDID = FileExplorer.Instance.History.Pop();
+
+            if (prevDID == null) return;
+
+            Finder.Navigate(prevDID.Value.ToString("X8"));
+        });
     }
 }

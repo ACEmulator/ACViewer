@@ -17,7 +17,7 @@ namespace ACViewer.Entity
 
             if (_position.ObjCellID != 0)
             {
-                var objCellID = new TreeNode($"ObjCellID: {_position.ObjCellID:X8}");
+                var objCellID = new TreeNode($"ObjCellID: {_position.ObjCellID:X8}", clickable: true);
                 treeNode.Add(objCellID);
             }
 

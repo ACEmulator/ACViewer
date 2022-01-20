@@ -22,7 +22,7 @@ namespace ACViewer.FileTypes
             var surfaces = new TreeNode("Surfaces");
 
             foreach (var surface in _gfxObj.Surfaces)
-                surfaces.Items.Add(new TreeNode($"{surface:X8}"));
+                surfaces.Items.Add(new TreeNode($"{surface:X8}", clickable: true));
 
             var vertexArray = new TreeNode("VertexArray");
             foreach (var item in new VertexArray(_gfxObj.VertexArray).BuildTree())
@@ -69,7 +69,7 @@ namespace ACViewer.FileTypes
 
             if (_gfxObj.Flags.HasFlag(GfxObjFlags.HasDIDDegrade))
             {
-                var didDegrade = new TreeNode($"DIDDegrade: {_gfxObj.DIDDegrade:X8}");
+                var didDegrade = new TreeNode($"DIDDegrade: {_gfxObj.DIDDegrade:X8}", clickable: true);
                 treeView.Items.Add(didDegrade);
             }
 

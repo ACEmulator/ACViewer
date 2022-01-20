@@ -14,7 +14,7 @@ namespace ACViewer.Entity
         public List<TreeNode> BuildTree()
         {
             var treeNode = new List<TreeNode>();
-            var icon = new TreeNode($"Icon: {_hairStyle.IconImage:X8}");
+            var icon = new TreeNode($"Icon: {_hairStyle.IconImage:X8}", clickable: true);
             treeNode.Add(icon);
 
             if (_hairStyle.Bald)
@@ -25,7 +25,7 @@ namespace ACViewer.Entity
 
             if (_hairStyle.AlternateSetup != 0)
             {
-                var alternateSetup = new TreeNode($"Alternate Setup: {_hairStyle.AlternateSetup:X8}");
+                var alternateSetup = new TreeNode($"Alternate Setup: {_hairStyle.AlternateSetup:X8}", clickable: true);
                 treeNode.Add(alternateSetup);
             }
             var objDesc = new TreeNode("ObjDesc:");

@@ -25,9 +25,9 @@ namespace ACViewer.FileTypes
 
             var surfaces = new TreeNode("Surfaces:");
             foreach (var surface in _envCell.Surfaces)
-                surfaces.Items.Add(new TreeNode($"{surface:X8}"));
+                surfaces.Items.Add(new TreeNode($"{surface:X8}", clickable: true));
 
-            var envID = new TreeNode($"Environment: {_envCell.EnvironmentId:X8}");
+            var envID = new TreeNode($"Environment: {_envCell.EnvironmentId:X8}", clickable: true);
 
             treeView.Items.AddRange(new List<TreeNode>() { surfaces, envID });
 
@@ -42,7 +42,7 @@ namespace ACViewer.FileTypes
 
             if (_envCell.CellPortals.Count != 0)
             {
-                var cellPortals = new TreeNode("CellPortals:");
+                var cellPortals = new TreeNode("CellPortals:"); 
                 for (var i = 0; i < _envCell.CellPortals.Count; i++)
                 {
                     var cellPortal = new TreeNode($"{i}");
@@ -77,7 +77,7 @@ namespace ACViewer.FileTypes
 
             if (_envCell.RestrictionObj != 0)
             {
-                var restrictionObj = new TreeNode($"RestrictionObj: {_envCell.RestrictionObj:X8}");
+                var restrictionObj = new TreeNode($"RestrictionObj: {_envCell.RestrictionObj:X8}", clickable: true);
                 treeView.Items.Add(restrictionObj);
             }
             return treeView;

@@ -19,8 +19,8 @@ namespace ACViewer.FileTypes
 
             var emitterType = new TreeNode($"EmitterType: {_info.EmitterType}");
             var particleType = new TreeNode($"ParticleType: {_info.ParticleType}");
-            var gfxObjID = new TreeNode($"GfxObjID: {_info.GfxObjId:X8}");
-            var hwGfxObjID = new TreeNode($"HWGfxObjID: {_info.HwGfxObjId:X8}");
+            var gfxObjID = new TreeNode($"GfxObjID: {_info.GfxObjId:X8}", clickable: true);
+            var hwGfxObjID = new TreeNode($"HWGfxObjID: {_info.HwGfxObjId:X8}", clickable: true);
             var birthrate = new TreeNode($"Birthrate: {_info.Birthrate}");
             var maxParticles = new TreeNode($"MaxParticles: {_info.MaxParticles}");
             var initialParticles = new TreeNode($"InitialParticles: {_info.InitialParticles}");

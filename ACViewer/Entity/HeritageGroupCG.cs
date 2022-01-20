@@ -18,9 +18,9 @@ namespace ACViewer.Entity
             var treeNode = new List<TreeNode>();
 
             var name = new TreeNode($"Name: {_hg.Name}");
-            var icon = new TreeNode($"Icon: {_hg.IconImage:X8}");
-            var setup = new TreeNode($"Setup: {_hg.SetupID:X8}");
-            var environment = new TreeNode($"Environment: {_hg.EnvironmentSetupID:X8}");
+            var icon = new TreeNode($"Icon: {_hg.IconImage:X8}", clickable: true);
+            var setup = new TreeNode($"Setup: {_hg.SetupID:X8}", clickable: true);
+            var environment = new TreeNode($"Environment: {_hg.EnvironmentSetupID:X8}", clickable: true);
             var attribCredits = new TreeNode($"Attribute Credits: {_hg.AttributeCredits}");
             var skillCredits = new TreeNode($"Skill Credits: {_hg.SkillCredits}");
             var primaryStartAreas = new TreeNode($"Primary Start Areas: {string.Join(",", _hg.PrimaryStartAreas)}");

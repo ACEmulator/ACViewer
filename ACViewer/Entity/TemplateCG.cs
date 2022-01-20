@@ -16,7 +16,7 @@ namespace ACViewer.Entity
         public List<TreeNode> BuildTree()
         {
             var name = new TreeNode($"Name: {_template.Name}");
-            var icon = new TreeNode($"Icon: {_template.IconImage:X8}");
+            var icon = new TreeNode($"Icon: {_template.IconImage:X8}", clickable: true);
             var title = new TreeNode($"Title: {(CharacterTitle)_template.Title}");
 
             var strength = new TreeNode($"Strength: {_template.Strength}");

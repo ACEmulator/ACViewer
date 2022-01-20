@@ -18,7 +18,7 @@ namespace ACViewer.Entity
             for (var i = 0; i < _soundDesc.STBDesc.Count; i++)
             {
                 var tree = new AmbientSoundTableDesc(_soundDesc.STBDesc[i]).BuildTree();
-                var node = new TreeNode($"{i} - {tree[0].Name.Replace("Ambient Sound Table ID: ", "")}");
+                var node = new TreeNode($"{i}: {tree[0].Name.Replace("Ambient Sound Table ID: ", "")}", clickable: true);
                 tree.RemoveAt(0);
                 node.Items.AddRange(tree);
 

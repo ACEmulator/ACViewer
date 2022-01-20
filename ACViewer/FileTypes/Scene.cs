@@ -18,7 +18,7 @@ namespace ACViewer.FileTypes
             foreach (var objDesc in _scene.Objects)
             {
                 var desc = new ObjectDesc(objDesc).BuildTree();
-                var obj = new TreeNode(desc[0].Name.Replace("Object ID: ", ""));
+                var obj = new TreeNode(desc[0].Name.Replace("Object ID: ", ""), clickable: true);
                 desc.RemoveAt(0);
                 obj.Items.AddRange(desc);
                 treeView.Items.Add(obj);

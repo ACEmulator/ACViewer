@@ -18,7 +18,7 @@ namespace ACViewer.Entity
             for (var i = 0; i < _starterArea.Locations.Count; i++)
             {
                 var position = new Position(_starterArea.Locations[i]).BuildTree();
-                var location = new TreeNode($"{position[0].Name.Replace("ObjCellID: ", "")}");
+                var location = new TreeNode($"{position[0].Name.Replace("ObjCellID: ", "")}", clickable: true);
                 location.Items.AddRange(new List<TreeNode>() { position[1], position[2] });
                 locations.Items.Add(location);
             }

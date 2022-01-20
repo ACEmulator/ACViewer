@@ -13,7 +13,7 @@ namespace ACViewer.Entity
 
         public List<TreeNode> BuildTree()
         {
-            var texGID = new TreeNode($"TexGID: {_terrainTex.TexGID:X8}");
+            var texGID = new TreeNode($"TexGID: {_terrainTex.TexGID:X8}", clickable: true);
             var texTiling = new TreeNode($"TexTiling: {_terrainTex.TexTiling}");
             var maxVertBright = new TreeNode($"MaxVertBrightness: {_terrainTex.MaxVertBright}");
             var minVertBright = new TreeNode($"MinVertBrightness: {_terrainTex.MinVertBright}");
@@ -22,7 +22,7 @@ namespace ACViewer.Entity
             var maxVertHue = new TreeNode($"MaxVertHue: {_terrainTex.MaxVertHue}");
             var minVertHue = new TreeNode($"MinVertHue: {_terrainTex.MinVertHue}");
             var detailTexTiling = new TreeNode($"DetailTexTiling: {_terrainTex.DetailTexTiling}");
-            var detailTexGID = new TreeNode($"DetailTexGID: {_terrainTex.DetailTexGID:X8}");
+            var detailTexGID = new TreeNode($"DetailTexGID: {_terrainTex.DetailTexGID:X8}", clickable: true);
 
             return new List<TreeNode>() { texGID, texTiling, maxVertBright, minVertBright, maxVertSaturate, minVertSaturate, maxVertHue, minVertHue, detailTexTiling, detailTexGID };
         }

@@ -13,7 +13,7 @@ namespace ACViewer.Entity
 
         public List<TreeNode> BuildTree()
         {
-            var objectID = new TreeNode($"Object ID: {_desc.ObjId:X8}");
+            var objectID = new TreeNode($"Object ID: {_desc.ObjId:X8}", clickable: true);
             var baseLoc = new TreeNode($"BaseLoc: {new Frame(_desc.BaseLoc).ToString()}");
             var freq = new TreeNode($"Frequency: {_desc.Freq}");
             var displaceX = new TreeNode($"DisplaceX: {_desc.DisplaceX}");

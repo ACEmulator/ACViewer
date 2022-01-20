@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+
+using ACE.Entity.Enum;
 
 namespace ACViewer.Entity
 {
@@ -15,20 +18,20 @@ namespace ACViewer.Entity
         {
             var name = new TreeNode($"Name: {_sex.Name}");
             var scale = new TreeNode($"Scale: {_sex.Scale}%");
-            var setup = new TreeNode($"Setup: {_sex.SetupID:X8}");
-            var soundTable = new TreeNode($"SoundTable: {_sex.SoundTable:X8}");
-            var icon = new TreeNode($"Icon: {_sex.IconImage:X8}");
-            var basePalette = new TreeNode($"Base Palette: {_sex.BasePalette:X8}");
-            var skinPaletteSet = new TreeNode($"Skin Palette Set: {_sex.SkinPalSet:X8}");
-            var physicsTable = new TreeNode($"Physics Table: {_sex.PhysicsTable:X8}");
-            var motionTable = new TreeNode($"Motion Table: {_sex.MotionTable:X8}");
-            var combatTable = new TreeNode($"Combat Table: {_sex.CombatTable:X8}");
+            var setup = new TreeNode($"Setup: {_sex.SetupID:X8}", clickable: true);
+            var soundTable = new TreeNode($"SoundTable: {_sex.SoundTable:X8}", clickable: true);
+            var icon = new TreeNode($"Icon: {_sex.IconImage:X8}", clickable: true);
+            var basePalette = new TreeNode($"Base Palette: {_sex.BasePalette:X8}", clickable: true);
+            var skinPaletteSet = new TreeNode($"Skin Palette Set: {_sex.SkinPalSet:X8}", clickable: true);
+            var physicsTable = new TreeNode($"Physics Table: {_sex.PhysicsTable:X8}", clickable: true);
+            var motionTable = new TreeNode($"Motion Table: {_sex.MotionTable:X8}", clickable: true);
+            var combatTable = new TreeNode($"Combat Table: {_sex.CombatTable:X8}", clickable: true);
             var baseObjDesc = new TreeNode("ObjDesc:");
             baseObjDesc.Items.AddRange(new ObjDesc(_sex.BaseObjDesc).BuildTree());
 
             var hairColors = new TreeNode($"Hair Colors:");
             foreach (var hairColor in _sex.HairColorList)
-                hairColors.Items.Add(new TreeNode($"{hairColor:X8}"));
+                hairColors.Items.Add(new TreeNode($"{hairColor:X8}", clickable: true));
 
             var hairStyles = new TreeNode($"Hair Styles:");
             for (var i = 0; i < _sex.HairStyleList.Count; i++)
@@ -40,7 +43,7 @@ namespace ACViewer.Entity
 
             var eyeColors = new TreeNode($"Eye Colors:");
             foreach (var eyeColor in _sex.EyeColorList)
-                eyeColors.Items.Add(new TreeNode($"{eyeColor:X8}"));
+                eyeColors.Items.Add(new TreeNode($"{eyeColor:X8}", clickable: true));
 
             var eyeStrips = new TreeNode($"Eye Strips:");
             for (var i = 0; i < _sex.EyeStripList.Count; i++)
@@ -98,7 +101,10 @@ namespace ACViewer.Entity
                 footwear.Items.Add(footwearNode);
             }
 
-            var clothingColors = new TreeNode($"Clothing Colors: {string.Join(",", _sex.ClothingColorsList)}");
+            var clothingColors = new TreeNode($"Clothing Colors:");
+
+            foreach (var clothingColor in _sex.ClothingColorsList.OrderBy(i => i))
+                clothingColors.Items.Add(new TreeNode($"{clothingColor} - {(PaletteTemplate)clothingColor}"));
 
             return new List<TreeNode>() { name, scale, setup, soundTable, icon, basePalette, skinPaletteSet, physicsTable, motionTable, combatTable,
                 baseObjDesc, hairColors, hairStyles, eyeColors, eyeStrips, noseStrips, mouthStrips, headgear, shirts, pants, footwear, clothingColors };

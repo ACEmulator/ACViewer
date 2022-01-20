@@ -21,17 +21,21 @@ namespace ACViewer.View
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            var didStr = DID.Text;
+            Navigate(DID.Text);
 
+            Close();
+        }
+
+        public static bool Navigate(string didStr)
+        {
             if (didStr.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
                 didStr = didStr.Substring(2);
-            
+
             if (!uint.TryParse(didStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out var did))
             {
                 // input invalid -- throw error?
-                Close();
                 Console.WriteLine($"Invalid DID format: {did:X8}");
-                return;
+                return false;
             }
 
             uint filetype = 0;
@@ -40,15 +44,14 @@ namespace ACViewer.View
             if (DatManager.PortalDat == null)
             {
                 Console.WriteLine($"Please load the DATs before using finder");
-                Close();
-                return;
+                return false;
             }
-            
+
             // try lookup in portal.dat
             if (DatManager.PortalDat.AllFiles.TryGetValue(did, out var portalFile))
             {
                 datType = DatType.Portal;
-                Console.WriteLine($"Found {did:X8} in portal");
+                //Console.WriteLine($"Found {did:X8} in portal");
                 filetype = did >> 24;
                 if (filetype == 0xE)
                     filetype = did;
@@ -57,30 +60,31 @@ namespace ACViewer.View
             else if (DatManager.CellDat.AllFiles.TryGetValue(did, out var cellFile))
             {
                 datType = DatType.Cell;
-                Console.WriteLine($"Found {did:X8} in cell");
+                //Console.WriteLine($"Found {did:X8} in cell");
                 if ((ushort)did == 0xFFFF)
                     filetype = 0xFFFF;
                 else if ((ushort)did == 0xFFFE)
                     filetype = 0xFFFE;
+                else
+                    filetype = 0x100;   // there is a slight overlap of ~600 EnvCell IDs that are also in portal
             }
             // try lookup in language.dat
             else if (DatManager.LanguageDat.AllFiles.TryGetValue(did, out var languageFile))
             {
                 datType = DatType.Language;
-                Console.WriteLine($"Found {did:X8} in language");
+                //Console.WriteLine($"Found {did:X8} in language");
                 filetype = did >> 24;
             }
             else if (DatManager.HighResDat.AllFiles.TryGetValue(did, out var highResFile))
             {
                 datType = DatType.HighRes;
-                Console.WriteLine($"Found {did:X8} in highres");
+                //Console.WriteLine($"Found {did:X8} in highres");
                 filetype = did >> 24;
             }
             else
             {
                 Console.WriteLine($"Couldn't find {did:X8} in DATs");
-                Close();
-                return;
+                return false;
             }
 
             var fileTypeSelect = FileExplorer.FileTypes.FirstOrDefault(i => i.ID == filetype);
@@ -88,13 +92,11 @@ namespace ACViewer.View
             if (fileTypeSelect == null)
             {
                 Console.WriteLine($"Unknown filetype {did:X8} found in {datType} Dat");
-                Close();
-                return;
+                return false;
             }
 
             var items = FileExplorer.Instance.FileType.Items;
 
-            var found = false;
             foreach (var item in items)
             {
                 if (item is Entity.FileType entityFileType && entityFileType.ID == filetype)
@@ -105,20 +107,16 @@ namespace ACViewer.View
                     {
                         if (file.ToString().Equals(didStr))
                         {
-                            found = true;
                             FileExplorer.Instance.Files.SelectedItem = file;
                             FileExplorer.Instance.Files.ScrollIntoView(file);
-                            break;
+                            return true;
                         }
                     }
                     break;
                 }
             }
-
-            if (!found)
-                Console.WriteLine($"Error selecting file");
-
-            Close();
+            Console.WriteLine($"Error selecting file");
+            return false;
         }
     }
 }

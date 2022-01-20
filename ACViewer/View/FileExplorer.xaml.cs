@@ -43,6 +43,8 @@ namespace ACViewer.View
 
         public bool TeleportMode { get; set; }
 
+        public History History { get; set; }
+
         public List<string> FileIDs
         {
             get
@@ -107,6 +109,8 @@ namespace ACViewer.View
             };
 
             DIDTables.Load();
+
+            History = new History();
 
             DataContext = this;
         }
@@ -184,6 +188,7 @@ namespace ACViewer.View
             if (fileID == 0) return;
 
             Selected_FileID = fileID;
+            History.Add(fileID);
 
             if (PortalMode)
                 ReadPortalFile(fileID);
