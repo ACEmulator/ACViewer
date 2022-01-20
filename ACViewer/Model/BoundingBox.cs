@@ -66,18 +66,18 @@ namespace ACViewer.Model
 
             foreach (var vert in verts)
             {
-                if (vert.X < Mins.X)
+                if (vert.X < mins.X)
                     mins.X = vert.X;
-                if (vert.Y < Mins.Y)
+                if (vert.Y < mins.Y)
                     mins.Y = vert.Y;
-                if (vert.Z < Mins.Z)
+                if (vert.Z < mins.Z)
                     mins.Z = vert.Z;
 
-                if (vert.X > Maxs.X)
+                if (vert.X > maxs.X)
                     maxs.X = vert.X;
-                if (vert.Y > Maxs.Y)
+                if (vert.Y > maxs.Y)
                     maxs.Y = vert.Y;
-                if (vert.Z > Maxs.Z)
+                if (vert.Z > maxs.Z)
                     maxs.Z = vert.Z;
             }
 
