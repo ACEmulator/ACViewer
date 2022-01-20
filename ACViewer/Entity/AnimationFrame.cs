@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using ACViewer.Entity.AnimationHooks;
-
 namespace ACViewer.Entity
 {
     public class AnimationFrame

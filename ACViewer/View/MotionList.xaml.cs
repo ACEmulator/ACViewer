@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,21 +18,21 @@ namespace ACViewer.View
     /// </summary>
     public partial class MotionList : UserControl
     {
-        public static MainWindow MainWindow { get => MainWindow.Instance; }
-        public static ModelViewer ModelViewer { get => ModelViewer.Instance; }
+        public static MotionList Instance { get; set; }
 
-        public static FileTypes.MotionTable MotionTable;
+        public static MainWindow MainWindow => MainWindow.Instance;
+        public static ModelViewer ModelViewer => ModelViewer.Instance;
 
-        public static MotionList Instance;
+        public static FileTypes.MotionTable MotionTable { get; set; }
 
         public MotionList()
         {
             InitializeComponent();
+            DataContext = this;
+
             Instance = this;
 
             BuildMotionCommands();
-
-            DataContext = this;
         }
 
         public void OnClickSetup(uint fileID)

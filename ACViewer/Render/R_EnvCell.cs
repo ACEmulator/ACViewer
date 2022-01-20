@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
-using ACE.Server.Physics.Common;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
+using ACE.Server.Physics.Common;
 
 namespace ACViewer.Render
 {
@@ -17,18 +19,17 @@ namespace ACViewer.Render
         // - draw environment (combine cellstructs into 1 vertex / index buffer. this requires offsets?)
         // - instancing?
 
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
-        public static Effect Effect { get => Render.Effect; }
+        public static Effect Effect => Render.Effect;
 
-        public EnvCell EnvCell;
+        public EnvCell EnvCell { get; set; }
 
-        public R_Environment Environment;
+        public R_Environment Environment { get; set; }
 
-        public List<R_PhysicsObj> StaticObjs;
+        public List<R_PhysicsObj> StaticObjs { get; set; }
 
-        public Matrix WorldTransform;
+        public Matrix WorldTransform { get; set; }
 
-        public List<Texture2D> Textures;
+        public List<Texture2D> Textures { get; set; }
 
         public R_EnvCell(EnvCell envCell)
         {

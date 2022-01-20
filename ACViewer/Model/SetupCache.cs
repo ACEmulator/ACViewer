@@ -4,7 +4,7 @@ namespace ACViewer.Model
 {
     public static class SetupCache
     {
-        public static Dictionary<uint, Setup> Cache;
+        public static Dictionary<uint, Setup> Cache { get; set; }
 
         static SetupCache()
         {

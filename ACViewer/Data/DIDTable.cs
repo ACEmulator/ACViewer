@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ACViewer.Data
 {
     public class DIDTable: IEquatable<DIDTable>
     {
-        public uint SetupID;
-        public uint MotionTableID;
-        public uint SoundTableID;
-        public uint CombatTableID;
+        public uint SetupID { get; set; }
+        public uint MotionTableID { get; set; }
+        public uint SoundTableID { get; set; }
+        public uint CombatTableID { get; set; }
 
         public DIDTable() { }
 

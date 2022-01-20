@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
 using ACE.Entity.Enum;
 
 namespace ACViewer.Entity
@@ -57,13 +54,13 @@ namespace ACViewer.Entity
             if (bspType == BSPType.Cell)
                 return treeNode;
 
-            var sphere = new TreeNode($"Sphere: {new Sphere(_bspNode.Sphere).ToString()}");
+            var sphere = new TreeNode($"Sphere: {new Sphere(_bspNode.Sphere)}");
             treeNode.Add(sphere);
 
             if (bspType == BSPType.Physics)
                 return treeNode;
 
-            var inPolys = new TreeNode($"InPolys: {String.Join(", ", _bspNode.InPolys)}");
+            var inPolys = new TreeNode($"InPolys: {string.Join(", ", _bspNode.InPolys)}");
             treeNode.Add(inPolys);
 
             return treeNode;

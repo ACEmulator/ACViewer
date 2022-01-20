@@ -1,32 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using ACViewer.Model;
 
 namespace ACViewer.Render
 {
     public class InstanceBatchDraw
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public static Effect Effect { get => Render.Effect; }
+        public static Effect Effect => Render.Effect;
 
-        public EffectParameters EffectParameters;
+        public EffectParameters EffectParameters { get; set; }
 
         //public List<VertexPositionNormalTexture> Vertices;
-        public List<VertexPositionNormalTextures> Vertices;
+        public List<VertexPositionNormalTextures> Vertices { get; set; }
 
-        public VertexBuffer VertexBuffer;
-        public IndexBuffer IndexBuffer;
+        public VertexBuffer VertexBuffer { get; set; }
+        public IndexBuffer IndexBuffer { get; set; }
 
-        public TextureFormat TextureFormat;
-        public Dictionary<uint, byte> TextureIndex;
+        public TextureFormat TextureFormat { get; set; }
+        public Dictionary<uint, byte> TextureIndex { get; set; }
 
-        public int NumItems;
+        public int NumItems { get; set; }
 
-        public VertexBufferBinding[] Bindings;
+        public VertexBufferBinding[] Bindings { get; set; }
 
         public InstanceBatchDraw()
         {
@@ -58,7 +58,7 @@ namespace ACViewer.Render
         public void AddPolygon(List<VertexPositionNormalTexture> vertices, Polygon polygon, Matrix world)
         {
             //foreach (var idx in polygon.Indices)
-            //Vertices.Add(vertices[idx].Transform(world));
+                //Vertices.Add(vertices[idx].Transform(world));
         }
 
         public void AddPolygon(List<VertexPositionNormalTexture> vertices, Polygon polygon, uint textureID, Matrix model)
@@ -78,6 +78,7 @@ namespace ACViewer.Render
             var bytesPerPixel = TextureFormat.GetBytesPerPixel();
 
             var textures = new Texture2D(GraphicsDevice, TextureFormat.Width, TextureFormat.Height, false, TextureFormat.SurfaceFormat, TextureIndex.Count);
+
             foreach (var kvp in TextureIndex)
             {
                 var surface = kvp.Key;
@@ -88,6 +89,7 @@ namespace ACViewer.Render
                 texture.GetData(data);
                 textures.SetData(0, idx, null, data, 0, data.Length);
             }
+
             EffectParameters.Texture = textures;
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ACViewer.Entity
 {
@@ -102,7 +98,7 @@ namespace ACViewer.Entity
                 footwear.Items.Add(footwearNode);
             }
 
-            var clothingColors = new TreeNode($"Clothing Colors: {String.Join(",", _sex.ClothingColorsList)}");
+            var clothingColors = new TreeNode($"Clothing Colors: {string.Join(",", _sex.ClothingColorsList)}");
 
             return new List<TreeNode>() { name, scale, setup, soundTable, icon, basePalette, skinPaletteSet, physicsTable, motionTable, combatTable,
                 baseObjDesc, hairColors, hairStyles, eyeColors, eyeStrips, noseStrips, mouthStrips, headgear, shirts, pants, footwear, clothingColors };

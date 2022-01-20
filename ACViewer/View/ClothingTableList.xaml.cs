@@ -1,19 +1,10 @@
-﻿using ACE.DatLoader;
-using ACE.DatLoader.FileTypes;
-using ACE.Entity.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
+using ACE.DatLoader;
+using ACE.DatLoader.FileTypes;
+using ACE.Entity.Enum;
 
 namespace ACViewer.View
 {
@@ -22,21 +13,17 @@ namespace ACViewer.View
     /// </summary>
     public partial class ClothingTableList : UserControl
     {
-        public static MainWindow MainWindow { get => MainWindow.Instance; }
-        public static ModelViewer ModelViewer { get => ModelViewer.Instance; }
+        public static ClothingTableList Instance { get; set; }
 
-        public static FileTypes.MotionTable MotionTable;
+        public static MainWindow MainWindow => MainWindow.Instance;
+        public static ModelViewer ModelViewer => ModelViewer.Instance;
 
-        public static ClothingTableList Instance;
-
-        private static ClothingTable CurrentClothingItem;
+        private static ClothingTable CurrentClothingItem { get; set; }
 
         public ClothingTableList()
         {
             InitializeComponent();
             Instance = this;
-
-            //BuildMotionCommands();
 
             DataContext = this;
         }
@@ -59,7 +46,6 @@ namespace ACViewer.View
                 newSetup.Content = cbe.ToString("X8");
                 newSetup.DataContext = cbe;
                 SetupIds.Items.Add(newSetup);
-                //SetupIds.Items.Add(cbe.ToString("X8"));
             }
 
             // If no SubPalEffects, we are done adding items. Select the first setup.

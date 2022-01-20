@@ -1,5 +1,4 @@
 ﻿using ACViewer.Entity;
-using ACViewer.Entity.AnimationHooks;
 
 namespace ACViewer.FileTypes
 {

@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using ACE.Server.Physics.Extensions;
 
 namespace ACViewer.Render
 {
     public class InstanceBatch
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public Dictionary<TextureFormat, InstanceBatchDraw> DrawCalls;
+        public Dictionary<TextureFormat, InstanceBatchDraw> DrawCalls { get; set; }
 
-        public List<VertexInstance> Instances;
-        public List<VertexInstanceEnv> Instances_Env;
+        public List<VertexInstance> Instances { get; set; }
+        public List<VertexInstanceEnv> Instances_Env { get; set; }
 
-        public VertexBuffer InstanceBuffer;
+        public VertexBuffer InstanceBuffer { get; set; }
 
-        public R_PhysicsObj R_PhysicsObj;
-        public R_Environment R_Environment;
+        public R_PhysicsObj R_PhysicsObj { get; set; }
+        public R_Environment R_Environment { get; set; }
 
         public InstanceBatch(R_PhysicsObj obj)
         {

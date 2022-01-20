@@ -1,13 +1,14 @@
 ﻿using System;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer.Render
 {
     public class TextureFormat: IEquatable<TextureFormat>
     {
-        public SurfaceFormat SurfaceFormat;
-        public int Width;
-        public int Height;
+        public SurfaceFormat SurfaceFormat { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
 
         public TextureFormat(SurfaceFormat surfaceFormat, int width, int height)
         {

@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer.Render
 {
     public class TerrainBatch
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public static Effect Effect { get => Render.Effect; }
+        public static Effect Effect => Render.Effect;
 
-        public EffectParameters EffectParameters;
+        public EffectParameters EffectParameters { get; set; }
 
-        public List<LandVertex> Vertices;
+        public List<LandVertex> Vertices { get; set; }
 
-        public VertexBuffer VertexBuffer;
+        public VertexBuffer VertexBuffer { get; set; }
 
-        public int NumItems;
+        public int NumItems { get; set; }
 
         public TerrainBatch()
         {

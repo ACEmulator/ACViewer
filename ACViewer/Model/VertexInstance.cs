@@ -5,8 +5,8 @@ namespace ACViewer
 {
     public struct VertexInstance : IVertexType
     {
-        public Vector3 Position;
-        public Vector2 HeadingScale;
+        public Vector3 Position { get; set; }
+        public Vector2 HeadingScale { get; set; }
 
         public readonly static VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
@@ -17,10 +17,9 @@ namespace ACViewer
         public VertexInstance(Vector3 position, float rotation = 0.0f, float scale = 1.0f)
         {
             Position = position;
-            HeadingScale.X = rotation;
-            HeadingScale.Y = scale;
+            HeadingScale = new Vector2(rotation, scale);
         }
 
-        VertexDeclaration IVertexType.VertexDeclaration { get => VertexDeclaration; }
+        VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
     }
 }

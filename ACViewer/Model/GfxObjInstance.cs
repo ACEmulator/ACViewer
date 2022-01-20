@@ -4,11 +4,11 @@ namespace ACViewer.Model
 {
     public class GfxObjInstance
     {
-        public GfxObj GfxObj;
+        public GfxObj GfxObj { get; set; }
 
-        public Vector3 Position;
-        public Quaternion Rotation;
-        public Vector3 Scale;
+        public Vector3 Position { get; set; }
+        public Quaternion Rotation { get; set; }
+        public Vector3 Scale { get; set; }
 
         public GfxObjInstance(uint gfxObjID)
         {

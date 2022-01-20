@@ -1,23 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
+
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
+
 using ACE.Entity.Enum;
 
 namespace ACViewer.Model
 {
     public class Setup
     {
-        public SetupModel _setup;
+        public SetupModel _setup { get; set; }
 
-        public List<GfxObj> Parts;
+        public List<GfxObj> Parts { get; set; }
 
-        public List<Matrix> PlacementFrames;
+        public List<Matrix> PlacementFrames { get; set; }
 
-        public BoundingBox BoundingBox;
+        public BoundingBox BoundingBox { get; set; }
 
         public Setup() { }
 

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
+
 using ACViewer.Render;
 using ACViewer.View;
 
@@ -12,22 +15,22 @@ namespace ACViewer.Model
 {
     public class GfxObj
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public ACE.DatLoader.FileTypes.GfxObj _gfxObj;
+        public ACE.DatLoader.FileTypes.GfxObj _gfxObj { get; set; }
 
-        public List<VertexPositionNormalTexture> VertexArray;
-        public Dictionary<Tuple<ushort, ushort>, ushort> UVLookup;
+        public List<VertexPositionNormalTexture> VertexArray { get; set; }
+        public Dictionary<Tuple<ushort, ushort>, ushort> UVLookup { get; set; }
 
-        public List<Polygon> Polygons;
+        public List<Polygon> Polygons { get; set; }
 
-        public VertexBuffer VertexBuffer;
+        public VertexBuffer VertexBuffer { get; set; }
 
-        public List<Texture2D> Textures;
+        public List<Texture2D> Textures { get; set; }
 
-        public List<Surface> Surfaces;
+        public List<Surface> Surfaces { get; set; }
 
-        public BoundingBox BoundingBox;
+        public BoundingBox BoundingBox { get; set; }
 
         public GfxObj(uint gfxObjID, bool doBuild = true)
         {
@@ -63,8 +66,7 @@ namespace ACViewer.Model
         public void BuildVertexBuffer()
         {
             // bad data 02001C50
-            if (VertexArray.Count == 0)
-                return;
+            if (VertexArray.Count == 0) return;
             
             VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), VertexArray.Count, BufferUsage.WriteOnly);
             VertexBuffer.SetData(VertexArray.ToArray());

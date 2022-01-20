@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -8,18 +9,22 @@ namespace ACViewer.Render
 {
     public class Buffer
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public Dictionary<uint, TerrainBatch> TerrainGroups;   // key: surfnum
-        public Dictionary<uint, InstanceBatch> RB_Instances;   // key: setup id
-        //public Dictionary<uint, RenderBatch> RB_EnvCell;     // key: surface id
-        public Dictionary<TextureSet, InstanceBatch> RB_EnvCell;
-        public Dictionary<uint, RenderBatch> RB_StaticObjs;
-        //public Dictionary<uint, InstanceBatch> RB_StaticObjs;
-        //public Dictionary<uint, RenderBatch> RB_Buildings;
-        public Dictionary<uint, InstanceBatch> RB_Buildings;
-        //public Dictionary<uint, RenderBatch> RB_Scenery;
-        public Dictionary<uint, InstanceBatch> RB_Scenery;
+        public Dictionary<uint, TerrainBatch> TerrainGroups { get; set; }   // key: surfnum
+        public Dictionary<uint, InstanceBatch> RB_Instances { get; set; }   // key: setup id
+
+        //public Dictionary<uint, RenderBatch> RB_EnvCell { get; set; };    // key: surface id
+        public Dictionary<TextureSet, InstanceBatch> RB_EnvCell { get; set; }
+
+        public Dictionary<uint, RenderBatch> RB_StaticObjs { get; set; }
+        //public Dictionary<uint, InstanceBatch> RB_StaticObjs { get; set; }
+
+        //public Dictionary<uint, RenderBatch> RB_Buildings { get; set; }
+        public Dictionary<uint, InstanceBatch> RB_Buildings { get; set; }
+
+        //public Dictionary<uint, RenderBatch> RB_Scenery { get; set; }
+        public Dictionary<uint, InstanceBatch> RB_Scenery { get; set; }
 
         public static Effect Effect { get => Render.Effect; }
 
@@ -210,7 +215,7 @@ namespace ACViewer.Render
             }
         }
 
-        public static Matrix Buildings = Matrix.CreateTranslation(Vector3.UnitZ * 0.01f);
+        public static readonly Matrix Buildings = Matrix.CreateTranslation(Vector3.UnitZ * 0.01f);
 
         public void AddEnvCell(R_EnvCell envCell)
         {
@@ -287,7 +292,7 @@ namespace ACViewer.Render
             {
                 var gfxObjID = entry.Key;
                 var setupIDs = entry.Value;
-                Console.WriteLine($"{gfxObjID:X8} ({setupIDs.Count}): {String.Join(",", setupIDs.Select(i => i.ToString("X8")))}");
+                Console.WriteLine($"{gfxObjID:X8} ({setupIDs.Count}): {string.Join(",", setupIDs.Select(i => i.ToString("X8")))}");
             }
 
             var s2g_index = SetupToGfxObj(objects);
@@ -297,7 +302,7 @@ namespace ACViewer.Render
             {
                 var setupID = entry.Key;
                 var gfxObjIDs = entry.Value;
-                Console.WriteLine($"{setupID:X8} ({gfxObjIDs.Count}): {String.Join(",", gfxObjIDs.Select(i => i.ToString("X8")))}");
+                Console.WriteLine($"{setupID:X8} ({gfxObjIDs.Count}): {string.Join(",", gfxObjIDs.Select(i => i.ToString("X8")))}");
             }
         }
 
@@ -315,7 +320,7 @@ namespace ACViewer.Render
             {
                 var textureID = entry.Key;
                 var setupIDs = entry.Value;
-                Console.WriteLine($"{textureID:X8} ({setupIDs.Count}): {String.Join(",", setupIDs.Select(i => i.ToString("X8")))}");
+                Console.WriteLine($"{textureID:X8} ({setupIDs.Count}): {string.Join(",", setupIDs.Select(i => i.ToString("X8")))}");
             }
 
             var s2t_index = SetupToTexture(objects);
@@ -325,7 +330,7 @@ namespace ACViewer.Render
             {
                 var setupID = entry.Key;
                 var textureIDs = entry.Value;
-                Console.WriteLine($"{setupID:X8} ({textureIDs.Count}): {String.Join(",", textureIDs.Select(i => i.ToString("X8")))}");
+                Console.WriteLine($"{setupID:X8} ({textureIDs.Count}): {string.Join(",", textureIDs.Select(i => i.ToString("X8")))}");
             }
         }
 

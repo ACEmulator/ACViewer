@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework.Graphics;
+
 using ACE.DatLoader;
 
 namespace ACViewer.Render
 {
     public class R_Environment
     {
-        public ACE.DatLoader.FileTypes.Environment _env;
+        public ACE.DatLoader.FileTypes.Environment _env { get; set; }
 
-        public Dictionary<uint, R_CellStruct> R_CellStructs;
+        public Dictionary<uint, R_CellStruct> R_CellStructs { get; set; }
 
         public R_Environment(uint envID)
         {

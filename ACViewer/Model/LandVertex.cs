@@ -5,14 +5,14 @@ namespace ACViewer
 {
     public struct LandVertex: IVertexType
     {
-        public Vector3 Position;
-        public Vector3 Normal;
-        public Vector3 TexCoord0;
-        public Vector3 TexCoord1;
-        public Vector3 TexCoord2;
-        public Vector3 TexCoord3;
-        public Vector3 TexCoord4;
-        public Vector3 TexCoord5;
+        public Vector3 Position { get; set; }
+        public Vector3 Normal { get; set; }
+        public Vector3 TexCoord0 { get; set; }
+        public Vector3 TexCoord1 { get; set; }
+        public Vector3 TexCoord2 { get; set; }
+        public Vector3 TexCoord3 { get; set; }
+        public Vector3 TexCoord4 { get; set; }
+        public Vector3 TexCoord5 { get; set; }
 
         public readonly static VertexDeclaration VertexDeclaration = new VertexDeclaration
         (
@@ -26,6 +26,6 @@ namespace ACViewer
             new VertexElement(sizeof(float) * 21, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 5)
         );
 
-        VertexDeclaration IVertexType.VertexDeclaration { get => VertexDeclaration; }
+        VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
     }
 }

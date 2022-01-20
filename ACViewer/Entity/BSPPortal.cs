@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
 using ACE.Entity.Enum;
 
 namespace ACViewer.Entity
@@ -20,7 +17,7 @@ namespace ACViewer.Entity
         {
             var type = new TreeNode($"Type: {_bspPortal.Type:X8}");
 
-            var splitter = new TreeNode($"Splitting Plane: {new Plane(_bspPortal.SplittingPlane).ToString()}");
+            var splitter = new TreeNode($"Splitting Plane: {new Plane(_bspPortal.SplittingPlane)}");
 
             var posNode = new TreeNode("PosNode:");
             if (_bspPortal.PosNode != null)
@@ -48,8 +45,8 @@ namespace ACViewer.Entity
 
             if (bspType == BSPType.Drawing)
             {
-                var sphere = new TreeNode($"Sphere: {new Sphere(_bspPortal.Sphere).ToString()}");
-                var inPolys = new TreeNode($"InPolys: {String.Join(", ", _bspPortal.InPolys)}");
+                var sphere = new TreeNode($"Sphere: {new Sphere(_bspPortal.Sphere)}");
+                var inPolys = new TreeNode($"InPolys: {string.Join(", ", _bspPortal.InPolys)}");
 
                 var inPortals = new TreeNode("InPortals:");
                 foreach (var inPortal in _bspPortal.InPortals)

@@ -3,9 +3,10 @@ using System.Windows.Input;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+
 using MonoGame.Framework.WpfInterop.Input;
 
-using ACViewer.Model;
+using ACViewer.Enum;
 using ACViewer.Render;
 using ACViewer.View;
 
@@ -15,42 +16,49 @@ namespace ACViewer
 {
     public class Camera
     {
-        public GameView Game;
+        public GameView GameView;
 
-        public Matrix ViewMatrix;
-        public Matrix ProjectionMatrix;
+        public Matrix ViewMatrix { get; set; }
+        public Matrix ProjectionMatrix { get; set; }
 
-        public Vector3 Position;
-        public Vector3 Dir;
-        public Vector3 Up;
+        public Vector3 Position { get; set; }
+        public Vector3 Dir { get; set; }
+        public Vector3 Up { get; set; }
 
-        public WpfKeyboard Keyboard;
-        public WpfMouse Mouse;
-        public MouseState PrevMouseState;
+        public WpfKeyboard Keyboard => GameView._keyboard;
+        public WpfMouse Mouse => GameView._mouse;
+        
+        public MouseState PrevMouseState
+        {
+            get => GameView.PrevMouseState;
+            set => GameView.PrevMouseState = value;
+        }
 
-        public int PrevScrollWheelValue;
+        public int PrevScrollWheelValue { get; set; }
 
         public float Speed { get; set; } = Model_Speed;
 
-        public float SpeedMod = 1.5f;
+        public float SpeedMod { get; set; } = 1.5f;
 
-        public static float NearPlane_Model = 0.1f;
-        public static float NearPlane_World = 1.0f;
+        public static float NearPlane_Model { get; set; } = 0.1f;
+        public static float NearPlane_World { get; set; } = 1.0f;
 
-        public float NearPlane = 1.0f;
-        public int DrawDistance = 60000;
+        public float NearPlane { get; set; } = 1.0f;
 
-        public float FieldOfView = 90.0f;
+        public int DrawDistance { get; set; } = 60000;
 
-        public int ViewportWidth;
-        public int ViewportHeight;
+        public float FieldOfView { get; set; } = 90.0f;
 
-        public static float Model_Speed = 0.1f;
-        public static float World_Speed = 0.75f;
+        public int ViewportWidth { get; set; }
+        public int ViewportHeight { get; set; }
+
+        public static float Model_Speed { get; set; } = 0.1f;
+        public static float World_Speed { get; set; } = 0.75f;
 
         public Camera(GameView game)
         {
-            Game = game;
+            GameView = game;
+            
             Init();
         }
 
@@ -60,13 +68,10 @@ namespace ACViewer
 
             CreateProjection();
 
-            Keyboard = GameView.Instance._keyboard;
-            Mouse = GameView.Instance._mouse;
-
             //SetMouse();
         }
 
-        public static float ParticleDist = 10.0f;
+        public static readonly float ParticleDist = 10.0f;
 
         public void InitParticle()
         {
@@ -83,57 +88,6 @@ namespace ACViewer
             NearPlane = nearPlane;
             CreateProjection();
             Render.Render.Effect.Parameters["xProjection"].SetValue(ProjectionMatrix);
-        }
-
-        public void InitTeleport(R_Landblock landblock, float zBump)
-        {
-            var origin = Teleport.Origin;
-            var orientation = Teleport.Orientation;
-
-            var lbx = landblock.Landblock.ID >> 24;
-            var lby = landblock.Landblock.ID >> 16 & 0xFF;
-
-            Position = new Vector3(lbx * 192.0f + origin.X, lby * 192.0f + origin.Y, origin.Z + zBump);
-
-            Dir = Vector3.Normalize(Vector3.Transform(Vector3.UnitY, Matrix.CreateFromQuaternion(orientation.ToXna())));
-
-            Up = Vector3.UnitZ;
-
-            Speed = World_Speed;
-
-            CreateLookAt();
-
-        }
-
-        public void InitDungeon(R_Landblock landblock, Model.BoundingBox box)
-        {
-            var size = box.Size;
-
-            var center = box.Center;
-
-            // draw a view plane from NW to SE
-            var p1 = new Vector3(box.Mins.X, box.Maxs.Y, center.Z);
-            var p2 = new Vector3(box.Maxs.X, box.Mins.Y, center.Z);
-
-            var length = Vector3.Distance(p1, p2);
-
-            var unit_length = (float)Math.Sqrt(length * length / 2);
-
-            var dist_scalar = 0.75f;
-            unit_length *= dist_scalar;
-
-            // move camera out in -x, -y by this distance
-            Position = center;
-            Position.X -= unit_length;
-            Position.Y -= unit_length;
-            Position.Z += unit_length;
-
-            Dir = Vector3.Normalize(box.Center - Position);
-
-            Up = Vector3.UnitZ;
-            Speed = World_Speed;
-
-            CreateLookAt();
         }
 
         public void InitLandblock(R_Landblock landblock)
@@ -156,6 +110,59 @@ namespace ACViewer
             CreateLookAt();
         }
 
+        public void InitDungeon(R_Landblock landblock, Model.BoundingBox box)
+        {
+            var size = box.Size;
+
+            var center = box.Center;
+
+            // draw a view plane from NW to SE
+            var p1 = new Vector3(box.Mins.X, box.Maxs.Y, center.Z);
+            var p2 = new Vector3(box.Maxs.X, box.Mins.Y, center.Z);
+
+            var length = Vector3.Distance(p1, p2);
+
+            var unit_length = (float)Math.Sqrt(length * length / 2);
+
+            var dist_scalar = 0.75f;
+            unit_length *= dist_scalar;
+
+            // move camera out in -x, -y by this distance
+            var position = center;
+            position.X -= unit_length;
+            position.Y -= unit_length;
+            position.Z += unit_length;
+
+            Position = position;
+
+            Dir = Vector3.Normalize(box.Center - Position);
+
+            Up = Vector3.UnitZ;
+            Speed = World_Speed;
+
+            CreateLookAt();
+        }
+
+        public void InitTeleport(R_Landblock landblock, float zBump)
+        {
+            var origin = Teleport.Origin;
+            var orientation = Teleport.Orientation;
+
+            var lbx = landblock.Landblock.ID >> 24;
+            var lby = landblock.Landblock.ID >> 16 & 0xFF;
+
+            Position = new Vector3(lbx * 192.0f + origin.X, lby * 192.0f + origin.Y, origin.Z + zBump);
+
+            Dir = Vector3.Normalize(Vector3.Transform(Vector3.UnitY, Matrix.CreateFromQuaternion(orientation.ToXna())));
+
+            Up = Vector3.UnitZ;
+
+            Speed = World_Speed;
+
+            CreateLookAt();
+        }
+
+
         public void InitModel(Model.BoundingBox box)
         {
             //var box = setup.BoundingBox;
@@ -170,15 +177,13 @@ namespace ACViewer
             var facing = box.GetTargetFace();
             var face = box.Faces[(int)facing];
             var center = face.Center;
+
             //Console.WriteLine("TargetFace: " + facing);
 
             var largest = Math.Max(face.Width, face.Height);
             largest = Math.Max(largest, 1.2f);
-            var isAdjustWidth = face.Width > face.Height;
-            var adjustWidth = face.Width / face.Height;
-            //var ratio = 1280.0f / 720.0f;
 
-            Position = new Vector3(center.X, center.Y, center.Z);
+            var position = new Vector3(center.X, center.Y, center.Z);
 
             var factor = 1.414f;
             //var factor = 1.2f;
@@ -186,24 +191,24 @@ namespace ACViewer
             //Console.WriteLine($"Width: {face.Width}, Height: {face.Height}");
 
             var gfxObjMode = ModelViewer.Instance.GfxObjMode;
-
+            
             if (facing == Facing.Front || facing == Facing.Back)
             {
                 if (gfxObjMode)
-                    Position.Y -= largest * factor;
+                    position.Y -= largest * factor;
                 else
-                    Position.Y += largest * factor;
+                    position.Y += largest * factor;
 
-                //Position.Z *= factor;
+                //position.Z *= factor;
 
                 Up = Vector3.UnitZ;
             }
             else if (facing == Facing.Left || facing == Facing.Right)
             {
                 if (gfxObjMode)
-                    Position.X -= largest * factor;
+                    position.X -= largest * factor;
                 else
-                    Position.X += largest * factor;
+                    position.X += largest * factor;
 
                 Up = Vector3.UnitZ;
             }
@@ -216,10 +221,12 @@ namespace ACViewer
                 //Console.WriteLine("Left area: " + left.Area);
                 //Console.WriteLine("Top area: " + face.Area);
 
-                Position.Z += largest * factor;
+                position.Z += largest * factor;
 
                 Up = -Vector3.UnitY;
             }
+
+            Position = position;
 
             //Console.WriteLine("Camera pos: " + Position);
 
@@ -241,8 +248,8 @@ namespace ACViewer
 
         public Matrix CreateLookAt()
         {
-            if (ViewportWidth != Game.GraphicsDevice.Viewport.Width ||
-                ViewportHeight != Game.GraphicsDevice.Viewport.Height)
+            if (ViewportWidth != GameView.GraphicsDevice.Viewport.Width ||
+                ViewportHeight != GameView.GraphicsDevice.Viewport.Height)
             {
                 OnResize();
             }
@@ -252,8 +259,8 @@ namespace ACViewer
 
         public Matrix CreateProjection()
         {
-            ViewportWidth = Game.GraphicsDevice.Viewport.Width;
-            ViewportHeight = Game.GraphicsDevice.Viewport.Height;
+            ViewportWidth = GameView.GraphicsDevice.Viewport.Width;
+            ViewportHeight = GameView.GraphicsDevice.Viewport.Height;
 
             var aspectRatio = (float)ViewportWidth / ViewportHeight;
 
@@ -266,13 +273,12 @@ namespace ACViewer
 
         public void Update(GameTime gameTime)
         {
-            if (Mouse == null)
-                return;
+            if (Mouse == null) return;
 
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
 
-            if (!Game.IsActive)
+            if (!GameView.IsActive)
             {
                 PrevMouseState = mouseState;
                 return;
@@ -334,8 +340,8 @@ namespace ACViewer
             //Console.WriteLine("Camera dir: " + GameView.Instance.Render.Camera.Dir);
         }
 
-        private int centerX => Game.GraphicsDevice.Viewport.Width / 2;
-        private int centerY => Game.GraphicsDevice.Viewport.Height / 2;
+        private int centerX => GameView.GraphicsDevice.Viewport.Width / 2;
+        private int centerY => GameView.GraphicsDevice.Viewport.Height / 2;
 
         public string GetPosition()
         {

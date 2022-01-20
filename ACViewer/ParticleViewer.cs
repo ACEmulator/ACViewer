@@ -13,6 +13,7 @@ using ACE.Entity.Enum;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Animation;
 
+using ACViewer.Enum;
 using ACViewer.Model;
 using ACViewer.Render;
 using ACViewer.View;
@@ -28,6 +29,7 @@ namespace ACViewer
 
         public static ParticleViewer Instance;
         public static Camera Camera => GameView.Camera;
+
         public static WpfKeyboard Keyboard => GameView._keyboard;
         public static KeyboardState PrevKeyboardState;
 
@@ -180,7 +182,6 @@ namespace ACViewer
             GraphicsDevice.Indices = Billboard.IndexBuffer;
 
             var translateWorld = Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna());
-            //var translateWorld = Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna()) * Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna());
             
             // get initial scale from gfxobj vertices
             if (gfxObj.BoundingBox == null)
@@ -229,7 +230,7 @@ namespace ACViewer
                         GraphicsDevice.BlendState = BlendState.Additive;
                     else
                         GraphicsDevice.BlendState = BlendState.NonPremultiplied;
-                    //GraphicsDevice.BlendState = BlendState.AlphaBlend;
+                        //GraphicsDevice.BlendState = BlendState.AlphaBlend;
 
                     if (poly.IndexBuffer == null)
                         poly.BuildIndexBuffer();

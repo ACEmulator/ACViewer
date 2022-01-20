@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ACViewer.Entity;
+﻿using System.Linq;
+
 using ACE.Entity.Enum;
+
+using ACViewer.Entity;
 
 namespace ACViewer.FileTypes
 {

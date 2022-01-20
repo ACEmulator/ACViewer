@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ACViewer.Render
 {
     public static class R_EnvironmentCache
     {
-        public static Dictionary<uint, R_Environment> Cache;
+        public static Dictionary<uint, R_Environment> Cache { get; set; }
 
         static R_EnvironmentCache()
         {

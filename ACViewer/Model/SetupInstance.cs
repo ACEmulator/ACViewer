@@ -1,32 +1,33 @@
-﻿using System;
+﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using ACViewer.Render;
-using System.Collections.Generic;
 
 namespace ACViewer.Model
 {
     public class SetupInstance
     {
-        public static GraphicsDevice GraphicsDevice { get => GameView.Instance.GraphicsDevice; }
-        public static Effect Effect { get => Render.Render.Effect; }
-        public static Camera Camera { get => GameView.Camera; }
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
+        public static Effect Effect => Render.Render.Effect;
+        public static Camera Camera => GameView.Camera;
 
-        public Setup Setup;
+        public Setup Setup { get; set; }
 
-        public Vector3 Position;
-        public Quaternion Rotation;
-        public Vector3 Scale;
+        public Vector3 Position { get; set; }
+        public Quaternion Rotation { get; set; }
+        public Vector3 Scale { get; set; }
 
-        public Matrix WorldTranslate;
-        public Matrix WorldRotate;
-        public Matrix WorldScale;
+        public Matrix WorldTranslate { get; set; }
+        public Matrix WorldRotate { get; set; }
+        public Matrix WorldScale { get; set; }
 
-        public Matrix WorldTransform;
+        public Matrix WorldTransform { get; set; }
 
-        public ViewObject ViewObject { get => ModelViewer.Instance.ViewObject; }
+        public ViewObject ViewObject => ModelViewer.Instance.ViewObject;
 
-        public float Angle;
+        public float Angle { get; set; }
 
         public SetupInstance(uint setupID)
         {

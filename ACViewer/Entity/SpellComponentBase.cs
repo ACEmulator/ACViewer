@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using ACE.DatLoader;
+﻿using System.Collections.Generic;
+
 using ACE.Entity.Enum;
 
 namespace ACViewer.Entity

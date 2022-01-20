@@ -1,56 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-
-using MonoGame.Framework.WpfInterop.Input;
 
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
 using ACE.Entity.Enum;
+
 using ACE.Server.Physics.Animation;
 
+using ACViewer.Enum;
 using ACViewer.Model;
 using ACViewer.Render;
 using ACViewer.View;
 
 namespace ACViewer
 {
-    public enum ModelType
-    {
-        Setup,
-        EnvCell,
-        Environment,
-    };
-
     public class ModelViewer
     {
+        public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
+
         public static MainWindow MainWindow => MainWindow.Instance;
-        public static GameView GameView => GameView.Instance;
 
         public static ModelViewer Instance { get; set; }
 
-        public SetupInstance Setup;
-        public R_EnvCell EnvCell;
-        public R_Environment Environment;
+        public SetupInstance Setup { get; set; }
+        public R_EnvCell EnvCell { get; set; }
+        public R_Environment Environment { get; set; }
 
-        public static GraphicsDevice GraphicsDevice => GameView.GraphicsDevice;
-        public Render.Render Render => GameView.Render;
-        public static Effect Effect => ACViewer.Render.Render.Effect;
+        public static Effect Effect => Render.Render.Effect;
         public static Camera Camera => GameView.Camera;
 
         public ViewObject ViewObject { get; set; }
 
-        public bool GfxObjMode = false;
+        public bool GfxObjMode { get; set; }
 
-        public WpfKeyboard Keyboard => GameView._keyboard;
-
-        public KeyboardState PrevKeyboardState;
-
-        public ModelType ModelType;
+        public ModelType ModelType { get; set; }
 
         public ModelViewer()
         {
@@ -69,17 +54,19 @@ namespace ACViewer
             Setup = new SetupInstance(id);
             InitObject(id);
 
-            Render.Camera.InitModel(Setup.Setup.BoundingBox);
+            Camera.InitModel(Setup.Setup.BoundingBox);
 
             ModelType = ModelType.Setup;
         }
 
+        /// <summary>
+        /// Load a model with a ClothingTable
+        /// </summary>
         public void LoadModel(uint id, ClothingTable clothingBase, uint palTemplate, float shade)
         {
             TextureCache.Init();
 
-            // can be either a gfxobj or setup id
-            // if gfxobj, create a simple setup
+            // assumed to be in Setup mode for ClothingBase
             GfxObjMode = false;
 
             // create the objDesc, describing the "Changed" items to the base setup.
@@ -125,8 +112,8 @@ namespace ACViewer
                 var palette = DatManager.PortalDat.ReadFromDat<Palette>(palId);
                 foreach (var range in subPals.Ranges)
                 {
-                    int offset = (int)(range.Offset);
-                    int numColors = (int)(range.NumColors);
+                    int offset = (int)range.Offset;
+                    int numColors = (int)range.NumColors;
                     // add the appropriate colors to our custom palette
                     for (int i = 0; i < numColors; i++)
                         customPaletteColors.Add(i + offset, palette.Colors[i + offset]);
@@ -139,7 +126,7 @@ namespace ACViewer
             {
                 InitObject(id);
 
-                Render.Camera.InitModel(Setup.Setup.BoundingBox);
+                Camera.InitModel(Setup.Setup.BoundingBox);
             }
 
             ModelType = ModelType.Setup;
@@ -157,6 +144,8 @@ namespace ACViewer
 
         public void LoadEnvCell(uint envCellID)
         {
+            // TODO: this should be more like WorldViewer, with support for various StaticObjects and their PhysicsEffects in the EnvCell
+
             var envCell = new ACE.Server.Physics.Common.EnvCell(DatManager.CellDat.ReadFromDat<EnvCell>(envCellID));
             envCell.Pos = new ACE.Server.Physics.Common.Position();
             EnvCell = new R_EnvCell(envCell);
@@ -196,8 +185,6 @@ namespace ACViewer
                 ViewObject.DoMotion(motionCommand);
         }
 
-        public static int PolyIdx = -1;
-
         public void Update(GameTime time)
         {
             if (ViewObject != null)
@@ -228,6 +215,9 @@ namespace ACViewer
                     break;
             }
         }
+
+        // for debugging
+        public static int PolyIdx { get; set; } = -1;
 
         public void DrawModel()
         {

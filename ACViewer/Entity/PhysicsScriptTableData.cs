@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ACViewer.Entity
 {
@@ -20,7 +16,7 @@ namespace ACViewer.Entity
             var scriptTable = new TreeNode("ScriptMods:");
 
             foreach (var scriptMod in _data.Scripts)
-                scriptTable.Items.Add(new TreeNode($"{new ScriptMod(scriptMod).ToString()}"));
+                scriptTable.Items.Add(new TreeNode($"{new ScriptMod(scriptMod)}"));
 
             return scriptTable.Items;
         }

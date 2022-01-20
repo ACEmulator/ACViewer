@@ -1,14 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+
 using MonoGame.Framework.WpfInterop.Input;
+
 using ACE.Server.Physics;
 using ACE.Server.Physics.Common;
-using ACViewer.Model;
+
+using ACViewer.Enum;
 using ACViewer.Render;
 using ACViewer.View;
 
@@ -16,38 +19,42 @@ namespace ACViewer
 {
     public class WorldViewer
     {
-        public static MainWindow MainWindow { get => MainWindow.Instance; }
-        public static Render.Render Render { get => GameView.Instance.Render; }
+        public static MainWindow MainWindow => MainWindow.Instance;
 
-        public static WorldViewer Instance;
+        public static WorldViewer Instance { get; set; }
 
-        //public Dictionary<uint, R_Landblock> Landblocks;
+        public static Render.Render Render => GameView.Instance.Render;
 
-        public PhysicsEngine Physics;
+        public Render.Buffer Buffer => Render.Buffer;
+        
+        public static Camera Camera => GameView.Camera;
 
-        public Render.Buffer Buffer { get => Render.Buffer; }
+        public PhysicsEngine Physics { get; set; }
 
-        public static Camera Camera { get => GameView.Camera; }
+        public WpfKeyboard Keyboard => GameView.Instance._keyboard;
 
-        public WpfKeyboard Keyboard { get => GameView.Instance._keyboard; }
-        public WpfMouse Mouse { get => GameView.Instance._mouse; }
+        public KeyboardState PrevKeyboardState
+        {
+            get => GameView.Instance.PrevKeyboardState;
+            set => GameView.Instance.PrevKeyboardState = value;
+        }
 
-        public KeyboardState PrevKeyboardState;
+        public bool DungeonMode { get; set; }
 
-        public bool DungeonMode = false;
-
-        public Model.BoundingBox BoundingBox;
+        public Model.BoundingBox BoundingBox { get; set; }
 
         public WorldViewer()
         {
             Instance = this;
+            
             Physics = new PhysicsEngine(new ObjectMaint(), new SmartBox());
+            
             Physics.Server = false;
         }
 
         public void LoadLandblock(uint landblockID, uint radius = 1)
         {
-            Buffer.ClearBuffer();
+            Render.Buffer.ClearBuffer();
             TextureCache.Init();
 
             LScape.unload_landblocks_all();
@@ -91,7 +98,7 @@ namespace ACViewer
                 }
             }
 
-            Buffer.BuildBuffers();
+            Render.Buffer.BuildBuffers();
 
             if (FileExplorer.Instance.TeleportMode)
             {
@@ -102,7 +109,7 @@ namespace ACViewer
             }
             else if (DungeonMode)
             {
-                BoundingBox = new Model.BoundingBox(Buffer.RB_EnvCell);
+                BoundingBox = new Model.BoundingBox(Render.Buffer.RB_EnvCell);
                 Camera.InitDungeon(r_landblock, BoundingBox);
             }
             else
@@ -113,7 +120,7 @@ namespace ACViewer
 
         public async void LoadLandblocks(Vector2 startBlock, Vector2 endBlock)
         {
-            Buffer.ClearBuffer();
+            Render.Buffer.ClearBuffer();
             TextureCache.Init();
             
             LScape.unload_landblocks_all();
@@ -163,7 +170,7 @@ namespace ACViewer
                 }
             }
 
-            Buffer.BuildBuffers();
+            Render.Buffer.BuildBuffers();
 
             Camera.InitLandblock(centerBlock);
             GameView.ViewMode = ViewMode.World;
@@ -175,11 +182,6 @@ namespace ACViewer
         {
             R_Landblock.Init();
             TextureCache.Init(false);
-        }
-
-        public void ShowLoadStatus(int numBlocks)
-        {
-            
         }
 
         public void Update(GameTime time)

@@ -1,30 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
+
+using ACViewer.Enum;
 
 namespace ACViewer.Model
 {
     public class Face
     {
-        public Facing Facing;
+        public Facing Facing { get; set; }
 
-        public Vector3 NW;
-        public Vector3 NE;
-        public Vector3 SE;
-        public Vector3 SW;
+        public Vector3 NW { get; set; }
+        public Vector3 NE { get; set; }
+        public Vector3 SE { get; set; }
+        public Vector3 SW { get; set; }
 
-        public Vector3 Normal;
-        public Vector3 Center;
+        public Vector3 Normal { get; set; }
+        public Vector3 Center { get; set; }
 
-        public float Width;
-        public float Height;
+        public float Width { get; set; }
+        public float Height { get; set; }
 
-        public float Area;
+        public float Area { get; set; }
 
-        public bool GfxObjMode { get => ModelViewer.Instance.GfxObjMode; }
+        public bool GfxObjMode => ModelViewer.Instance.GfxObjMode;
 
         public Face(Facing facing, Vector3 nw, Vector3 ne, Vector3 se, Vector3 sw, Vector3 normal)
         {
@@ -36,7 +35,7 @@ namespace ACViewer.Model
             SW = sw;
             Normal = normal;
 
-            Center = new Vector3(nw.X, nw.Y, nw.Z);
+            var center = new Vector3(nw.X, nw.Y, nw.Z);
 
             if (facing == Facing.Front || Facing == Facing.Back)
             {
@@ -44,11 +43,11 @@ namespace ACViewer.Model
                 Height = Math.Abs(ne.Z - se.Z);
 
                 if (GfxObjMode)
-                    Center.X += Width * 0.5f;
+                    center.X += Width * 0.5f;
                 else
-                    Center.X -= Width * 0.5f;
+                    center.X -= Width * 0.5f;
 
-                Center.Z -= Height * 0.5f;
+                center.Z -= Height * 0.5f;
             }
             else if (facing == Facing.Left || Facing == Facing.Right)
             {
@@ -56,20 +55,22 @@ namespace ACViewer.Model
                 Height = Math.Abs(ne.Z - se.Z);
 
                 if (GfxObjMode)
-                    Center.Y -= Width * 0.5f;
+                    center.Y -= Width * 0.5f;
                 else
-                    Center.Y += Width * 0.5f;
+                    center.Y += Width * 0.5f;
 
-                Center.Z -= Height * 0.5f;
+                center.Z -= Height * 0.5f;
             }
             else if (facing == Facing.Top || Facing == Facing.Bottom)
             {
                 Width = Math.Abs(ne.X - nw.X);
                 Height = Math.Abs(ne.Y - se.Y);
 
-                Center.X -= Width * 0.5f;
-                Center.Y += Height * 0.5f;
+                center.X -= Width * 0.5f;
+                center.Y += Height * 0.5f;
             }
+
+            Center = center;
 
             Area = Width * Height;
         }

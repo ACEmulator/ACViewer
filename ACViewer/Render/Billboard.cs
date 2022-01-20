@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -6,11 +7,11 @@ namespace ACViewer.Render
 {
     public static class Billboard
     {
-        public static List<VertexPositionTexture> Vertices;
-        public static List<short> Indices;
+        public static List<VertexPositionTexture> Vertices { get; set; }
+        public static List<short> Indices { get; set; }
 
-        public static VertexBuffer VertexBuffer;
-        public static IndexBuffer IndexBuffer;
+        public static VertexBuffer VertexBuffer { get; set; }
+        public static IndexBuffer IndexBuffer { get; set; }
 
         static Billboard()
         {

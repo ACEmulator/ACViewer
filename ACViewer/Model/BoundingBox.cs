@@ -1,36 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Microsoft.Xna.Framework;
+
+using ACViewer.Enum;
 using ACViewer.Render;
 
 namespace ACViewer.Model
 {
-    public enum Facing
-    {
-        Front,
-        Back,
-        Left,
-        Right,
-        Top,
-        Bottom
-    };
-
     public class BoundingBox
     {
-        public Vector3 Mins;
-        public Vector3 Maxs;
+        public Vector3 Mins { get; set; }
+        public Vector3 Maxs { get; set; }
 
-        public Vector3 Size;
+        public Vector3 Size { get; set; }
         
-        public float MaxSize;
+        public float MaxSize { get; set; }
 
-        public Vector3 Center;
+        public Vector3 Center { get; set; }
 
-        public List<Vector3> Verts;
-        public List<Face> Faces;
+        public List<Vector3> Verts { get; set; }
+
+        public List<Face> Faces { get; set; }
 
         public BoundingBox(List<Vector3> verts)
         {
@@ -69,31 +61,35 @@ namespace ACViewer.Model
 
         public void GetMinMax(List<Vector3> verts)
         {
-            Mins = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
-            Maxs = new Vector3(float.MinValue, float.MinValue, float.MinValue);
+            var mins = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            var maxs = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
             foreach (var vert in verts)
             {
-                if (vert.X < Mins.X)
-                    Mins.X = vert.X;
-                if (vert.Y < Mins.Y)
-                    Mins.Y = vert.Y;
-                if (vert.Z < Mins.Z)
-                    Mins.Z = vert.Z;
+                if (vert.X < mins.X)
+                    mins.X = vert.X;
+                if (vert.Y < mins.Y)
+                    mins.Y = vert.Y;
+                if (vert.Z < mins.Z)
+                    mins.Z = vert.Z;
 
-                if (vert.X > Maxs.X)
-                    Maxs.X = vert.X;
-                if (vert.Y > Maxs.Y)
-                    Maxs.Y = vert.Y;
-                if (vert.Z > Maxs.Z)
-                    Maxs.Z = vert.Z;
+                if (vert.X > maxs.X)
+                    maxs.X = vert.X;
+                if (vert.Y > maxs.Y)
+                    maxs.Y = vert.Y;
+                if (vert.Z > maxs.Z)
+                    maxs.Z = vert.Z;
             }
+
+            Mins = mins;
+            Maxs = maxs;
 
             Size = new Vector3(Maxs.X - Mins.X, Maxs.Y - Mins.Y, Maxs.Z - Mins.Z);
 
             MaxSize = Math.Max(Math.Max(Size.X, Size.Y), Size.Z);
 
             var halfSize = Size * 0.5f;
+            
             Center = new Vector3(Mins.X + halfSize.X, Mins.Y + halfSize.Y, Mins.Z + halfSize.Z);
 
             //Console.WriteLine("Mins: " + Mins);
@@ -147,7 +143,7 @@ namespace ACViewer.Model
             var sorted = eval.OrderByDescending(i => i.Area).ToList();
 
             //foreach (var face in sorted)
-            //Console.WriteLine($"Face: {face.Facing} - Area: {face.Area}");
+                //Console.WriteLine($"Face: {face.Facing} - Area: {face.Area}");
 
             var mostArea = sorted[0];
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ACE.Server.Physics;
+﻿using ACE.Server.Physics;
 
 namespace ACViewer.Render
 {
@@ -11,8 +6,8 @@ namespace ACViewer.Render
     {
         // a physics part has 1 gfxobj
         // a gfxobj can have multiple polygons
-        public PhysicsPart PhysicsPart;
-        public R_GfxObj R_GfxObj;
+        public PhysicsPart PhysicsPart { get; set; }
+        public R_GfxObj R_GfxObj { get; set; }
 
         public R_PhysicsPart(PhysicsPart physicsPart)
         {

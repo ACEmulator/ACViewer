@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer.Render
@@ -14,11 +13,11 @@ namespace ACViewer.Render
         //public Matrix Projection;
 
         // per-draw call
-        public Texture2D Texture;
+        public Texture2D Texture { get; set; }
 
         // texture arrays for landscape
-        public Texture2D Overlays;
-        public Texture2D Alphas;
+        public Texture2D Overlays { get; set; }
+        public Texture2D Alphas { get; set; }
 
         public bool Equals(EffectParameters effectParameters)
         {

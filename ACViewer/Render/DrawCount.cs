@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ACViewer.Render
 {
     public static class DrawCount
     {
-        public static int NumSetup;
-        public static int NumCellStruct;
-        public static int NumLandblock;
-        public static int NumPhysicsObj;
-        public static int NumPointSprite;
-        public static int NumGfxObj;
+        public static int NumSetup { get; set; }
+        public static int NumCellStruct { get; set; }
+        public static int NumLandblock { get; set; }
+        public static int NumPhysicsObj { get; set; }
+        public static int NumPointSprite { get; set; }
+        public static int NumGfxObj { get; set; }
 
-        public static Stopwatch Timer;
-        public static double LastUpdate;
+        public static Stopwatch Timer { get; set; }
+        public static double LastUpdate { get; set; }
 
-        public static bool Output = false;
+        public static bool Output { get; set; }
 
         static DrawCount()
         {
