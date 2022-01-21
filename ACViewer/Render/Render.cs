@@ -145,7 +145,7 @@ namespace ACViewer.Render
         {
             NumParticlesThisFrame = 0;
             
-            if (!MainMenu.ShowParticles) return;
+            if (!MainMenu.ShowParticles || !ParticlesInitted) return;
 
             PerfTimer.Start(ProfilerSection.ParticleDraw);
 
