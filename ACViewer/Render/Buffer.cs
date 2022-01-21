@@ -5,6 +5,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using ACViewer.Enum;
+
 namespace ACViewer.Render
 {
     public class Buffer
@@ -583,7 +585,7 @@ namespace ACViewer.Render
             Effect.Parameters["xLightDirection"].SetValue(-Vector3.UnitZ);
             Effect.Parameters["xAmbient"].SetValue(0.5f);
 
-            PerfTimer.Start();
+            PerfTimer.Start(ProfilerSection.Draw);
             
             DrawTerrain();
 
@@ -593,7 +595,7 @@ namespace ACViewer.Render
             DrawBuffer(RB_Scenery);
             //DrawBuffer(RB_Instances);
 
-            PerfTimer.Stop();
+            PerfTimer.Stop(ProfilerSection.Draw);
         }
 
         public void DrawTerrain()

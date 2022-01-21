@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 using ACE.Entity.Enum;
 
@@ -11,6 +13,7 @@ using ACE.Server.Physics.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using ACViewer.Enum;
 using ACViewer.Model;
 using ACViewer.View;
 
@@ -78,9 +81,14 @@ namespace ACViewer.Render
 
         public bool ParticlesInitted;
 
+        public List<PhysicsObj> EmitterObjs;
+        public int Emitters;
+
         public void InitEmitters()
         {
             ParticlesInitted = false;
+            EmitterObjs = new List<PhysicsObj>();
+            Emitters = 0; 
             
             if (!MainMenu.ShowParticles) return;
 
@@ -98,76 +106,79 @@ namespace ACViewer.Render
                             //Console.WriteLine($"Creating emitter for {setup.Id:X8} in {staticObj.Position.ObjCellID:X8}");
                             var createParticleHooks = ParticleViewer.Instance.GetCreateParticleHooks(setup.DefaultScript, 1.0f);
 
+                            if (createParticleHooks.Count == 0) continue;
+
+                            EmitterObjs.Add(staticObj);
+
                             staticObj.destroy_particle_manager();
 
                             foreach (var createParticleHook in createParticleHooks)
-                                staticObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, new AFrame(createParticleHook.Offset), (int)createParticleHook.EmitterId);
-                        }
-                    }
-                }
-            }
-            ParticlesInitted = true;
-        }
-
-        public void UpdateEmitters()
-        {
-            if (!MainMenu.ShowParticles) return;
-
-            if (!GameView.Instance.IsActive) return;
-            
-            foreach (var landblock in LScape.Landblocks.Values)
-            {
-                foreach (var cell in landblock.LandCells.Values)
-                {
-                    foreach (var staticObj in cell.ObjectList.ToList())
-                    {
-                        if (staticObj.ParticleManager != null)
-                            staticObj.ParticleManager.UpdateParticles();
-                    }
-                }
-            }
-        }
-
-        public void DrawEmitters()
-        {
-            if (!MainMenu.ShowParticles) return;
-
-            foreach (var landblock in LScape.Landblocks.Values)
-            {
-                foreach (var cell in landblock.LandCells.Values)
-                {
-                    foreach (var staticObj in cell.ObjectList.ToList())
-                    {
-                        var num_emitters = staticObj.get_num_emitters();
-
-                        if (num_emitters <= 0) continue;
-
-                        foreach (var emitter in staticObj.ParticleManager.ParticleTable.Values)
-                        {
-                            if (emitter == null) continue;
-
-                            foreach (var part in emitter.Parts)
                             {
-                                if (part == null) continue;
-
-                                var gfxObjID = part.GfxObj.ID;
-                                var gfxObj = GfxObjCache.Get(gfxObjID);
-                                var texture = gfxObj.Textures[0];
-
-                                bool isPointSprite = gfxObj._gfxObj.SortCenter.NearZero() && gfxObj._gfxObj.Id != 0x0100283B;
-
-                                if (isPointSprite)
-                                    DrawParticle_PointSprite(gfxObj, part, texture);
-                                else
-                                    DrawParticle_GfxObj(gfxObj, part, texture);
+                                staticObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, new AFrame(createParticleHook.Offset), (int)createParticleHook.EmitterId);
+                                Emitters++;
                             }
                         }
                     }
                 }
             }
+            ParticlesInitted = true;
+            //Console.WriteLine($"Initted {EmitterObjs.Count:N0} emitter obs w/ {Emitters:N0} emitters");
+        }
+
+        public void UpdateEmitters()
+        {
+            if (!MainMenu.ShowParticles || !ParticlesInitted) return;
+
+            if (!GameView.Instance.IsActive) return;
+
+            PerfTimer.Start(ProfilerSection.ParticleUpdate);
+
+            Parallel.ForEach(EmitterObjs, emitterObj =>
+            {
+                emitterObj.ParticleManager.UpdateParticles();
+            });
+
+            PerfTimer.Stop(ProfilerSection.ParticleUpdate);
+        }
+
+        public void DrawEmitters()
+        {
+            NumParticlesThisFrame = 0;
+            
+            if (!MainMenu.ShowParticles) return;
+
+            PerfTimer.Start(ProfilerSection.ParticleDraw);
+
+            foreach (var emitterObj in EmitterObjs)
+            {
+                foreach (var emitter in emitterObj.ParticleManager.ParticleTable.Values)
+                {
+                    if (emitter == null) continue;
+
+                    foreach (var part in emitter.Parts)
+                    {
+                        if (part == null) continue;
+
+                        var gfxObjID = part.GfxObj.ID;
+                        var gfxObj = GfxObjCache.Get(gfxObjID);
+                        var texture = gfxObj.Textures[0];
+
+                        bool isPointSprite = gfxObj._gfxObj.SortCenter.NearZero() && gfxObj._gfxObj.Id != 0x0100283B;
+
+                        if (isPointSprite)
+                            DrawParticle_PointSprite(gfxObj, part, texture);
+                        else
+                            DrawParticle_GfxObj(gfxObj, part, texture);
+                    }
+                }
+            }
+
+            PerfTimer.Stop(ProfilerSection.ParticleDraw);
         }
 
         private static readonly float pointSpriteSize = 1.8f;   // guessing
+
+        public static int NumParticlesThisFrame;
 
         public void DrawParticle_PointSprite(GfxObj gfxObj, PhysicsPart part, Texture2D texture)
         {
@@ -202,6 +213,8 @@ namespace ACViewer.Render
 
                 GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleStrip, 0, 0, 2);
             }
+
+            NumParticlesThisFrame++;
         }
 
         public void DrawParticle_GfxObj(GfxObj gfxObj, PhysicsPart part, Texture2D texture)
@@ -246,6 +259,8 @@ namespace ACViewer.Render
                     GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexCnt / 3);*/
                 }
             }
+
+            NumParticlesThisFrame++;
         }
 
         // text rendering

@@ -212,7 +212,10 @@ namespace ACViewer
 
             Render.UpdateEmitters();
 
-            PerfTimer.Update();
+            if (PerfTimer.Update())
+            {
+                Console.WriteLine($"NumParticles: {ACViewer.Render.Render.NumParticlesThisFrame}");
+            }
         }
 
         public void ShowLocation()

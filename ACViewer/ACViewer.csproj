@@ -160,6 +160,7 @@
     <Compile Include="Enum\DatType.cs" />
     <Compile Include="Enum\Facing.cs" />
     <Compile Include="Enum\ModelType.cs" />
+    <Compile Include="Enum\ProfilerSection.cs" />
     <Compile Include="Enum\ViewMode.cs" />
     <Compile Include="Extensions\PositionExtensions.cs" />
     <Compile Include="Extensions\TextureExtensions.cs" />
