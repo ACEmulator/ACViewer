@@ -14,7 +14,7 @@ namespace ACViewer.Entity
         public List<TreeNode> BuildTree()
         {
             var mod = new TreeNode($"{_scriptMod.Mod}");
-            var script = new TreeNode($"{_scriptMod.ScriptId:X8}");
+            var script = new TreeNode($"{_scriptMod.ScriptId:X8}", clickable: true);
 
             return new List<TreeNode>() { mod, script };
         }

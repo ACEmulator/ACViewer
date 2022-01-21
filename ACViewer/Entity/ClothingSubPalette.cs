@@ -29,7 +29,7 @@ namespace ACViewer.Entity
                 treeNode.Add(ranges);
             }
 
-            var paletteSet = new TreeNode($"Palette Set: {_subPalette.PaletteSet:X8}");
+            var paletteSet = new TreeNode($"Palette Set: {_subPalette.PaletteSet:X8}", clickable: true);
             treeNode.Add(paletteSet);
 
             return treeNode;

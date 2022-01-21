@@ -13,15 +13,15 @@ namespace ACViewer.Entity
 
         public List<TreeNode> BuildTree()
         {
-            var id = new TreeNode($"ID: {_stab.Id:X8}");
-            var frame = new TreeNode($"Frame: {new Frame(_stab.Frame).ToString()}");
+            var id = new TreeNode($"ID: {_stab.Id:X8}", clickable: true);
+            var frame = new TreeNode($"Frame: {new Frame(_stab.Frame)}");
 
             return new List<TreeNode>() { id, frame };
         }
 
         public override string ToString()
         {
-            return $"ID: {_stab.Id:X8}, Frame: {new Frame(_stab.Frame).ToString()}";
+            return $"ID: {_stab.Id:X8}, Frame: {new Frame(_stab.Frame)}";
         }
     }
 }

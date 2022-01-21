@@ -19,10 +19,16 @@ namespace ACViewer.Entity
             var posSurface = new TreeNode($"PosSurface: {_polygon.PosSurface}");
             var negSurface = new TreeNode($"NegSurface: {_polygon.NegSurface}");
             var vertexIDs = new TreeNode($"Vertex IDs: {string.Join(", ", _polygon.VertexIds)}");
-            var posUVIndices = new TreeNode($"PosUVIndices: {string.Join(", ", _polygon.PosUVIndices)}");
-            var negUVIndices = new TreeNode($"NegUVIndices: {string.Join(", ", _polygon.NegUVIndices)}");
 
-            return new List<TreeNode>() { stippling, cullMode, posSurface, negSurface, vertexIDs, posUVIndices, negUVIndices };
+            var treeView = new List<TreeNode>() { stippling, cullMode, posSurface, negSurface, vertexIDs };
+
+            if (_polygon.PosUVIndices.Count > 0)
+                treeView.Add(new TreeNode($"PosUVIndices: {string.Join(", ", _polygon.PosUVIndices)}"));
+
+            if (_polygon.NegUVIndices.Count > 0)
+                treeView.Add(new TreeNode($"NegUVIndices: {string.Join(", ", _polygon.NegUVIndices)}"));
+
+            return treeView;
         }
     }
 }

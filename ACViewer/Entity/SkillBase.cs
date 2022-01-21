@@ -25,7 +25,7 @@ namespace ACViewer.Entity
 
             treeNode.Add(new TreeNode($"Name: {_skillBase.Name}"));
             treeNode.Add(new TreeNode($"Description: {_skillBase.Description}"));
-            treeNode.Add(new TreeNode($"IconId: 0x{_skillBase.IconId:X8}"));
+            treeNode.Add(new TreeNode($"Icon: {_skillBase.IconId:X8}", clickable: true));
             treeNode.Add(new TreeNode($"TrainedCost: {_skillBase.TrainedCost}"));
             treeNode.Add(new TreeNode($"SpecializedCost: {_skillBase.SpecializedCost}"));
             treeNode.Add(new TreeNode($"Category: {(SkillCategory)_skillBase.Category}"));

@@ -16,7 +16,7 @@ namespace ACViewer.FileTypes
             var treeView = new TreeNode($"{_paletteSet.Id:X8}");
 
             foreach (var paletteID in _paletteSet.PaletteList)
-                treeView.Items.Add(new TreeNode($"{paletteID:X8}"));
+                treeView.Items.Add(new TreeNode($"{paletteID:X8}", clickable: true));
 
             return treeView;
         }

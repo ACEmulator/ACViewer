@@ -18,7 +18,7 @@ namespace ACViewer.Entity
             foreach (var sound in _soundData.Data)
             {
                 var soundTree = new SoundTableData(sound).BuildTree();
-                var soundNode = new TreeNode(soundTree[0].Name.Replace("Sound ID: ", ""));
+                var soundNode = new TreeNode(soundTree[0].Name.Replace("Sound ID: ", ""), clickable: true);
                 soundTree.RemoveAt(0);
                 soundNode.Items.AddRange(soundTree);
                 soundTable.Items.Add(soundNode);

@@ -15,7 +15,7 @@ namespace ACViewer.Entity.AnimationHooks
 
             if (_hook is ACE.DatLoader.Entity.AnimationHooks.SoundTweakedHook _soundTweakedHook)
             {
-                treeNode.Add(new TreeNode($"SoundID: {_soundTweakedHook.SoundID:X8}"));
+                treeNode.Add(new TreeNode($"SoundID: {_soundTweakedHook.SoundID:X8}", clickable: true));
                 treeNode.Add(new TreeNode($"Priority: {_soundTweakedHook.Priority}"));
                 treeNode.Add(new TreeNode($"Probability: {_soundTweakedHook.Probability}"));
                 treeNode.Add(new TreeNode($"Volume: {_soundTweakedHook.Volume}"));

@@ -232,6 +232,7 @@
     <Compile Include="FileTypes\TabooTable.cs" />
     <Compile Include="FileTypes\Texture.cs" />
     <Compile Include="FileTypes\XpTable.cs" />
+    <Compile Include="History.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="MapViewer.cs" />
     <Compile Include="ModelViewer.cs" />

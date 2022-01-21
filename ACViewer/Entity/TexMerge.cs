@@ -17,16 +17,16 @@ namespace ACViewer.Entity
 
             var cornerTerrainMaps = new TreeNode("CornerTerrainMap:");
             foreach (var cornerTerrainMap in _texMerge.CornerTerrainMaps)
-                cornerTerrainMaps.Items.Add(new TreeNode(new TerrainAlphaMap(cornerTerrainMap).ToString()));
+                cornerTerrainMaps.Items.Add(new TreeNode(new TerrainAlphaMap(cornerTerrainMap).ToString(), clickable: true));
 
             var sideTerrainMaps = new TreeNode("SideTerrainMap:");
             foreach (var sideTerrainMap in _texMerge.SideTerrainMaps)
-                sideTerrainMaps.Items.Add(new TreeNode(new TerrainAlphaMap(sideTerrainMap).ToString()));
+                sideTerrainMaps.Items.Add(new TreeNode(new TerrainAlphaMap(sideTerrainMap).ToString(), clickable: true));
 
             // roadalphamap
             var roadAlphaMaps = new TreeNode("RoadAlphaMap:");
             foreach (var roadAlphaMap in _texMerge.RoadMaps)
-                roadAlphaMaps.Items.Add(new TreeNode(new RoadAlphaMap(roadAlphaMap).ToString()));
+                roadAlphaMaps.Items.Add(new TreeNode(new RoadAlphaMap(roadAlphaMap).ToString(), clickable: true));
 
             var terrainDescs = new TreeNode("TMTerrainDesc:");
             for (var i = 0; i < _texMerge.TerrainDesc.Count; i++)

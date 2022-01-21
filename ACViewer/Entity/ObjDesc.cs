@@ -17,7 +17,7 @@ namespace ACViewer.Entity
 
             if (_objDesc.PaletteID != 0)
             {
-                var paletteID = new TreeNode($"Palette ID: {_objDesc.PaletteID:X8}");
+                var paletteID = new TreeNode($"Palette ID: {_objDesc.PaletteID:X8}", clickable: true);
                 treeNode.Add(paletteID);
             }
 
@@ -39,7 +39,7 @@ namespace ACViewer.Entity
             {
                 var textureChanges = new TreeNode("Texture Changes:");
                 foreach (var textureMapChange in _objDesc.TextureChanges)
-                    textureChanges.Items.Add(new TreeNode(new TextureMapChange(textureMapChange).ToString()));
+                    textureChanges.Items.Add(new TreeNode(new TextureMapChange(textureMapChange).ToString(), clickable: true));
 
                 treeNode.Add(textureChanges);
             }
@@ -48,7 +48,7 @@ namespace ACViewer.Entity
             {
                 var animChanges = new TreeNode("AnimPart Changes:");
                 foreach (var animChange in _objDesc.AnimPartChanges)
-                    animChanges.Items.Add(new TreeNode(new AnimPartChange(animChange).ToString()));
+                    animChanges.Items.Add(new TreeNode(new AnimPartChange(animChange).ToString(), clickable: true));
 
                 treeNode.Add(animChanges);
             }

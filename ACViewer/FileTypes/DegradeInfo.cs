@@ -18,7 +18,7 @@ namespace ACViewer.FileTypes
             foreach (var degrade in _degrade.Degrades)
             {
                 var degradeTree = new GfxObjInfo(degrade).BuildTree();
-                var degradeNode = new TreeNode($"{degradeTree[0].Name.Replace("ID: ", "")}");
+                var degradeNode = new TreeNode($"{degradeTree[0].Name.Replace("ID: ", "")}", clickable: true);
                 degradeTree.RemoveAt(0);
                 degradeNode.Items.AddRange(degradeTree);
                 treeView.Items.Add(degradeNode);

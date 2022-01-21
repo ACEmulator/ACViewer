@@ -16,7 +16,7 @@ namespace ACViewer.Entity
             var scriptTable = new TreeNode("ScriptMods:");
 
             foreach (var scriptMod in _data.Scripts)
-                scriptTable.Items.Add(new TreeNode($"{new ScriptMod(scriptMod)}"));
+                scriptTable.Items.Add(new TreeNode($"{new ScriptMod(scriptMod)}", clickable: true));
 
             return scriptTable.Items;
         }

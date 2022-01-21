@@ -14,7 +14,7 @@ namespace ACViewer.Entity
         public List<TreeNode> BuildTree()
         {
             var partIdx = new TreeNode($"PartIdx: {_animChange.PartIndex}");
-            var partID = new TreeNode($"PartID: {_animChange.PartID:X8}");
+            var partID = new TreeNode($"PartID: {_animChange.PartID:X8}", clickable: true);
 
             return new List<TreeNode>() { partIdx, partID };
         }

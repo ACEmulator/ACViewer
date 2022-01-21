@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 using ACE.Entity.Enum;
 
@@ -26,7 +27,7 @@ namespace ACViewer.FileTypes
 
             var parts = new TreeNode("Parts:");
             foreach (var part in _setup.Parts)
-                parts.Items.Add(new TreeNode($"{part:X8}"));
+                parts.Items.Add(new TreeNode($"{part:X8}", clickable: true));
 
             treeView.Items.Add(parts);
 
@@ -51,9 +52,9 @@ namespace ACViewer.FileTypes
             if (_setup.HoldingLocations.Count > 0)
             {
                 var holdingLocations = new TreeNode("Holding locations:");
-                foreach (var kvp in _setup.HoldingLocations)
+                foreach (var kvp in _setup.HoldingLocations.OrderBy(i => i.Key))
                 {
-                    var holdingLocation = new TreeNode($"{kvp.Key} - {new LocationType(kvp.Value)}");
+                    var holdingLocation = new TreeNode($"{kvp.Key} - {(ParentLocation)kvp.Key} - {new LocationType(kvp.Value)}");
                     holdingLocations.Items.Add(holdingLocation);
                 }
                 treeView.Items.Add(holdingLocations);
@@ -71,9 +72,9 @@ namespace ACViewer.FileTypes
             }
 
             var placementFrames = new TreeNode("Placement frames:");
-            foreach (var kvp in _setup.PlacementFrames)
+            foreach (var kvp in _setup.PlacementFrames.OrderBy(i => i.Key))
             {
-                var placementFrame = new TreeNode($"{kvp.Key}");
+                var placementFrame = new TreeNode($"{kvp.Key} - {(Placement)kvp.Key}");
                 placementFrame.Items.AddRange(new PlacementType(kvp.Value).BuildTree());
 
                 placementFrames.Items.Add(placementFrame);
@@ -121,19 +122,19 @@ namespace ACViewer.FileTypes
             }
 
             if (_setup.DefaultAnimation != 0)
-                treeView.Items.Add(new TreeNode($"Default animation: {_setup.DefaultAnimation:X8}"));
+                treeView.Items.Add(new TreeNode($"Default animation: {_setup.DefaultAnimation:X8}", clickable: true));
 
             if (_setup.DefaultScript != 0)
-                treeView.Items.Add(new TreeNode($"Default script: {_setup.DefaultScript:X8}"));
+                treeView.Items.Add(new TreeNode($"Default script: {_setup.DefaultScript:X8}", clickable: true));
 
             if (_setup.DefaultMotionTable != 0)
-                treeView.Items.Add(new TreeNode($"Default motion table: {_setup.DefaultMotionTable:X8}"));
+                treeView.Items.Add(new TreeNode($"Default motion table: {_setup.DefaultMotionTable:X8}", clickable: true));
 
             if (_setup.DefaultSoundTable != 0)
-                treeView.Items.Add(new TreeNode($"Default sound table: {_setup.DefaultSoundTable:X8}"));
+                treeView.Items.Add(new TreeNode($"Default sound table: {_setup.DefaultSoundTable:X8}", clickable: true));
 
             if (_setup.DefaultScriptTable != 0)
-                treeView.Items.Add(new TreeNode($"Default script table: {_setup.DefaultScriptTable:X8}"));
+                treeView.Items.Add(new TreeNode($"Default script table: {_setup.DefaultScriptTable:X8}", clickable: true));
 
             return treeView;
         }

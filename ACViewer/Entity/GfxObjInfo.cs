@@ -13,7 +13,7 @@ namespace ACViewer.Entity
 
         public List<TreeNode> BuildTree()
         {
-            var id = new TreeNode($"ID: {_gfxObjInfo.Id:X8}");
+            var id = new TreeNode($"ID: {_gfxObjInfo.Id:X8}", clickable: true);
             var degradeMode = new TreeNode($"DegradeMode: {_gfxObjInfo.DegradeMode}");
             var minDist = new TreeNode($"MinDist: {_gfxObjInfo.MinDist}");
             var idealDist = new TreeNode($"IdealDist: {_gfxObjInfo.IdealDist}");

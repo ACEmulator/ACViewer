@@ -13,7 +13,7 @@ namespace ACViewer.Entity
 
         public List<TreeNode> BuildTree()
         {
-            var ambientSoundTableID = new TreeNode($"Ambient Sound Table ID: {_stbDesc.STBId:X8}");
+            var ambientSoundTableID = new TreeNode($"Ambient Sound Table ID: {_stbDesc.STBId:X8}", clickable: true);
 
             var ambientSounds = new TreeNode("Ambient Sounds:");
             for (var i = 0; i < _stbDesc.AmbientSounds.Count; i++)
