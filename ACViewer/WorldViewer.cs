@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -99,6 +100,7 @@ namespace ACViewer
             }
 
             Render.Buffer.BuildBuffers();
+            Render.InitEmitters();
 
             if (FileExplorer.Instance.TeleportMode)
             {
@@ -208,7 +210,9 @@ namespace ACViewer
             if (Camera != null)
                 Camera.Update(time);
 
-            DrawCount.Update();
+            Render.UpdateEmitters();
+
+            PerfTimer.Update();
         }
 
         public void ShowLocation()
@@ -220,7 +224,7 @@ namespace ACViewer
         public void Draw(GameTime time)
         {
             //Render.Draw(Landblocks);
-            Render.Draw(null);
+            Render.Draw();
 
             if (MainMenu.ShowHUD)
                 Render.DrawHUD();

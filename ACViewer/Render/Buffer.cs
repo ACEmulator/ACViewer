@@ -12,7 +12,7 @@ namespace ACViewer.Render
         public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
         public Dictionary<uint, TerrainBatch> TerrainGroups { get; set; }   // key: surfnum
-        public Dictionary<uint, InstanceBatch> RB_Instances { get; set; }   // key: setup id
+        //public Dictionary<uint, InstanceBatch> RB_Instances { get; set; }   // key: setup id
 
         //public Dictionary<uint, RenderBatch> RB_EnvCell { get; set; };    // key: surface id
         public Dictionary<TextureSet, InstanceBatch> RB_EnvCell { get; set; }
@@ -36,7 +36,7 @@ namespace ACViewer.Render
         public void Init()
         {
             TerrainGroups = new Dictionary<uint, TerrainBatch>();
-            RB_Instances = new Dictionary<uint, InstanceBatch>();
+            //RB_Instances = new Dictionary<uint, InstanceBatch>();
             //RB_EnvCell = new Dictionary<uint, RenderBatch>();
             RB_EnvCell = new Dictionary<TextureSet, InstanceBatch>();
             RB_StaticObjs = new Dictionary<uint, RenderBatch>();
@@ -52,7 +52,7 @@ namespace ACViewer.Render
             foreach (var batch in TerrainGroups.Values)
                 batch.Dispose();
 
-            ClearBuffer(RB_Instances);
+            //ClearBuffer(RB_Instances);
             ClearBuffer(RB_EnvCell);
             ClearBuffer(RB_StaticObjs);
             ClearBuffer(RB_Buildings);
@@ -258,7 +258,7 @@ namespace ACViewer.Render
         {
             BuildTerrain();
 
-            BuildBuffer(RB_Instances);
+            //BuildBuffer(RB_Instances);
             BuildBuffer(RB_StaticObjs);
             BuildBuffer(RB_Buildings);
             BuildBuffer(RB_EnvCell);
@@ -492,7 +492,7 @@ namespace ACViewer.Render
             var sceneryCnt = QueryBuffer(RB_Scenery, out var nDrawCnt);
             //var envCellCnt = QueryBuffer(RB_EnvCell);
             var envCellCnt = QueryBuffer(RB_EnvCell, out var eDrawCnt);
-            var instanceCnt = QueryBuffer(RB_Instances, out var drawCnt);
+            //var instanceCnt = QueryBuffer(RB_Instances, out var drawCnt);
 
             Console.WriteLine($"Terrain: {terrainCnt:N0} / {TerrainGroups.Count:N0}");
             Console.WriteLine($"StaticObjs: {staticObjCnt:N0} / {RB_StaticObjs.Count:N0}");
@@ -503,7 +503,8 @@ namespace ACViewer.Render
             Console.WriteLine($"Scenery: {sceneryCnt:N0} / {RB_Scenery.Count:N0} / {nDrawCnt:N0}");
             //Console.WriteLine($"EnvCells: {envCellCnt:N0} / {RB_EnvCell.Count:N0}");
             Console.WriteLine($"EnvCells: {envCellCnt:N0} / {RB_EnvCell.Count:N0} / {eDrawCnt:N0}");
-            Console.WriteLine($"Instances: {instanceCnt:N0} / {RB_Instances.Count:N0} / {drawCnt:N0}");
+            //Console.WriteLine($"Instances: {instanceCnt:N0} / {RB_Instances.Count:N0} / {drawCnt:N0}");
+            Console.WriteLine();
         }
 
         public int QueryBuffer(Dictionary<uint, RenderBatch> buffer)
@@ -582,13 +583,17 @@ namespace ACViewer.Render
             Effect.Parameters["xLightDirection"].SetValue(-Vector3.UnitZ);
             Effect.Parameters["xAmbient"].SetValue(0.5f);
 
+            PerfTimer.Start();
+            
             DrawTerrain();
 
             DrawBuffer(RB_StaticObjs);
             DrawBuffer(RB_Buildings);
             DrawBuffer(RB_EnvCell, true);
             DrawBuffer(RB_Scenery);
-            DrawBuffer(RB_Instances);
+            //DrawBuffer(RB_Instances);
+
+            PerfTimer.Stop();
         }
 
         public void DrawTerrain()

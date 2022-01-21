@@ -306,7 +306,7 @@ namespace ACViewer.Render
                 pass.Apply();
 
                 //GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, Indices.Count / 3);
-                DrawCount.NumLandblock++;
+                //PerfTimer.NumLandblock++;
             }
         }
 

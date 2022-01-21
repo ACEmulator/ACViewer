@@ -262,7 +262,7 @@
     <Compile Include="Physics\Common\TextureMergeInfo.cs" />
     <Compile Include="Physics\Common\TMTerrainDesc.cs" />
     <Compile Include="Render\Buffer.cs" />
-    <Compile Include="Render\DrawCount.cs" />
+    <Compile Include="Render\PerfTimer.cs" />
     <Compile Include="Render\EffectParameters.cs" />
     <Compile Include="Render\TextureSet.cs" />
     <Compile Include="Render\InstanceBatch.cs" />
