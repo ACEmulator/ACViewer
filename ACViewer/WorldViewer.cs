@@ -173,6 +173,7 @@ namespace ACViewer
             }
 
             Render.Buffer.BuildBuffers();
+            Render.InitEmitters();
 
             Camera.InitLandblock(centerBlock);
             GameView.ViewMode = ViewMode.World;
