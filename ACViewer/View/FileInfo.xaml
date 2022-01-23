@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <!-- <VirtualizingStackPanel.VirtualizationMode="Recycling" -->
-        <TreeView ItemsSource="{Binding Path=Info}" ScrollViewer.VerticalScrollBarVisibility="Auto" VirtualizingStackPanel.IsVirtualizing="True">
+        <TreeView Name="FileInfo_TreeView" ItemsSource="{Binding Path=Info}" ScrollViewer.VerticalScrollBarVisibility="Auto" VirtualizingStackPanel.IsVirtualizing="True">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type entity:TreeNode}" ItemsSource="{Binding Path=Items}">
                     <TreeViewItem Header="{Binding Path=Name}" />
@@ -23,6 +23,14 @@
                     <EventSetter Event="MouseLeave" Handler="TreeViewItem_MouseLeave"/>
                 </Style>
             </TreeView.ItemContainerStyle>
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Expand All" Click="TreeView_Expand"/>
+                    <MenuItem Header="Collapse All" Click="TreeView_Collapse"/>
+                    <Separator />
+                    <MenuItem Header="Copy All" Click="TreeView_Copy"/>
+                </ContextMenu>
+            </TreeView.ContextMenu>
         </TreeView>
     </Grid>
 </UserControl>
