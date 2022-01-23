@@ -2,19 +2,24 @@
 
 using Microsoft.Xna.Framework.Graphics;
 
+using ACE.Entity.Enum;
+
 namespace ACViewer.Render
 {
-    public class TextureFormat: IEquatable<TextureFormat>
+    public class ParticleTextureFormat : IEquatable<ParticleTextureFormat>
     {
         public SurfaceFormat SurfaceFormat { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public bool IsAdditive { get; set; }
 
-        public TextureFormat(SurfaceFormat surfaceFormat, int width, int height)
+        public ParticleTextureFormat(SurfaceFormat surfaceFormat, SurfaceType surfaceType, int width, int height)
         {
             SurfaceFormat = surfaceFormat;
+            //SurfaceType = surfaceType;
             Width = width;
             Height = height;
+            IsAdditive = surfaceType.HasFlag(SurfaceType.Additive);
         }
 
         public float GetBytesPerPixel()
@@ -30,9 +35,9 @@ namespace ACViewer.Render
             }
         }
 
-        public bool Equals(TextureFormat textureFormat)
+        public bool Equals(ParticleTextureFormat textureFormat)
         {
-            return SurfaceFormat == textureFormat.SurfaceFormat && Width == textureFormat.Width && Height == textureFormat.Height;
+            return SurfaceFormat == textureFormat.SurfaceFormat && Width == textureFormat.Width && Height == textureFormat.Height && IsAdditive == textureFormat.IsAdditive;
         }
 
         public override int GetHashCode()
@@ -40,15 +45,17 @@ namespace ACViewer.Render
             var hash = 0;
 
             hash = (hash * 397) ^ SurfaceFormat.GetHashCode();
+            //hash = (hash * 397) ^ SurfaceType.GetHashCode();
             hash = (hash * 397) ^ Width.GetHashCode();
             hash = (hash * 397) ^ Height.GetHashCode();
+            hash = (hash * 397) ^ IsAdditive.GetHashCode();
 
             return hash;
         }
 
         public override string ToString()
         {
-            return $"SurfaceFormat: {SurfaceFormat}, Width: {Width}, Height: {Height}";
+            return $"SurfaceFormat: {SurfaceFormat}, Width: {Width}, Height: {Height}, IsAdditive: {IsAdditive}";
         }
     }
 }

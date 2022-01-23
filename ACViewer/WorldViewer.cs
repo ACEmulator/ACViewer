@@ -214,7 +214,7 @@ namespace ACViewer
 
             if (PerfTimer.Update())
             {
-                Console.WriteLine($"NumParticles: {ACViewer.Render.Render.NumParticlesThisFrame}");
+                //Console.WriteLine($"NumParticles: {ACViewer.Render.Render.NumParticlesThisFrame}, ParticleTextures: {ACViewer.Render.Render.ParticleTexturesThisFrame.Count}");
             }
         }
 

@@ -76,19 +76,20 @@ namespace ACViewer.Render
             //landblock.Draw();
             Buffer.Draw();
 
-            DrawEmitters();
+            //DrawEmitters_Naive();
+            DrawEmitters_Batch();
         }
 
         public bool ParticlesInitted;
 
-        public List<PhysicsObj> EmitterObjs;
-        public int Emitters;
+        public List<PhysicsObj> EmitterParentObjs;
+        public int EmitterParents;
 
         public void InitEmitters()
         {
             ParticlesInitted = false;
-            EmitterObjs = new List<PhysicsObj>();
-            Emitters = 0; 
+            EmitterParentObjs = new List<PhysicsObj>();
+            EmitterParents = 0; 
             
             if (!MainMenu.ShowParticles) return;
 
@@ -108,20 +109,25 @@ namespace ACViewer.Render
 
                             if (createParticleHooks.Count == 0) continue;
 
-                            EmitterObjs.Add(staticObj);
+                            EmitterParentObjs.Add(staticObj);
 
                             staticObj.destroy_particle_manager();
 
                             foreach (var createParticleHook in createParticleHooks)
                             {
-                                staticObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, new AFrame(createParticleHook.Offset), (int)createParticleHook.EmitterId);
-                                Emitters++;
+                                var emitterIdx = staticObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, new AFrame(createParticleHook.Offset), (int)createParticleHook.EmitterId);
+                                var emitter = staticObj.ParticleManager.ParticleTable[emitterIdx];
+                                Buffer.AddEmitter(emitter);
+                                EmitterParents++;
                             }
                         }
                     }
                 }
             }
+
+            Buffer.BuildParticleBuffer();
             ParticlesInitted = true;
+
             //Console.WriteLine($"Initted {EmitterObjs.Count:N0} emitter obs w/ {Emitters:N0} emitters");
         }
 
@@ -133,23 +139,47 @@ namespace ACViewer.Render
 
             PerfTimer.Start(ProfilerSection.ParticleUpdate);
 
-            Parallel.ForEach(EmitterObjs, emitterObj =>
+            Parallel.ForEach(EmitterParentObjs, emitterObj =>
             {
                 emitterObj.ParticleManager.UpdateParticles();
             });
 
+            Buffer.UpdateParticles();
+
             PerfTimer.Stop(ProfilerSection.ParticleUpdate);
         }
 
-        public void DrawEmitters()
+        public static int NumParticlesThisFrame { get; set; }
+
+        public static HashSet<Texture2D> ParticleTexturesThisFrame { get; set; }
+
+        public void DrawEmitters_Batch()
         {
-            NumParticlesThisFrame = 0;
-            
             if (!MainMenu.ShowParticles || !ParticlesInitted) return;
+
+            Effect.Parameters["xCamPos"].SetValue(Camera.Position);
+            Effect.Parameters["xCamUp"].SetValue(Camera.Up);
 
             PerfTimer.Start(ProfilerSection.ParticleDraw);
 
-            foreach (var emitterObj in EmitterObjs)
+            Buffer.DrawParticles();
+
+            PerfTimer.Stop(ProfilerSection.ParticleDraw);
+        }
+        
+        public void DrawEmitters_Naive()
+        {
+            NumParticlesThisFrame = 0;
+            ParticleTexturesThisFrame = new HashSet<Texture2D>();
+            
+            if (!MainMenu.ShowParticles || !ParticlesInitted) return;
+
+            Effect.Parameters["xCamPos"].SetValue(Camera.Position);
+            Effect.Parameters["xCamUp"].SetValue(Camera.Up);
+
+            PerfTimer.Start(ProfilerSection.ParticleDraw);
+
+            foreach (var emitterObj in EmitterParentObjs)
             {
                 foreach (var emitter in emitterObj.ParticleManager.ParticleTable.Values)
                 {
@@ -162,6 +192,8 @@ namespace ACViewer.Render
                         var gfxObjID = part.GfxObj.ID;
                         var gfxObj = GfxObjCache.Get(gfxObjID);
                         var texture = gfxObj.Textures[0];
+
+                        ParticleTexturesThisFrame.Add(texture);
 
                         bool isPointSprite = gfxObj._gfxObj.SortCenter.NearZero() && gfxObj._gfxObj.Id != 0x0100283B;
 
@@ -177,8 +209,6 @@ namespace ACViewer.Render
         }
 
         private static readonly float pointSpriteSize = 1.8f;   // guessing
-
-        public static int NumParticlesThisFrame;
 
         public void DrawParticle_PointSprite(GfxObj gfxObj, PhysicsPart part, Texture2D texture)
         {
@@ -196,8 +226,6 @@ namespace ACViewer.Render
             Effect.CurrentTechnique = Effect.Techniques["PointSprite"];
             Effect.Parameters["xWorld"].SetValue(translateWorld);
             Effect.Parameters["xTextures"].SetValue(texture);
-            Effect.Parameters["xCamPos"].SetValue(Camera.Position);
-            Effect.Parameters["xCamUp"].SetValue(Camera.Up);
             Effect.Parameters["xPointSpriteSizeX"].SetValue(part.GfxObjScale.X * gfxObj.BoundingBox.MaxSize * pointSpriteSize);
             Effect.Parameters["xPointSpriteSizeY"].SetValue(part.GfxObjScale.Y * gfxObj.BoundingBox.MaxSize * pointSpriteSize);
             Effect.Parameters["xOpacity"].SetValue(1.0f - part.CurTranslucency);

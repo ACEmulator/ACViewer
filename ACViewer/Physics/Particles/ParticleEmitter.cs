@@ -4,7 +4,8 @@ using System.Numerics;
 using ACE.Entity.Enum;
 using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
-using ACE.Server.Physics.Extensions;
+
+using ACViewer.Render;
 
 namespace ACE.Server.Physics
 {
@@ -28,6 +29,10 @@ namespace ACE.Server.Physics
         public Vector3 LastEmitOffset;
         public bool Stopped;
         public double LastUpdateTime;
+
+        // custom for ACViewer renderer
+        public ParticleBatchDraw RenderBatch;
+        public int BatchIdx;
 
         public ParticleEmitter(PhysicsObj parent)
         {
@@ -62,6 +67,11 @@ namespace ACE.Server.Physics
                                               
             Parts[i] = null;
             NumParticles--;
+
+            // acviewer custom
+            if (RenderBatch != null)
+                RenderBatch.DestroyParticle(this, i);
+
             return true;
         }
 
@@ -84,7 +94,7 @@ namespace ACE.Server.Physics
             NumParticles++;
             TotalEmitted++;
 
-            LastEmitOffset = PhysicsObj.Position.Frame.Origin.Copy();
+            LastEmitOffset = PhysicsObj.Position.Frame.Origin;
             LastEmitTime = PhysicsTimer.CurrentTime;
         }
 
@@ -116,7 +126,7 @@ namespace ACE.Server.Physics
                 return false;
             }
             PhysicsObj = PhysicsObj.makeParticleObject(Info.MaxParticles, Info.SortingSphere);
-            LastEmitOffset = PhysicsObj.Position.Frame.Origin.Copy();
+            LastEmitOffset = PhysicsObj.Position.Frame.Origin;
             Parts = PhysicsObj.PartArray.Parts;
             PartStorage = new PhysicsPart[Info.MaxParticles];
             for (var i = 0; i < Info.MaxParticles; i++)
@@ -152,6 +162,10 @@ namespace ACE.Server.Physics
             var randomC = Info.GetRandomC();
 
             Particles[nextIdx].Init(Info, Parent, PartIndex, ParentOffset, Parts[nextIdx], randomOffset, firstParticle, randomA, randomB, randomC);
+
+            // acviewer custom
+            if (RenderBatch != null)
+                RenderBatch.SpawnParticle(this, nextIdx);
 
             PhysicsObj.AddPartToShadowCells(Parts[nextIdx]);
 
@@ -240,6 +254,11 @@ namespace ACE.Server.Physics
 
                             var firstParticle = Info.TotalParticles == 0 && Info.TotalSeconds == 0.0f;
                             Particles[i].Update(Info.ParticleType, firstParticle, part, frame);
+
+                            // acviewer custom
+                            if (RenderBatch != null)
+                                RenderBatch.UpdateParticle(this, i);
+
                             KillParticle(i);
                         }
                     }

@@ -5,6 +5,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using ACE.Server.Physics;
+
 using ACViewer.Enum;
 
 namespace ACViewer.Render
@@ -28,6 +30,8 @@ namespace ACViewer.Render
         //public Dictionary<uint, RenderBatch> RB_Scenery { get; set; }
         public Dictionary<uint, InstanceBatch> RB_Scenery { get; set; }
 
+        public ParticleBatch RB_Particles { get; set; }
+
         public static Effect Effect { get => Render.Effect; }
 
         public Buffer()
@@ -47,6 +51,7 @@ namespace ACViewer.Render
             RB_Buildings = new Dictionary<uint, InstanceBatch>();
             //RB_Scenery = new Dictionary<uint, RenderBatch>();
             RB_Scenery = new Dictionary<uint, InstanceBatch>();
+            RB_Particles = new ParticleBatch();
         }
 
         public void ClearBuffer()
@@ -59,6 +64,7 @@ namespace ACViewer.Render
             ClearBuffer(RB_StaticObjs);
             ClearBuffer(RB_Buildings);
             ClearBuffer(RB_Scenery);
+            ClearBuffer(RB_Particles);
 
             Init();
         }
@@ -79,6 +85,11 @@ namespace ACViewer.Render
         {
             foreach (var batch in batches.Values)
                 batch.Dispose();
+        }
+
+        public void ClearBuffer(ParticleBatch batch)
+        {
+            batch.Dispose();
         }
 
         public void AddOutdoor(R_Landblock landblock)
@@ -215,6 +226,20 @@ namespace ACViewer.Render
                     AddStaticObj(staticObj, RB_StaticObjs);
                     //AddInstanceObj(staticObj, RB_StaticObjs);
             }
+        }
+
+        public void AddEmitter(ParticleEmitter emitter)
+        {
+            var setupID = emitter.PhysicsObj.PartArray.Setup._dat.Id;
+
+            //Console.WriteLine($"AddEmitterObj: {setupID:X8}");
+
+            if (setupID != 0)
+            {
+                Console.WriteLine($"Unhandled particle emitter {emitter.Info._info.Id:X8} for GfxObj {setupID:X8}");
+                return;
+            }
+            RB_Particles.AddEmitter(emitter);
         }
 
         public static readonly Matrix Buildings = Matrix.CreateTranslation(Vector3.UnitZ * 0.01f);
@@ -567,6 +592,11 @@ namespace ACViewer.Render
                 batch.OnCompleted();
         }
 
+        public void BuildParticleBuffer()
+        {
+            RB_Particles.OnCompleted();
+        }
+
         public static void SetRasterizerState(CullMode cullMode = CullMode.CullClockwiseFace)
         {
             var rs = new RasterizerState();
@@ -641,6 +671,20 @@ namespace ACViewer.Render
 
             foreach (var batch in batches.Values)
                 batch.Draw();
+        }
+
+        public void UpdateParticles()
+        {
+            RB_Particles.UpdateBuffers();
+        }
+
+        public void DrawParticles()
+        {
+            SetRasterizerState(CullMode.None);
+
+            Effect.CurrentTechnique = Effect.Techniques["ParticleInstance"];
+
+            RB_Particles.Draw();
         }
     }
 }
