@@ -139,6 +139,9 @@ namespace ACViewer.Render
 
             PerfTimer.Start(ProfilerSection.ParticleUpdate);
 
+            //foreach (var emitterObj in EmitterParentObjs)
+                //emitterObj.ParticleManager.UpdateParticles();
+            
             Parallel.ForEach(EmitterParentObjs, emitterObj =>
             {
                 emitterObj.ParticleManager.UpdateParticles();

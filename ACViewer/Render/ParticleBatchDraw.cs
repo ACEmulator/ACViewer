@@ -147,7 +147,6 @@ namespace ACViewer.Render
             var instanceIdx = emitter.BatchIdx + particleIdx;
 
             Instances_[instanceIdx].ScaleOpacityActive = Vector3.Zero;
-
         }
 
         public void UpdateInstanceBuffer()
