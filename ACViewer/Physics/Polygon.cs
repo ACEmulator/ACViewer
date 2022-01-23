@@ -14,6 +14,7 @@ namespace ACE.Server.Physics
         public List<short> VertexIDs;
         //public List<Vector2> Screen;
         public int PolyID;              // not directly in this DAT structure
+        public int NumPoints;
         public StipplingType Stippling;
         public CullMode SidesType;
         public List<byte> PosUVIndices;   // texture coordinates unused by server
@@ -30,6 +31,7 @@ namespace ACE.Server.Physics
             Init();
 
             PolyID = idx;
+            NumPoints = numPoints;
             SidesType = cullMode;
 
             VertexIDs = new List<short>(numPoints);
@@ -48,6 +50,7 @@ namespace ACE.Server.Physics
         {
             NegSurface = polygon.NegSurface;
             //NegUVIndices = polygon.NegUVIndices;
+            NumPoints = polygon.NumPts;
             PosSurface = polygon.PosSurface;
             //PosUVIndices = polygon.PosUVIndices;
             SidesType = polygon.SidesType;
@@ -138,7 +141,7 @@ namespace ACE.Server.Physics
             var radsum = sphere.Radius * sphere.Radius;
             if (small) radsum *= 0.25f;
 
-            var prevIdx = Vertices.Count - 1;
+            var prevIdx = NumPoints - 1;
             for (var i = 0; i < Vertices.Count; i++)
             {
                 var vertex = Vertices[i];
@@ -178,7 +181,7 @@ namespace ACE.Server.Physics
             var angle = (Vector3.Dot(Plane.Normal, sphere.Center) + Plane.D) / angleUp;
             var center = sphere.Center - up * angle;
 
-            var prevIdx = Vertices.Count - 1;
+            var prevIdx = NumPoints - 1;
             for (var i = 0; i < Vertices.Count; i++)
             {
                 var vertex = Vertices[i];
@@ -207,24 +210,23 @@ namespace ACE.Server.Physics
         public void make_plane()
         {
             var normal = Vector3.Zero;
-            var numPoints = Vertices.Count;
 
             // calculate plane normal
-            for (int i = numPoints - 2, spreadIdx = 1; i > 0; i--)
+            for (int i = NumPoints - 2, spreadIdx = 1; i > 0; i--)
             {
                 var v1 = Vertices[spreadIdx++] - Vertices[0];
                 var v2 = Vertices[spreadIdx] - Vertices[0];
 
                 normal += Vector3.Cross(v1, v2);
             }
-            normal = normal.Normalize();
+            normal = Vector3.Normalize(normal);
 
             // calculate distance
             var distSum = 0.0f;
-            for (int i = numPoints, spread = 0; i > 0; i--, spread++)
+            for (int i = NumPoints, spread = 0; i > 0; i--, spread++)
                 distSum += Vector3.Dot(normal, Vertices[spread].Origin);
 
-            var dist = -(distSum / numPoints);
+            var dist = -(distSum / NumPoints);
 
             Plane = new Plane(normal, dist);
         }
@@ -232,7 +234,7 @@ namespace ACE.Server.Physics
         public bool point_in_poly2D(Vector3 point, Sidedness side)
         {
             var prevIdx = 0;
-            for (var i = Vertices.Count - 1; i >= 0; i--)
+            for (var i = NumPoints - 1; i >= 0; i--)
             {
                 var prevVertex = Vertices[prevIdx];
                 var vertex = Vertices[i];
@@ -259,7 +261,7 @@ namespace ACE.Server.Physics
 
         public bool point_in_polygon(Vector3 point)
         {
-            var lastVertex = Vertices[Vertices.Count - 1];
+            var lastVertex = Vertices[NumPoints - 1];
 
             foreach (var vertex in Vertices)
             {
@@ -296,7 +298,7 @@ namespace ACE.Server.Physics
 
             contactPoint = sphere.Center - Plane.Normal * dpPos;
 
-            var prevIdx = Vertices.Count - 1;
+            var prevIdx = NumPoints - 1;
             for (var i = 0; i < Vertices.Count; i++)
             {
                 var vertex = Vertices[i];
@@ -328,8 +330,7 @@ namespace ACE.Server.Physics
 
         public bool polygon_hits_sphere_precise(Sphere sphere, ref Vector3 contactPoint)
         {
-            var numPoints = Vertices.Count;
-            if (numPoints == 0) return true;
+            if (NumPoints == 0) return true;
 
             var dpPos = Vector3.Dot(Plane.Normal, sphere.Center) + Plane.D;
             var rad = sphere.Radius - PhysicsGlobals.EPSILON;
@@ -338,7 +339,7 @@ namespace ACE.Server.Physics
             var diff = rad * rad - dpPos * dpPos;
             contactPoint = sphere.Center - Plane.Normal * dpPos;
 
-            var prevIdx = numPoints - 1;
+            var prevIdx = NumPoints - 1;
             for (var i = 0; i < Vertices.Count; i++)
             {
                 var vertex = Vertices[i];
@@ -352,7 +353,7 @@ namespace ACE.Server.Physics
                 if (Vector3.Dot(disp, cross) >= 0.0f) continue;
 
                 // inner loop
-                prevIdx = numPoints - 1;    // alt idx?
+                prevIdx = NumPoints - 1;    // alt idx?
                 for (var j = 0; j < Vertices.Count; j++)
                 {
                     vertex = Vertices[j];
@@ -412,12 +413,10 @@ namespace ACE.Server.Physics
 
         public bool Equals(Polygon p)
         {
-            var numPoints = Vertices.Count;
-
-            if (PolyID != p.PolyID || numPoints != p.Vertices.Count || Stippling != p.Stippling || SidesType != p.SidesType ||
+            if (PolyID != p.PolyID || NumPoints != p.NumPoints || Stippling != p.Stippling || SidesType != p.SidesType ||
                 PosSurface != p.PosSurface || NegSurface != p.NegSurface) return false;
 
-            for (var i = 0; i < numPoints; i++)
+            for (var i = 0; i < NumPoints; i++)
             {
                 if (!p.Vertices[i].Equals(Vertices[i]))
                     return false;
@@ -433,12 +432,13 @@ namespace ACE.Server.Physics
             int hash = 0;
 
             hash = (hash * 397) ^ PolyID.GetHashCode();
+            hash = (hash * 397) ^ NumPoints.GetHashCode();
             hash = (hash * 397) ^ Stippling.GetHashCode();
             hash = (hash * 397) ^ SidesType.GetHashCode();
             hash = (hash * 397) ^ PosSurface.GetHashCode();
             hash = (hash * 397) ^ NegSurface.GetHashCode();
 
-            for (var i = 0; i < Vertices.Count; i++)
+            for (var i = 0; i < NumPoints; i++)
             {
                 hash = (hash * 397) ^ Vertices[i].GetHashCode();
                 hash = (hash * 397) ^ VertexIDs[i].GetHashCode();

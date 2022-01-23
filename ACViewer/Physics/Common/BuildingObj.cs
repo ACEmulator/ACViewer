@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+
 using ACE.DatLoader.Entity;
 using ACE.Server.Physics.Animation;
 
@@ -123,6 +125,26 @@ namespace ACE.Server.Physics.Common
                 return null;
 
             return building;
+        }
+
+        public float GetMinZ()
+        {
+            get_building_cells();
+
+            var minZ = float.MaxValue;
+
+            foreach (var buildingCell in BuildingCells.Where(i => i.Environment != null))
+            {
+                if (buildingCell.Environment == null) continue;
+
+                foreach (var cellStruct in buildingCell.Environment.Cells.Values)
+                {
+                    foreach (var vertex in cellStruct.VertexArray.Vertices.Values)
+                        if (vertex.Origin.Z < minZ)
+                            minZ = vertex.Origin.Z;
+                }
+            }
+            return minZ;
         }
 
         public void remove()

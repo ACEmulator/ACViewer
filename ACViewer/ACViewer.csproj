@@ -162,6 +162,7 @@
     <Compile Include="Enum\ModelType.cs" />
     <Compile Include="Enum\ProfilerSection.cs" />
     <Compile Include="Enum\ViewMode.cs" />
+    <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="Extensions\PositionExtensions.cs" />
     <Compile Include="Extensions\TextureExtensions.cs" />
     <Compile Include="Extensions\Vector2Extensions.cs" />
@@ -245,6 +246,12 @@
     <Compile Include="Model\VertexInstanceEnv.cs" />
     <Compile Include="Model\VertexPositionNormalTextures.cs" />
     <Compile Include="ParticleViewer.cs" />
+    <Compile Include="Physics\Command\ACCmdInterp.cs" />
+    <Compile Include="Physics\Command\CmdStruct.cs" />
+    <Compile Include="Physics\Command\CommandInterpreter.cs" />
+    <Compile Include="Physics\Command\CommandList.cs" />
+    <Compile Include="Physics\Command\CommandListElement.cs" />
+    <Compile Include="Physics\Command\InputEvent.cs" />
     <Compile Include="Physics\Common\ImgTex.cs" />
     <Compile Include="Physics\Common\LandSurf.cs" />
     <Compile Include="Physics\Common\Palette.cs" />
@@ -263,6 +270,7 @@
     <Compile Include="Physics\Common\TexMerge.cs" />
     <Compile Include="Physics\Common\TextureMergeInfo.cs" />
     <Compile Include="Physics\Common\TMTerrainDesc.cs" />
+    <Compile Include="Physics\Managers\ServerObjectManager.cs" />
     <Compile Include="Render\Buffer.cs" />
     <Compile Include="Render\ParticleBatch.cs" />
     <Compile Include="Render\ParticleBatchDraw.cs" />

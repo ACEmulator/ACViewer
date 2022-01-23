@@ -24,7 +24,7 @@ namespace ACE.Server.Physics.Animation
         public SpherePath SpherePath;
         public CollisionInfo CollisionInfo;
         public CellArray CellArray;
-        public ObjCell NewCellPtr;
+        //public ObjCell NewCellPtr;
 
         public Transition()
         {
@@ -155,7 +155,7 @@ namespace ACE.Server.Physics.Animation
             SpherePath.HitsInteriorCell = false;
 
             //ObjCell newCell = null;
-            var newCell = new ObjCell();    // null check?
+            var newCell = ObjCell.EmptyCell;    // null check?
             ObjCell.find_cell_list(CellArray, ref newCell, SpherePath);
 
             for (var i = 0; i < CellArray.Cells.Count; i++)
@@ -260,7 +260,7 @@ namespace ACE.Server.Physics.Animation
             else
             {
                 SpherePath.AddOffsetToCheckPos(collideNormal * -angle);
-                CollisionInfo.SetCollisionNormal(collideNormal * angle);    // verify
+                CollisionInfo.SetCollisionNormal(-collideNormal);
             }
             return TransitionState.Adjusted;
         }
@@ -503,14 +503,14 @@ namespace ACE.Server.Physics.Animation
             CalcNumSteps(ref offset, ref offsetPerStep, ref numSteps);  // restructure as retval?
 
             //var maxSteps = 30;
-            var maxSteps = 200; // for debugging
-            if (numSteps > maxSteps)
+            var maxSteps = 1000;
+            if (numSteps > maxSteps && !ObjectInfo.Object.IsSightObj)
             {
                 //Console.WriteLine("NumSteps: " + numSteps);
                 return false;
             }
 
-            if (ObjectInfo.State.HasFlag(ObjectInfoState.FreeRotate))
+            if ((ObjectInfo.State & ObjectInfoState.FreeRotate) != 0)
                 SpherePath.CurPos.Frame.set_rotate(SpherePath.EndPos.Frame.Orientation);
 
             SpherePath.SetCheckPos(SpherePath.CurPos, SpherePath.CurCell);
@@ -518,7 +518,7 @@ namespace ACE.Server.Physics.Animation
             var redo = 0;
             if (numSteps <= 0)
             {
-                if (!ObjectInfo.State.HasFlag(ObjectInfoState.FreeRotate))  // ?
+                if ((ObjectInfo.State & ObjectInfoState.FreeRotate) == 0)  // ?
                     SpherePath.CurPos.Frame.set_rotate(SpherePath.EndPos.Frame.Orientation);
 
                 SpherePath.CellArrayValid = true;
@@ -531,7 +531,7 @@ namespace ACE.Server.Physics.Animation
 
             for (var step = 0; step < numSteps; step++)
             {
-                if (ObjectInfo.State.HasFlag(ObjectInfoState.IsViewer))
+                if ((ObjectInfo.State & ObjectInfoState.IsViewer) != 0)
                 {
                     var lastStep = numSteps - 1;
 
@@ -546,14 +546,14 @@ namespace ACE.Server.Physics.Animation
                     }
                 }
                 SpherePath.GlobalOffset = AdjustOffset(offsetPerStep);
-                if (!ObjectInfo.State.HasFlag(ObjectInfoState.IsViewer))
+                if ((ObjectInfo.State & ObjectInfoState.IsViewer) == 0)
                 {
                     if (SpherePath.GlobalOffset.LengthSquared() < PhysicsGlobals.EPSILON * PhysicsGlobals.EPSILON)
                     {
                         return (step != 0 && transitionState == TransitionState.OK);
                     }
                 }
-                if (!ObjectInfo.State.HasFlag(ObjectInfoState.FreeRotate))
+                if ((ObjectInfo.State & ObjectInfoState.FreeRotate) == 0)
                 {
                     redo = step + 1;
                     var delta = (float)redo / numSteps;
@@ -587,7 +587,7 @@ namespace ACE.Server.Physics.Animation
                     if (CollisionInfo.FramesStationaryFall > 0) break;
                 }
 
-                if (CollisionInfo.CollisionNormalValid && ObjectInfo.State.HasFlag(ObjectInfoState.PathClipped)) break;
+                if (CollisionInfo.CollisionNormalValid && (ObjectInfo.State & ObjectInfoState.PathClipped) != 0) break;
             }
 
             return transitionState == TransitionState.OK;
@@ -607,7 +607,7 @@ namespace ACE.Server.Physics.Animation
             SpherePath = new SpherePath();
             CollisionInfo = new CollisionInfo();
             CellArray = new CellArray();
-            NewCellPtr = new ObjCell();
+            //NewCellPtr = new ObjCell();
         }
 
         public void InitContactPlane(uint cellID, Plane contactPlane, bool isWater)
@@ -729,7 +729,7 @@ namespace ACE.Server.Physics.Animation
             SpherePath.StepDown = false;
 
             if (transitionState == TransitionState.OK && CollisionInfo.ContactPlaneValid && CollisionInfo.ContactPlane.Normal.Z >= zVal &&
-                (!ObjectInfo.State.HasFlag(ObjectInfoState.EdgeSlide) || SpherePath.StepUp || CheckWalkable(zVal)))
+                ((ObjectInfo.State & ObjectInfoState.EdgeSlide) == 0 || SpherePath.StepUp || CheckWalkable(zVal)))
             {
                 SpherePath.Backup = SpherePath.InsertType;
                 SpherePath.InsertType = InsertType.Placement;
@@ -840,8 +840,8 @@ namespace ACE.Server.Physics.Animation
                         }
                         else
                         {
-                            if (CollisionInfo.ContactPlaneValid || !ObjectInfo.State.HasFlag(ObjectInfoState.Contact) ||
-                                SpherePath.StepDown || SpherePath.CheckCell == null || ObjectInfo.StepDown)
+                            if (CollisionInfo.ContactPlaneValid || (ObjectInfo.State & ObjectInfoState.Contact) == 0 ||
+                                SpherePath.StepDown || SpherePath.CheckCell == null || !ObjectInfo.StepDown)
                             {
                                 return TransitionState.OK;
                             }
@@ -849,7 +849,7 @@ namespace ACE.Server.Physics.Animation
                             var zVal = PhysicsGlobals.LandingZ;
                             var stepDownHeight = 0.039999999f;  // set global
 
-                            if (ObjectInfo.State.HasFlag(ObjectInfoState.OnWalkable))
+                            if ((ObjectInfo.State & ObjectInfoState.OnWalkable) != 0)
                             {
                                 zVal = ObjectInfo.GetWalkableZ();
                                 stepDownHeight = ObjectInfo.StepDownHeight;
@@ -864,21 +864,23 @@ namespace ACE.Server.Physics.Animation
                                     stepDownHeight = SpherePath.GlobalSphere[0].Radius * 0.5f;
                             }
 
-                            if (radsum < stepDownHeight)
+                            if (radsum >= stepDownHeight)
                             {
-                                // bad path
-                                stepDownHeight *= 0.5f;
-                                if (StepDown(stepDownHeight, zVal) || StepDown(stepDownHeight, zVal))   // double step..
+                                if (StepDown(stepDownHeight, zVal))
                                 {
                                     SpherePath.Walkable = null;
                                     return TransitionState.OK;
                                 }
                             }
-
-                            if (StepDown(stepDownHeight, zVal)) // triple step?
+                            else
                             {
-                                SpherePath.Walkable = null;
-                                return TransitionState.OK;
+                                // 2 half-steps
+                                stepDownHeight *= 0.5f;
+                                if (StepDown(stepDownHeight, zVal) || StepDown(stepDownHeight, zVal))
+                                {
+                                    SpherePath.Walkable = null;
+                                    return TransitionState.OK;
+                                }
                             }
 
                             if (EdgeSlide(ref transitState, stepDownHeight, zVal))
@@ -969,7 +971,11 @@ namespace ACE.Server.Physics.Animation
                 case TransitionState.Collided:
                 case TransitionState.Adjusted:
                 case TransitionState.Slid:
-                    if (SpherePath.PlacementAllowsSliding) CollisionInfo.Init();
+
+                    // added target id
+                    if (SpherePath.PlacementAllowsSliding && ObjectInfo.TargetID == 0)
+                        CollisionInfo.Init();
+
                     break;
             }
             return transitionState;

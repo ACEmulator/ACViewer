@@ -124,6 +124,7 @@ namespace ACE.Server.Physics.Animation
         public WeenieError PerformMovement(MovementStruct mvs)
         {
             PhysicsObj.set_active(true);
+
             switch (mvs.Type)
             {
                 case MovementType.RawCommand:
@@ -188,6 +189,9 @@ namespace ACE.Server.Physics.Animation
             return MotionInterpreter;
         }
 
+        /// <summary>
+        /// Alternatively, you can use PhysicsObj.IsAnimating for better performance.
+        /// </summary>
         public bool motions_pending()
         {
             if (MotionInterpreter == null) return false;

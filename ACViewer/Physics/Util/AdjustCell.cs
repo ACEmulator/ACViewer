@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Numerics;
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
@@ -7,9 +8,8 @@ namespace ACE.Server.Physics.Util
 {
     public class AdjustCell
     {
-        public List<Environment> EnvCells;
-        public List<Common.EnvCell> NewEnvCells;
-        public static Dictionary<uint, AdjustCell> AdjustCells = new Dictionary<uint, AdjustCell>();
+        public List<Common.EnvCell> EnvCells;
+        public static ConcurrentDictionary<uint, AdjustCell> AdjustCells = new ConcurrentDictionary<uint, AdjustCell>();
 
         public AdjustCell(uint dungeonID)
         {
@@ -22,31 +22,23 @@ namespace ACE.Server.Physics.Util
 
         public void BuildEnv(uint dungeonID, uint numCells)
         {
-            EnvCells = new List<Environment>();
-            NewEnvCells = new List<Common.EnvCell>();
+            EnvCells = new List<Common.EnvCell>();
             uint firstCellID = 0x100;
             for (uint i = 0; i < numCells; i++)
             {
                 uint cellID = firstCellID + i;
                 uint blockCell = dungeonID << 16 | cellID;
-                var cell = DatManager.CellDat.ReadFromDat<EnvCell>(blockCell);
-                EnvCells.Add(new Environment(cell));
 
                 var objCell = Common.LScape.get_landcell(blockCell);
                 var envCell = objCell as Common.EnvCell;
                 if (envCell != null)
-                    NewEnvCells.Add(envCell);
+                    EnvCells.Add(envCell);
             }
         }
 
         public uint? GetCell(Vector3 point)
         {
-            /*foreach (var envCell in EnvCells)
-                if (envCell.BBox.Contains(point))
-                    return envCell.EnvCell.Id;
-            return null;*/
-
-            foreach (var envCell in NewEnvCells)
+            foreach (var envCell in EnvCells)
                 if (envCell.point_in_cell(point))
                     return envCell.ID;
             return null;
@@ -59,7 +51,7 @@ namespace ACE.Server.Physics.Util
             if (adjustCell == null)
             {
                 adjustCell = new AdjustCell(dungeonID);
-                AdjustCells.Add(dungeonID, adjustCell);
+                AdjustCells.TryAdd(dungeonID, adjustCell);
             }
             return adjustCell;
         }

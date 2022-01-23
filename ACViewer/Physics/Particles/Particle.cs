@@ -1,9 +1,10 @@
 using System;
 using System.Numerics;
+
+using ACE.Common;
 using ACE.Entity.Enum;
 using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
-using ACE.Server.Physics.Extensions;
 
 namespace ACE.Server.Physics
 {
@@ -64,8 +65,8 @@ namespace ACE.Server.Physics
                     A = a;
                     B = b;
 
-                    var ra = Common.Random.RollDice(-(float)Math.PI, (float)Math.PI);
-                    var po = Common.Random.RollDice(-(float)Math.PI, (float)Math.PI);
+                    var ra = ThreadSafeRandom.Next(-(float)Math.PI, (float)Math.PI);
+                    var po = ThreadSafeRandom.Next(-(float)Math.PI, (float)Math.PI);
                     var rb = Math.Cos(po);
 
                     C.X = (float)(Math.Cos(ra) * c.X * rb);

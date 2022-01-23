@@ -32,7 +32,7 @@ namespace ACE.Server.Physics.Animation
         public List<MovementNode> PendingActions;
         public PhysicsObj PhysicsObj;
         public WeenieObject WeenieObj;
-        public List<Action> Callbacks;
+        public bool AlwaysTurn;
 
         public MoveToManager()
         {
@@ -59,7 +59,6 @@ namespace ACE.Server.Physics.Animation
             MovementParams = new MovementParameters();
 
             PendingActions = new List<MovementNode>();
-            Callbacks = new List<Action>();
         }
 
         public void InitializeLocalVars()
@@ -346,12 +345,7 @@ namespace ACE.Server.Physics.Animation
                 }
                 else
                     CleanUpAndCallWeenie(WeenieError.None);
-
             }
-
-            if (PendingActions.Count == 0)
-                foreach (var callback in Callbacks.ToList())
-                    callback();
         }
 
         public void BeginMoveForward()
@@ -425,7 +419,7 @@ namespace ACE.Server.Physics.Animation
             movementParams.Speed = MovementParams.Speed;
             movementParams.HoldKeyToApply = MovementParams.HoldKeyToApply;
 
-            if (!PhysicsObj.motions_pending())
+            if (!PhysicsObj.IsAnimating)
             {
                 var heading = MovementParams.get_desired_heading(CurrentCommand, MovingAway) + curPos.heading(CurrentTargetPosition);
                 if (heading >= 360.0f) heading -= 360.0f;
@@ -446,7 +440,13 @@ namespace ACE.Server.Physics.Animation
                     }
                 }
                 else
+                {
+                    // custom: sync for server ticrate
+                    if (AuxCommand != 0)
+                        PhysicsObj.set_heading(heading, true);
+
                     stop_aux_command(movementParams);
+                }
             }
             else
                 stop_aux_command(movementParams);
@@ -455,13 +455,25 @@ namespace ACE.Server.Physics.Animation
 
             if (!CheckProgressMade(dist))
             {
-                if (!PhysicsObj.IsInterpolating() && !PhysicsObj.motions_pending())
+                if (!PhysicsObj.IsInterpolating() && !PhysicsObj.IsAnimating)
                     FailProgressCount++;
             }
             else
             {
+                // custom for low monster update rate
+                var inRange = false;
+
+                if (!MovementParams.UseSpheres)
+                {
+                    if (dist < 1.0f && PreviousDistance < dist)
+                        inRange = true;
+
+                    PreviousDistance = dist;
+                    PreviousDistanceTime = PhysicsTimer.CurrentTime;
+                }
+
                 FailProgressCount = 0;
-                if (MovingAway && dist >= MovementParams.MinDistance || !MovingAway && dist <= MovementParams.DistanceToObject)
+                if (MovingAway && dist >= MovementParams.MinDistance || !MovingAway && dist <= MovementParams.DistanceToObject || inRange)
                 {
                     PendingActions.RemoveAt(0);
                     _StopMotion(CurrentCommand, movementParams);
@@ -505,8 +517,7 @@ namespace ACE.Server.Physics.Animation
                 return;
             }
 
-            if (PendingActions.Count == 0)
-                return;
+            if (PhysicsObj.IsAnimating && !AlwaysTurn) return;
 
             var pendingAction = PendingActions[0];
             var headingDiff = heading_diff(pendingAction.Heading, PhysicsObj.get_heading(), (uint)MotionCommand.TurnRight);
@@ -574,6 +585,7 @@ namespace ACE.Server.Physics.Animation
 
             var pendingAction = PendingActions[0];
             var heading = PhysicsObj.get_heading();
+
             if (heading_greater(heading, pendingAction.Heading, CurrentCommand))
             {
                 FailProgressCount = 0;
@@ -603,7 +615,7 @@ namespace ACE.Server.Physics.Animation
             {
                 PreviousHeading = heading;
 
-                if (!PhysicsObj.IsInterpolating() && !PhysicsObj.motions_pending())
+                if (!PhysicsObj.IsInterpolating() && !PhysicsObj.IsAnimating)
                     FailProgressCount++;
             }
         }
@@ -677,6 +689,8 @@ namespace ACE.Server.Physics.Animation
 
         public void CancelMoveTo(WeenieError retval)
         {
+            //Console.WriteLine($"CancelMoveTo({retval})");
+
             if (MovementType == MovementType.Invalid)
                 return;
 
@@ -710,7 +724,8 @@ namespace ACE.Server.Physics.Animation
             if (PhysicsObj != null)
                 PhysicsObj.StopCompletely(false);
 
-            // server - handle move to done?
+            // server custom
+            WeenieObj.OnMoveComplete(status);
         }
 
         public float GetCurrentDistance()
@@ -854,16 +869,6 @@ namespace ACE.Server.Physics.Animation
                 _StopMotion(AuxCommand, movementParams);
                 AuxCommand = 0;
             }
-        }
-
-        public void add_listener(Action listener)
-        {
-            Callbacks.Add(listener);
-        }
-
-        public void remove_listener(Action listener)
-        {
-            Callbacks.Remove(listener);
         }
     }
 }
