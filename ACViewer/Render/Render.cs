@@ -116,7 +116,12 @@ namespace ACViewer.Render
                             foreach (var createParticleHook in createParticleHooks)
                             {
                                 var emitterIdx = staticObj.create_particle_emitter(createParticleHook.EmitterInfoId, (int)createParticleHook.PartIndex, new AFrame(createParticleHook.Offset), (int)createParticleHook.EmitterId);
-                                var emitter = staticObj.ParticleManager.ParticleTable[emitterIdx];
+
+                                if (!staticObj.ParticleManager.ParticleTable.TryGetValue(emitterIdx, out var emitter))
+                                {
+                                    // can happen if HwGfxObjId==0, skip
+                                    continue;
+                                }
                                 Buffer.AddEmitter(emitter);
                                 EmitterParents++;
                             }
