@@ -119,7 +119,7 @@ namespace ACViewer.Render
 
                     var indexCnt = polygon.Indices.Count;
                     GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, indexCnt / 3);
-                    DrawCount.NumCellStruct++;
+                    //PerfTimer.NumCellStruct++;
                 }
             }
         }
@@ -136,7 +136,7 @@ namespace ACViewer.Render
 
                 var indexCnt = Indices.Count;
                 GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, indexCnt / 3);
-                DrawCount.NumCellStruct++;
+                //PerfTimer.NumCellStruct++;
             }
         }
     }

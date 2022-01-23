@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -99,6 +100,7 @@ namespace ACViewer
             }
 
             Render.Buffer.BuildBuffers();
+            Render.InitEmitters();
 
             if (FileExplorer.Instance.TeleportMode)
             {
@@ -171,6 +173,7 @@ namespace ACViewer
             }
 
             Render.Buffer.BuildBuffers();
+            Render.InitEmitters();
 
             Camera.InitLandblock(centerBlock);
             GameView.ViewMode = ViewMode.World;
@@ -208,7 +211,12 @@ namespace ACViewer
             if (Camera != null)
                 Camera.Update(time);
 
-            DrawCount.Update();
+            Render.UpdateEmitters();
+
+            if (PerfTimer.Update())
+            {
+                //Console.WriteLine($"NumParticles: {ACViewer.Render.Render.NumParticlesThisFrame}, ParticleTextures: {ACViewer.Render.Render.ParticleTexturesThisFrame.Count}");
+            }
         }
 
         public void ShowLocation()
@@ -220,7 +228,7 @@ namespace ACViewer
         public void Draw(GameTime time)
         {
             //Render.Draw(Landblocks);
-            Render.Draw(null);
+            Render.Draw();
 
             if (MainMenu.ShowHUD)
                 Render.DrawHUD();

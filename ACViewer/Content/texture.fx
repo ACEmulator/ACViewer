@@ -727,3 +727,107 @@ technique LandscapeSinglePass
         PixelShader = compile ps_4_0 LandscapeSinglePassPS();
     }
 }
+
+//------- Technique: ParticleInstance --------
+
+struct VertexParticleBase
+{
+    float4 Position : SV_POSITION;
+    float2 TextureCoord : TEXCOORD0;
+};
+
+struct VertexParticleInstance
+{
+    float4 Position : POSITION1;
+    float3 BillboardTexture : TEXCOORD1;
+    float3 ScaleOpacityActive : POSITION2;
+};
+
+struct ParticleVertexShaderOutput
+{
+    float4 Position : SV_POSITION;
+    float3 TextureCoordIdx : TEXCOORD0;
+    float2 OpacityActive : POSITION1;
+};
+
+ParticleVertexShaderOutput ParticleInstanceVS(VertexParticleBase base, VertexParticleInstance instance)
+{
+    ParticleVertexShaderOutput output = (ParticleVertexShaderOutput)0;
+
+    // xWorld?
+    float3 iPos = base.Position + instance.Position;
+
+    float3 center = iPos;
+    float3 eyeVector = center - xCamPos;
+
+    float3 sideVector = cross(eyeVector, xCamUp);
+    sideVector = normalize(sideVector);
+    float3 upVector = cross(sideVector, eyeVector);
+    upVector = normalize(upVector);
+
+    float3 finalPosition = center;
+    finalPosition += (base.TextureCoord.x - 0.5f) * sideVector * 0.5f * instance.BillboardTexture.x * instance.ScaleOpacityActive.x;
+    finalPosition += (0.5f - base.TextureCoord.y) * upVector * 0.5f * instance.BillboardTexture.y * instance.ScaleOpacityActive.x;
+
+    float4 finalPosition4 = float4(finalPosition, 1);
+
+    float4x4 preViewProjection = mul(xView, xProjection);
+
+    output.Position = mul(finalPosition4, preViewProjection);
+
+    // pixel shader needs:
+    // transformed position
+    // base texture u/v
+    // texture idx
+    // opacity
+    // active
+    output.TextureCoordIdx = float3(base.TextureCoord.xy, instance.BillboardTexture.z);
+
+    output.OpacityActive = float2(instance.ScaleOpacityActive.yz);
+
+    return output;
+}
+
+float4 ParticleInstancePS(ParticleVertexShaderOutput input) : COLOR
+{
+    float4 color = xTextures.Sample(TextureSampler, input.TextureCoordIdx);
+
+    color.a *= input.OpacityActive.x;
+    
+    // only output completely opaque pixels
+    // also discard inactive particles
+    clip(color.a < 1.0f || input.OpacityActive.y == 0 ? -1 : 1);
+
+    return color;
+}
+
+float4 ParticleInstanceTransPS(ParticleVertexShaderOutput input) : COLOR
+{
+    float4 color = xTextures.Sample(TextureSampler, input.TextureCoordIdx);
+
+    color.a *= input.OpacityActive.x;
+
+    // only output semi-transparent pixels
+    // also discard inactive particles
+    clip(color.a < 1.0f && color.a >= 0.03125f && input.OpacityActive.y > 0 ? 1 : -1);
+
+    return color;
+}
+
+technique ParticleInstance
+{
+    pass Pass0
+    {
+        ZWriteEnable = true;
+
+        VertexShader = compile vs_4_0 ParticleInstanceVS();
+        PixelShader = compile ps_4_0 ParticleInstancePS();
+    }
+    pass Pass1
+    {
+        ZWriteEnable = false;
+
+        VertexShader = compile vs_4_0 ParticleInstanceVS();
+        PixelShader = compile ps_4_0 ParticleInstanceTransPS();
+    }
+}

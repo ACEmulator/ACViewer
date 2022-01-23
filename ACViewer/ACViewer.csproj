@@ -160,6 +160,7 @@
     <Compile Include="Enum\DatType.cs" />
     <Compile Include="Enum\Facing.cs" />
     <Compile Include="Enum\ModelType.cs" />
+    <Compile Include="Enum\ProfilerSection.cs" />
     <Compile Include="Enum\ViewMode.cs" />
     <Compile Include="Extensions\PositionExtensions.cs" />
     <Compile Include="Extensions\TextureExtensions.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Model\Face.cs" />
     <Compile Include="Model\LandVertex.cs" />
     <Compile Include="Model\Mesh.cs" />
+    <Compile Include="Model\ParticleDeclaration.cs" />
     <Compile Include="Model\VertexInstanceEnv.cs" />
     <Compile Include="Model\VertexPositionNormalTextures.cs" />
     <Compile Include="ParticleViewer.cs" />
@@ -262,7 +264,10 @@
     <Compile Include="Physics\Common\TextureMergeInfo.cs" />
     <Compile Include="Physics\Common\TMTerrainDesc.cs" />
     <Compile Include="Render\Buffer.cs" />
-    <Compile Include="Render\DrawCount.cs" />
+    <Compile Include="Render\ParticleBatch.cs" />
+    <Compile Include="Render\ParticleBatchDraw.cs" />
+    <Compile Include="Render\ParticleTextureFormat.cs" />
+    <Compile Include="Render\PerfTimer.cs" />
     <Compile Include="Render\EffectParameters.cs" />
     <Compile Include="Render\TextureSet.cs" />
     <Compile Include="Render\InstanceBatch.cs" />

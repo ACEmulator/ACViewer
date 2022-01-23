@@ -35,6 +35,7 @@
                 <MenuItem x:Name="optionUseMipMaps" Header="Use _Mipmaps" Click="UseMipMaps_Click" />
                 <MenuItem Header="Show _Location" Click="ShowLocation_Click" />
                 <MenuItem x:Name="optionShowHUD" Header="Show _HUD" Click="ShowHUD_Click" />
+                <MenuItem x:Name="optionShowParticles" Header="Show _Particles in World Viewer" Click="ShowParticles_Click" />
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="_View Help" Click="Guide_Click" />

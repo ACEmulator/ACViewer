@@ -54,7 +54,7 @@ namespace ACE.Server.Physics.Common
 
         public void Clear()
         {
-            ObjCellID = 0;
+            //ObjCellID = 0;
             Frame.Origin = Vector3.Zero;
             Frame.Orientation = Quaternion.Identity;
         }

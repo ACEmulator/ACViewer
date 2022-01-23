@@ -3914,7 +3914,7 @@ namespace ACE.Server.Physics
 
         public bool IsGrounded { get => TransientState.HasFlag(TransientStateFlags.OnWalkable) && CachedVelocity.Equals(Vector3.Zero); }
 
-        public bool Equals(PhysicsObj obj)
+        /*public bool Equals(PhysicsObj obj)
         {
             if (obj == null) return false;
             return ID == obj.ID;
@@ -3923,6 +3923,6 @@ namespace ACE.Server.Physics
         public override int GetHashCode()
         {
             return ID.GetHashCode();
-        }
+        }*/
     }
 }

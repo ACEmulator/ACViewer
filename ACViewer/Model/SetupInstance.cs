@@ -136,7 +136,7 @@ namespace ACViewer.Model
 
                         var indexCnt = polygon.Indices.Count;
                         GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, indexCnt / 3);
-                        DrawCount.NumSetup++;
+                        //PerfTimer.NumSetup++;
                         tris += indexCnt / 3;
                     }
 

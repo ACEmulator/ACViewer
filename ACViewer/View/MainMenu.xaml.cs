@@ -2,8 +2,12 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+
 using Microsoft.Win32;
+
 using ACE.DatLoader;
+
+using ACViewer.Enum;
 using ACViewer.Render;
 
 namespace ACViewer.View
@@ -22,6 +26,8 @@ namespace ACViewer.View
         public static Options Options { get; set; }
 
         public static bool ShowHUD { get; set; }
+
+        public static bool ShowParticles { get; set; }
 
         public static bool UseMipMaps
         {
@@ -88,6 +94,11 @@ namespace ACViewer.View
             ToggleHUD();
         }
 
+        private void ShowParticles_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleParticles();
+        }
+
         private void UseMipMaps_Click(object sender, RoutedEventArgs e)
         {
             ToggleMipMaps();
@@ -97,6 +108,17 @@ namespace ACViewer.View
         {
             ShowHUD = !ShowHUD;
             Instance.optionShowHUD.IsChecked = ShowHUD;
+
+            return ShowHUD;
+        }
+
+        public static bool ToggleParticles()
+        {
+            ShowParticles = !ShowParticles;
+            Instance.optionShowParticles.IsChecked = ShowParticles;
+
+            if (ShowParticles && !GameView.Render.ParticlesInitted && GameView.ViewMode == ViewMode.World)
+                GameView.Render.InitEmitters();
 
             return ShowHUD;
         }

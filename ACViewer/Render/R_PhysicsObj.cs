@@ -44,7 +44,7 @@ namespace ACViewer.Render
                 {
                     pass.Apply();
                     GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.LineList, PartArray.VertexOffsets[i], PartArray.IndexOffsets[i], part.R_GfxObj.Indices.Length / 2);
-                    DrawCount.NumPhysicsObj++;
+                    //PerfTimer.NumPhysicsObj++;
                 }
             }
         }
