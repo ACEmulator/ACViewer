@@ -621,6 +621,9 @@ namespace ACE.Server.Physics
 
             for (var i = 0; i < numParts; i++)
             {
+                // should particles have this populated?
+                if (Parts[i] == null) continue;
+                
                 var curPartFrame = curFrame != null ? new AFrame(curFrame.Frames[i]) : new AFrame(Vector3.Zero, Quaternion.Identity);
 
                 Parts[i].Pos.Frame.Combine(frame, curPartFrame, Scale);
