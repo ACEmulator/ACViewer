@@ -774,7 +774,7 @@ namespace ACE.Server.Physics
             var divineType = MasterDBMap.DivineType(dataDID);
             if (divineType == 6)
             {
-                PartArray = PartArray.CreateMesh(this, dataDID);
+                PartArray = PartArray.CreateMesh(this, dataDID);    // gfxobj
             }
             else
             {

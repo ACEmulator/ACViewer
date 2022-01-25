@@ -611,15 +611,20 @@ namespace ACE.Server.Physics
         public void UpdateParts(AFrame frame)
         {
             var curFrame = Sequence.GetCurrAnimFrame();
-            if (curFrame == null)
-            {
-                /*if (Parts.Count == 1)     // ?? - not in acclient, why is this in server?
-                    Parts[0].Pos = Owner.Position;*/
-                return;
-            }
-            var numParts = Math.Min(NumParts, curFrame.Frames.Count);
+
+            // modified for simple setups, or else only PhysicsObj.Position is set,
+            // and PhysicsPart.Pos doesn't get set
+            var numParts = Parts.Count;
+
+            if (curFrame != null)
+                numParts = Math.Min(Parts.Count, curFrame.Frames.Count);
+
             for (var i = 0; i < numParts; i++)
-                Parts[i].Pos.Frame.Combine(frame, new AFrame(curFrame.Frames[i]), Scale);
+            {
+                var curPartFrame = curFrame != null ? new AFrame(curFrame.Frames[i]) : new AFrame(Vector3.Zero, Quaternion.Identity);
+
+                Parts[i].Pos.Frame.Combine(frame, curPartFrame, Scale);
+            }
         }
 
  
