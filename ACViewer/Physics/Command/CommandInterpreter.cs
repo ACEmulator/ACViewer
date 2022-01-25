@@ -266,7 +266,7 @@ namespace ACE.Server.Physics.Command
             // vfptr[8].OnLoseFocus(a2) - ACCmdInterp::TakeControlFromServer?
             TakeControlFromServer();
 
-            if (cmdStruct.Command == MotionCommand.HoldRun‬)
+            if (cmdStruct.Command == MotionCommand.HoldRun)
             {
                 // vfptr[2].OnLoseFocus
 
