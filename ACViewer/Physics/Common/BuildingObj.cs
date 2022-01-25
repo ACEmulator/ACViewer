@@ -42,7 +42,7 @@ namespace ACE.Server.Physics.Common
                 return TransitionState.OK;
 
             transition.SpherePath.BuildingCheck = true;
-            var transitionState = PartArray.Parts[0].FindObjCollisions(transition);
+            var transitionState = PartArray.Parts[0].FindObjCollisions(transition, 0);
             transition.SpherePath.BuildingCheck = false;
 
             if (transitionState != TransitionState.OK && !transition.ObjectInfo.State.HasFlag(ObjectInfoState.Contact))

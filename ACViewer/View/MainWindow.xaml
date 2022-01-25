@@ -39,5 +39,6 @@
         <KeyBinding Command="{Binding FindCommand}" Gesture="Ctrl+F" />
         <KeyBinding Command="{Binding TeleportCommand}" Gesture="Ctrl+T" />
         <KeyBinding Command="{Binding HistoryCommand}" Gesture="Backspace" />
+        <KeyBinding Command="{Binding DebugCommand}" Gesture="Ctrl+D" />
     </Window.InputBindings>
 </Window>

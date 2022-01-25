@@ -126,7 +126,7 @@ namespace ACE.Server.Physics.Common
             uint runSkill = 0;
             /*if (WorldObject is Creature creature)
                 runSkill = creature.GetCreatureSkill(Skill.Run).Current;*/
-            if (WorldObject.IsCreature)
+            if (WorldObject?.IsCreature ?? false)
                 runSkill = WorldObject.RunSkill;
 
             //rate = (float)MovementSystem.GetRunRate(0.0f, 300, 1.0f);
@@ -162,13 +162,13 @@ namespace ACE.Server.Physics.Common
         public bool IsPlayer()
         {
             //return WorldObject is Player;
-            return WorldObject.IsPlayer;
+            return WorldObject?.IsPlayer ?? false;
         }
 
         public bool IsCreature()
         {
             //return WorldObject is Creature;
-            return WorldObject.IsCreature;
+            return WorldObject?.IsCreature ?? false;
         }
 
         public bool IsStorage()

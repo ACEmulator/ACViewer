@@ -9,6 +9,9 @@ using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Collision;
 using ACE.Server.Physics.Extensions;
 
+using ACViewer;
+using ACViewer.Enum;
+
 namespace ACE.Server.Physics.Common
 {
     public class EnvCell: ObjCell, IEquatable<EnvCell>
@@ -99,7 +102,16 @@ namespace ACE.Server.Physics.Common
                     transitState = CellStructure.PhysicsBSP.find_collisions(transition, 1.0f);
 
                 if (transitState != TransitionState.OK && !transition.ObjectInfo.State.HasFlag(ObjectInfoState.Contact))
+                {
                     transition.CollisionInfo.CollidedWithEnvironment = true;
+
+                    if (PhysicsObj.IsPicking)
+                    {
+                        // HitPoly set in BSPLeaf
+                        Picker.PickResult.Type = PickType.EnvCell;
+                        Picker.PickResult.ObjCell = this;
+                    }
+                }
             }
             return transitState;
         }

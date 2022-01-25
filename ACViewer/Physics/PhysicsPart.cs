@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 using ACE.Entity.Enum;
@@ -6,6 +8,9 @@ using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
 using ACE.Server.Physics.Collision;
 using ACE.Server.Physics.Entity;
+
+using ACViewer;
+using ACViewer.Enum;
 
 namespace ACE.Server.Physics
 {
@@ -49,14 +54,72 @@ namespace ACE.Server.Physics
             SetPart(partID);
         }
 
-        public TransitionState FindObjCollisions(Transition transition)
+        public TransitionState FindObjCollisions(Transition transition, int partIdx)
         {
             if (GfxObj != null && GfxObj.PhysicsBSP != null)
             {
                 transition.SpherePath.CacheLocalSpaceSphere(Pos, GfxObjScale.Z);
-                return GfxObj.FindObjCollisions(transition, GfxObjScale.Z);
+                
+                var result = GfxObj.FindObjCollisions(transition, GfxObjScale.Z);
+
+                if (result == TransitionState.OK || !PhysicsObj.IsPicking)
+                    return result;
+
+                return FindObjCollisions_Draw(transition, partIdx);
             }
             return TransitionState.OK;  // should be invalid?
+        }
+
+        public int NextPolyIdx;
+
+        public TransitionState FindObjCollisions_Draw(Transition transition, int partIdx)
+        {
+            if (GfxObj == null || GfxObj.DrawingBSP == null)
+                return TransitionState.OK;
+            
+            transition.SpherePath.CacheLocalSpaceSphere(Pos, GfxObjScale.Z);
+                
+            var result = GfxObj.FindObjCollisions_Draw(transition, GfxObjScale.Z);
+
+            if (result == TransitionState.OK) return result;
+
+            // test against each poly in gfxobj
+            // build a ray for more precision
+            var dir = Picker.Dir.ToNumerics();
+            var q = Matrix4x4.CreateFromQuaternion(Quaternion.Inverse(Pos.Frame.Orientation));  // invert
+            dir = Vector3.Transform(dir, q);
+            var ray = new Ray(transition.SpherePath.LocalSpaceSphere[0].Center, dir, GfxObj.DrawingBSP.RootNode.Sphere.Radius * GfxObjScale.Z);
+
+            var hitPolys = new Dictionary<ushort, float>(); // polyIdx, contactTime
+
+            foreach (var polygon in GfxObj.Polygons)
+            {
+                var contactTime = 0.0f;
+
+                if (polygon.Value.polygon_hits_ray(ray, ref contactTime))
+                {
+                    hitPolys.Add(polygon.Key, contactTime);
+                }
+            }
+
+            if (hitPolys.Count == 0)
+            {
+                // at this point, we have a less precise sphere collision, but no precise ray collisions. no true collision detected
+                return TransitionState.OK;
+            }
+
+            Picker.PickResult.Type = PickType.GfxObj;
+            Picker.PickResult.PhysicsObj = PhysicsObj;
+            Picker.PickResult.PartIdx = partIdx;
+
+            // sort by contactTime, closest first
+            var closestPolyIdx = hitPolys.OrderBy(i => i.Value).Select(i => i.Key).First();
+
+            Picker.PickResult.PolyIdx = closestPolyIdx;
+
+            PhysicsObj.IsPicking = false;
+
+            return TransitionState.Collided;
         }
 
         public BBox GetBoundingBox()

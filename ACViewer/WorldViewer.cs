@@ -44,6 +44,8 @@ namespace ACViewer
 
         public Model.BoundingBox BoundingBox { get; set; }
 
+        public uint SingleBlock { get; set; }
+
         public WorldViewer()
         {
             Instance = this;
@@ -113,6 +115,8 @@ namespace ACViewer
             else
                 Camera.InitLandblock(r_landblock);
 
+            SingleBlock = landblock.ID;
+
             FreeResources();
         }
 
@@ -174,6 +178,8 @@ namespace ACViewer
             Camera.InitLandblock(centerBlock);
             GameView.ViewMode = ViewMode.World;
 
+            SingleBlock = uint.MaxValue;
+
             FreeResources();
         }
 
@@ -217,8 +223,9 @@ namespace ACViewer
 
         public void ShowLocation()
         {
-            var pos = Camera.GetPosition() ?? "unknown";
-            MainWindow.Status.WriteLine($"Location: {pos}");
+            var pos = Camera.GetPosition();
+
+            MainWindow.Status.WriteLine($"Location: {pos?.ToString() ?? "unknown"}");
         }
 
         public void Draw(GameTime time)

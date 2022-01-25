@@ -625,6 +625,9 @@ namespace ACViewer.Render
             DrawBuffer(RB_Scenery);
             //DrawBuffer(RB_Instances);
 
+            if (Picker.HitVertices != null)
+                Picker.DrawHitPoly();
+
             PerfTimer.Stop(ProfilerSection.Draw);
         }
 

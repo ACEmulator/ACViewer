@@ -809,7 +809,7 @@ float4 ParticleInstanceTransPS(ParticleVertexShaderOutput input) : COLOR
 
     // only output semi-transparent pixels
     // also discard inactive particles
-    clip(color.a < 1.0f && color.a >= 0.03125f && input.OpacityActive.y > 0 ? 1 : -1);
+    clip(color.a < 1.0f && input.OpacityActive.y > 0 ? 1 : -1);
 
     return color;
 }
@@ -829,5 +829,37 @@ technique ParticleInstance
 
         VertexShader = compile vs_4_0 ParticleInstanceVS();
         PixelShader = compile ps_4_0 ParticleInstanceTransPS();
+    }
+}
+
+//------- Technique: Picker --------
+
+VertexPositionColor PickerVS(float4 inPos : SV_POSITION, float4 inColor : COLOR)
+{
+    VertexPositionColor output = (VertexPositionColor)0;
+
+    output.Position = mul(mul(inPos, xView), xProjection);
+    output.Color = inColor;
+
+    return output;
+}
+
+PixelShaderOutput PickerPS(VertexPositionColor input)
+{
+    PixelShaderOutput output = (PixelShaderOutput)0;
+
+    output.Color = input.Color;
+
+    return output;
+}
+
+technique Picker
+{
+    pass Pass0
+    {
+        ZEnable = false;
+
+        VertexShader = compile vs_4_0 ColoredNoShadingVS();
+        PixelShader = compile ps_4_0 ColoredNoShadingPS();
     }
 }

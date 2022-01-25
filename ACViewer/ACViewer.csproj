@@ -159,6 +159,7 @@
     <Compile Include="Entity\TMTerrainDesc.cs" />
     <Compile Include="Enum\DatType.cs" />
     <Compile Include="Enum\Facing.cs" />
+    <Compile Include="Enum\PickType.cs" />
     <Compile Include="Enum\ModelType.cs" />
     <Compile Include="Enum\ProfilerSection.cs" />
     <Compile Include="Enum\ViewMode.cs" />
@@ -243,6 +244,7 @@
     <Compile Include="Model\LandVertex.cs" />
     <Compile Include="Model\Mesh.cs" />
     <Compile Include="Model\ParticleDeclaration.cs" />
+    <Compile Include="Model\PickResult.cs" />
     <Compile Include="Model\VertexInstanceEnv.cs" />
     <Compile Include="Model\VertexPositionNormalTextures.cs" />
     <Compile Include="ParticleViewer.cs" />
@@ -271,6 +273,7 @@
     <Compile Include="Physics\Common\TextureMergeInfo.cs" />
     <Compile Include="Physics\Common\TMTerrainDesc.cs" />
     <Compile Include="Physics\Managers\ServerObjectManager.cs" />
+    <Compile Include="Picker.cs" />
     <Compile Include="Render\Buffer.cs" />
     <Compile Include="Render\ParticleBatch.cs" />
     <Compile Include="Render\ParticleBatchDraw.cs" />
