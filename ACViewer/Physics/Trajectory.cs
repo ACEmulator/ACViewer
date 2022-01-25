@@ -28,8 +28,6 @@
 //    int SolveQuartic(double c0, double c1, double c2, double c3, double c4, out double s0, out double s1, out double s2, out double s3);
 
 
-using ACE.Server.Physics.Extensions;
-
 using System;
 using System.Diagnostics;
 using System.Numerics;
@@ -262,7 +260,9 @@ namespace ACE.Server.Physics
         public static float ballistic_range(float speed, float gravity, float initial_height)
         {
             // Handling these cases is up to your project's coding standards
-            Debug.Assert(speed > 0 && gravity > 0 && initial_height >= 0, "fts.ballistic_range called with invalid data");
+            //Debug.Assert(speed > 0 && gravity > 0 && initial_height >= 0, "fts.ballistic_range called with invalid data");
+            if (speed <= 0 || gravity <= 0 || initial_height < 0)
+                return 0.0f;
 
             // Derivation
             //   (1) x = speed * time * cos O
@@ -290,15 +290,17 @@ namespace ACE.Server.Physics
         // return (int): number of unique solutions found: 0, 1, or 2.
         public static int solve_ballistic_arc(Vector3 proj_pos, float proj_speed, Vector3 target, float gravity, out Vector3 s0, out Vector3 s1, out float t0, out float t1)
         {
-
             // Handling these cases is up to your project's coding standards
-            Debug.Assert(proj_pos != target && proj_speed > 0 && gravity > 0, "fts.solve_ballistic_arc called with invalid data");
+            //Debug.Assert(proj_pos != target && proj_speed > 0 && gravity > 0, "fts.solve_ballistic_arc called with invalid data");
 
             // C# requires out variables be set
             s0 = Vector3.Zero;
             s1 = Vector3.Zero;
             t0 = float.PositiveInfinity;
             t1 = float.PositiveInfinity;
+
+            if (proj_pos == target || proj_speed <= 0 || gravity <= 0)
+                return 0;
 
             // Derivation
             //   (1) x = v*t*cos O
@@ -338,7 +340,7 @@ namespace ACE.Server.Physics
             var highAng = Math.Atan2(speed2 + root, gx);
             int numSolutions = lowAng != highAng ? 2 : 1;
 
-            Vector3 groundDir = diffXY.Normalize();
+            Vector3 groundDir = Vector3.Normalize(diffXY);
             s0 = groundDir * (float)Math.Cos(lowAng) * proj_speed + Vector3.UnitZ * (float)Math.Sin(lowAng) * proj_speed;
             if (numSolutions > 1)
                 s1 = groundDir * (float)Math.Cos(highAng) * proj_speed + Vector3.UnitZ * (float)Math.Sin(highAng) * proj_speed;
@@ -465,12 +467,13 @@ namespace ACE.Server.Physics
         /// <returns></returns>
         public static bool SolveBallisticArc(Vector3 projectilePosition, float lateralSpeed, Vector3 targetPosition, out Vector3 velocityVector, out float time)
         {
-
             // Handling these cases is up to your project's coding standards
-            Debug.Assert(projectilePosition != targetPosition && lateralSpeed > 0, "fts.solve_ballistic_arc called with invalid data");
-
+            //Debug.Assert(projectilePosition != targetPosition && lateralSpeed > 0, "fts.solve_ballistic_arc called with invalid data");
             velocityVector = Vector3.Zero;
             time = float.NaN;
+
+            if (projectilePosition == targetPosition || lateralSpeed <= 0)
+                return false;
 
             Vector3 diff = targetPosition - projectilePosition;
             Vector3 diffXY = new Vector3(diff.X, diff.Y, 0f);
@@ -481,7 +484,7 @@ namespace ACE.Server.Physics
 
             time = lateralDist / lateralSpeed;
 
-            velocityVector = diffXY.Normalize() * lateralSpeed;
+            velocityVector = Vector3.Normalize(diffXY) * lateralSpeed;
 
             // System of equations. Hit max_height at t=.5*time. Hit target at t=time.
             //
@@ -514,12 +517,14 @@ namespace ACE.Server.Physics
         // return (bool): true if a valid solution was found
         public static bool solve_ballistic_arc_lateral(Vector3 proj_pos, float lateral_speed, Vector3 target_pos, float max_height, out Vector3 fire_velocity, out float gravity)
         {
-
             // Handling these cases is up to your project's coding standards
             Debug.Assert(proj_pos != target_pos && lateral_speed > 0 && max_height > proj_pos.Z, "fts.solve_ballistic_arc called with invalid data");
 
             fire_velocity = Vector3.Zero;
             gravity = float.NaN;
+
+            if (proj_pos == target_pos || lateral_speed <= 0 || max_height <= proj_pos.Z)
+                return false;
 
             Vector3 diff = target_pos - proj_pos;
             Vector3 diffXY = new Vector3(diff.X, diff.Y, 0f);
@@ -530,7 +535,7 @@ namespace ACE.Server.Physics
 
             float time = lateralDist / lateral_speed;
 
-            fire_velocity = diffXY.Normalize() * lateral_speed;
+            fire_velocity = Vector3.Normalize(diffXY) * lateral_speed;
 
             // System of equations. Hit max_height at t=.5*time. Hit target at t=time.
             //
@@ -562,14 +567,16 @@ namespace ACE.Server.Physics
         // return (bool): true if a valid solution was found
         public static bool solve_ballistic_arc_lateral(Vector3 proj_pos, float lateral_speed, Vector3 target, Vector3 target_velocity, float gravity, out Vector3 fire_velocity, out float time, out Vector3 impact_point)
         {
-
             // Handling these cases is up to your project's coding standards
-            Debug.Assert(proj_pos != target && lateral_speed > 0, "fts.solve_ballistic_arc_lateral called with invalid data");
+            //Debug.Assert(proj_pos != target && lateral_speed > 0, "fts.solve_ballistic_arc_lateral called with invalid data");
 
             // Initialize output variables
             fire_velocity = Vector3.Zero;
             time = 0.0f;
             impact_point = Vector3.Zero;
+
+            if (proj_pos == target || lateral_speed <= 0)
+                return false;
 
             // Ground plane terms
             Vector3 targetVelXY = new Vector3(target_velocity.X, target_velocity.Y, 0f);
@@ -604,7 +611,7 @@ namespace ACE.Server.Physics
 
             // Calculate fire velocity along XZ plane
             Vector3 dir = impact_point - proj_pos;
-            fire_velocity = new Vector3(dir.X, dir.Y, 0f).Normalize() * lateral_speed;
+            fire_velocity = Vector3.Normalize(new Vector3(dir.X, dir.Y, 0f)) * lateral_speed;
 
             // Solve system of equations. Hit max_height at t=.5*time. Hit target at t=time.
             //

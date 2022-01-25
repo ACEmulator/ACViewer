@@ -47,10 +47,6 @@ namespace ACViewer
         public WorldViewer()
         {
             Instance = this;
-            
-            Physics = new PhysicsEngine(new ObjectMaint(), new SmartBox());
-            
-            Physics.Server = false;
         }
 
         public void LoadLandblock(uint landblockID, uint radius = 1)

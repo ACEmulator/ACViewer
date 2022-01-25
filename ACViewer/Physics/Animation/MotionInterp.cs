@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using ACE.Entity.Enum;
 using ACE.Server.Physics.Common;
-using ACE.Server.Physics.Extensions;
 
 namespace ACE.Server.Physics.Animation
 {
@@ -170,6 +169,7 @@ namespace ACE.Server.Physics.Animation
                 }
             }
             PendingMotions.Clear();
+            if (PhysicsObj != null) PhysicsObj.IsAnimating = false;
         }
 
         public void HitGround()
@@ -226,7 +226,10 @@ namespace ACE.Server.Physics.Animation
 
                 motionData = PendingMotions.First;
                 if (motionData != null)
+                {
                     PendingMotions.Remove(motionData);
+                    PhysicsObj.IsAnimating = PendingMotions.Count > 0;
+                }
             }
         }
 
@@ -385,6 +388,7 @@ namespace ACE.Server.Physics.Animation
         public void add_to_queue(int contextID, uint motion, WeenieError jumpErrorCode)
         {
             PendingMotions.AddLast(new MotionNode(contextID, motion, jumpErrorCode));
+            PhysicsObj.IsAnimating = true;
         }
 
         public void adjust_motion(ref uint motion, ref float speed, HoldKey holdKey)
@@ -641,7 +645,7 @@ namespace ACE.Server.Physics.Animation
                 return 10.0f;
 
             float vz = extent;
-            if (WeenieObj.InqJumpVelocity(extent, ref vz))
+            if (WeenieObj.InqJumpVelocity(extent, out vz))
                 return vz;
 
             return 0.0f;
@@ -652,8 +656,8 @@ namespace ACE.Server.Physics.Animation
             var velocity = get_state_velocity();
             velocity.Z = get_jump_v_z();
 
-            if (!velocity.Equals(Vector3.Zero))
-                velocity = PhysicsObj.Position.GlobalToLocalVec(velocity);
+            if (Vec.IsZero(velocity))
+                velocity = PhysicsObj.Position.GlobalToLocalVec(PhysicsObj.Velocity);
 
             return velocity;
         }
@@ -689,7 +693,7 @@ namespace ACE.Server.Physics.Animation
             var maxSpeed = RunAnimSpeed * rate;
             if (velocity.Length() > maxSpeed)
             {
-                velocity = velocity.Normalize();
+                velocity = Vector3.Normalize(velocity);
                 velocity *= maxSpeed;
             }
             return velocity;
@@ -774,6 +778,9 @@ namespace ACE.Server.Physics.Animation
             return WeenieError.None;
         }
 
+        /// <summary>
+        /// Alternatively, you can use PhysicsObj.IsAnimating for better performance.
+        /// </summary>
         public bool motions_pending()
         {
             return PendingMotions.Count > 0;

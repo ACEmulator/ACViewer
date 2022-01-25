@@ -6,13 +6,15 @@ namespace ACE.Server.Physics
 {
     public class PhysicsGlobals
     {
-        public static readonly float EPSILON = 0.00019999999f;
+        public static readonly float EPSILON = 0.0002f;
 
-        public static readonly float Gravity = -9.8000002f;
+        public static readonly float EpsilonSq = EPSILON * EPSILON;
 
-        public static readonly float DefaultFriction = 0.94999999f;
+        public static readonly float Gravity = -9.8f;
 
-        public static readonly float DefaultElasticity = 0.050000001f;
+        public static readonly float DefaultFriction = 0.95f;
+
+        public static readonly float DefaultElasticity = 0.05f;
 
         public static readonly float DefaultTranslucency = 0.0f;
 
@@ -48,13 +50,12 @@ namespace ACE.Server.Physics
 
         public static readonly float FloorZ = 0.66417414618662751f;
 
-        //public static readonly float DummySphereRadius = 0.1f;
-        public static readonly float DummySphereRadius = 0.0f;  // ??
+        public static readonly float DummySphereRadius = 0.1f;
 
-        public static readonly Sphere DummySphere = new Sphere(Vector3.Zero, DummySphereRadius);
+        public static readonly Sphere DummySphere = new Sphere(new Vector3(0, 0, DummySphereRadius), DummySphereRadius);
 
         public static readonly Sphere DefaultSortingSphere;
 
-        public static readonly float DefaultStepHeight = 0.0099999998f;
+        public static readonly float DefaultStepHeight = 0.01f;
     }
 }

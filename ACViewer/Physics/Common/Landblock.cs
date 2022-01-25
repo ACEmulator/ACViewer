@@ -67,6 +67,8 @@ namespace ACE.Server.Physics.Common
 
         public void PostInit()
         {
+            init_landcell();
+
             init_buildings();
             init_static_objs();
         }
@@ -264,7 +266,12 @@ namespace ACE.Server.Physics.Common
                         var physicsObj = PhysicsObj.makeObject(obj.ObjId, 0, false);
                         physicsObj.DatObject = true;
                         physicsObj.set_initial_frame(pos.Frame);
-                        if (!physicsObj.obj_within_block()) continue;
+                        if (!physicsObj.obj_within_block())
+                        {
+                            //Console.WriteLine($"Landblock {ID:X8} scenery: failed to spawn {obj.ObjId:X8}");
+                            physicsObj.DestroyObject();
+                            continue;
+                        }
 
                         physicsObj.add_obj_to_cell(cell, pos.Frame);
                         var scale = ObjectDesc.ScaleObj(obj, globalCellX, globalCellY, j);
@@ -487,9 +494,28 @@ namespace ACE.Server.Physics.Common
                     var position = new Position(ID, new AFrame(info.Frame));
                     var outside = LandDefs.AdjustToOutside(position);
                     var cell = get_landcell(position.ObjCellID);
-                    if (cell == null) continue;
+                    if (cell == null)
+                    {
+                        //Console.WriteLine($"Landblock {ID:X8} - failed to spawn static object {info.Id:X8}");
+                        obj.DestroyObject();
+                        continue;
+                    }
                     obj.add_obj_to_cell(cell, position.Frame);
                     add_static_object(obj);
+                }
+
+                if (Info.RestrictionTables != null)
+                {
+                    foreach (var kvp in Info.RestrictionTables)
+                    {
+                        var lcoord = LandDefs.gid_to_lcoord(kvp.Key);
+
+                        if (lcoord == null) continue;
+
+                        var idx = ((int)lcoord.Value.Y & 7) + ((int)lcoord.Value.X & 7) * SideCellCount;
+
+                        LandCells[idx].RestrictionObj = kvp.Value;
+                    }
                 }
             }
             if (UseSceneFiles)
@@ -524,6 +550,15 @@ namespace ACE.Server.Physics.Common
             DynObjsInitDone = false;
         }
 
+        /// <summary>
+        /// Release shadow objects pointing to cells in this landblock
+        /// </summary>
+        public void release_shadow_objs()
+        {
+            foreach (var cell in LandCells.Values)
+                cell.release_shadow_objs();
+        }
+
         public void release_visible_cells()
         {
             // legacy method
@@ -544,14 +579,12 @@ namespace ACE.Server.Physics.Common
                 if (isDungeon != null)
                     return isDungeon.Value;
 
-                var lbx = ID >> 24;
-                var lby = (ID >> 16) & 0xFF;
-                
                 // hack for NW island
                 // did a worldwide analysis for adding watercells into the formula,
                 // but they are inconsistently defined for some of the edges of map unfortunately
-                if (lbx < 0x08 && lby > 0xF8)
+                if (BlockCoord.X < 64 && BlockCoord.Y > 1976)
                 {
+                    //Console.WriteLine($"Allowing {ID:X8}");
                     isDungeon = false;
                     return isDungeon.Value;
                 }
@@ -597,58 +630,6 @@ namespace ACE.Server.Physics.Common
             }
         }
 
-        private List<Landblock> adjacents;
-
-        /// <summary>
-        /// Returns the list of adjacent landblocks
-        /// </summary>
-        public List<Landblock> get_adjacents(bool reload = false)
-        {
-            if (adjacents != null && !reload) return adjacents;
-
-            var lbx = ID >> 24;
-            var lby = ID >> 16 & 0xFF;
-
-            //var _adjacents = LandblockManager.GetAdjacents(new LandblockId((byte)lbx, (byte)lby));
-
-            adjacents = new List<Landblock>();
-
-            // dungeons have no adjacents
-            if (IsDungeon /*|| _adjacents == null*/) return adjacents;
-
-            var startX = lbx > 0 ? lbx - 1 : lbx;
-            var startY = lby > 0 ? lby - 1 : lby;
-
-            var endX = lbx < 254 ? lbx + 1 : lbx;
-            var endY = lby < 254 ? lby + 1 : lby;
-
-            // get adjacents for outdoor landblocks
-            for (var curX = startX; curX <= endX; curX++)
-            {
-                for (var curY = startY; curY <= endY; curY++)
-                {
-                    // exclude current landblock
-                    if (curX == lbx && curY == lby) continue;
-
-                    var id = curX << 24 | curY << 16 | 0xFFFF;
-
-                    // ensure adjacent is loaded in ace landblock manager
-                    //if (!IsAdjacentLoaded(_adjacents, id))
-                        //continue;
-
-                    var landblock = LScape.get_landblock(id);
-                    if (landblock != null)
-                        adjacents.Add(landblock);
-                }
-            }
-            return adjacents;
-        }
-
-        /*public bool IsAdjacentLoaded(List<Server.Entity.Landblock> adjacents, uint landblockID)
-        {
-            return adjacents.Any(l => (l.Id.Raw | 0xFFFF) == landblockID);
-        }*/
-
         private List<EnvCell> envcells;
 
         public List<EnvCell> get_envcells()
@@ -670,6 +651,11 @@ namespace ACE.Server.Physics.Common
                     break;
             }
             return envcells;
+        }
+
+        public void SortObjects()
+        {
+            ServerObjects = ServerObjects.OrderBy(i => i.Order).ToList();
         }
     }
 }

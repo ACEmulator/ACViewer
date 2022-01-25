@@ -11,6 +11,7 @@ namespace ACE.Server.WorldObjects
     {
         public ObjectGuid Guid;
         public string Name;
+        public bool IsPlayer;
         public bool IsCreature;
         public uint RunSkill;
     }
