@@ -5,6 +5,9 @@ using ACE.Entity.Enum;
 using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Collision;
 
+using ACViewer;
+using ACViewer.Enum;
+
 namespace ACE.Server.Physics.Common
 {
     public class LandCell: SortCell
@@ -62,7 +65,15 @@ namespace ACE.Server.Physics.Common
             var checkPos = new Sphere(path.GlobalSphere[0]);
             checkPos.Center -= LandDefs.GetBlockOffset(path.CheckPos.ObjCellID, ID);
 
-            return objInfo.ValidateWalkable(checkPos, walkable.Plane, WaterType != LandDefs.WaterType.NotWater, waterDepth, transition, ID);
+            var result = objInfo.ValidateWalkable(checkPos, walkable.Plane, WaterType != LandDefs.WaterType.NotWater, waterDepth, transition, ID);
+
+            if (result != TransitionState.OK && PhysicsObj.IsPicking)
+            {
+                Picker.PickResult.Type = PickType.LandCell;
+                Picker.PickResult.ObjCell = this;
+                Picker.PickResult.HitPoly = walkable;
+            }
+            return result;
         }
 
         public new static LandCell Get(uint cellID)

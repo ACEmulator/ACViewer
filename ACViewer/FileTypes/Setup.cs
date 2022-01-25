@@ -113,11 +113,16 @@ namespace ACViewer.FileTypes
             if (_setup.Lights.Count > 0)
             {
                 var lights = new TreeNode("Lights:");
+
                 foreach (var kvp in _setup.Lights)
                 {
-                    var light = new TreeNode($"{kvp.Key}: {new LightInfo(kvp.Value)}");
+                    var light = new TreeNode($"{kvp.Key}");
+
+                    light.Items = new LightInfo(kvp.Value).BuildTree();
+
                     lights.Items.Add(light);
                 }
+
                 treeView.Items.Add(lights);
             }
 

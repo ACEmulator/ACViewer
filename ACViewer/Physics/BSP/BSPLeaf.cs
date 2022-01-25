@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Numerics;
 using ACE.Server.Physics.Animation;
 
+using ACViewer;
+
 namespace ACE.Server.Physics.BSP
 {
     public class BSPLeaf: BSPNode, IEquatable<BSPLeaf>
@@ -72,7 +74,12 @@ namespace ACE.Server.Physics.BSP
             foreach (var polygon in Polygons)
             {
                 if (polygon.pos_hits_sphere(checkPos, movement, ref contactPoint, ref hitPoly))
+                {
+                    if (PhysicsObj.IsPicking)
+                        Picker.PickResult.HitPoly = hitPoly;
+
                     return true;
+                }
             }
             return false;
         }
@@ -84,9 +91,15 @@ namespace ACE.Server.Physics.BSP
             if (!Sphere.Intersects(checkPos)) return false;
 
             foreach (var polygon in Polygons)
+            {
                 if (polygon.hits_sphere(checkPos))
-                    return true;
+                {
+                    if (PhysicsObj.IsPicking)
+                        Picker.PickResult.HitPoly = polygon;
 
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -104,6 +117,9 @@ namespace ACE.Server.Physics.BSP
             {
                 if (polygon.hits_sphere(checkPos))
                 {
+                    if (PhysicsObj.IsPicking)
+                        Picker.PickResult.HitPoly = hitPoly;
+
                     hitPoly = polygon;
                     return true;
                 }

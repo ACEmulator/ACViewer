@@ -147,9 +147,26 @@ namespace ACE.Server.Physics
 
         public TransitionState FindObjCollisions(Transition transition)
         {
-            foreach (var part in Parts)
+            for (var i = 0; i < Parts.Count; i++)
             {
-                var result = part.FindObjCollisions(transition);
+                var part = Parts[i];
+
+                var result = part.FindObjCollisions(transition, i);
+
+                if (result != TransitionState.OK)
+                    return result;
+            }
+            return TransitionState.OK;
+        }
+
+        public TransitionState FindObjCollisions_Draw(Transition transition)
+        {
+            for (var i = 0; i < Parts.Count; i++)
+            {
+                var part = Parts[i];
+
+                var result = part.FindObjCollisions_Draw(transition, i);
+
                 if (result != TransitionState.OK)
                     return result;
             }

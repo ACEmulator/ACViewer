@@ -44,8 +44,11 @@ namespace ACViewer.Model
             if (!_setup.PlacementFrames.TryGetValue((int)Placement.Resting, out var placementFrames))
                 _setup.PlacementFrames.TryGetValue((int)Placement.Default, out placementFrames);
 
-            foreach (var placementFrame in placementFrames.AnimFrame.Frames)
-                PlacementFrames.Add(placementFrame.ToXna());
+            if (placementFrames != null)
+            {
+                foreach (var placementFrame in placementFrames.AnimFrame.Frames)
+                    PlacementFrames.Add(placementFrame.ToXna());
+            }
 
             BuildBoundingBox();
         }
@@ -126,7 +129,11 @@ namespace ACViewer.Model
                     continue;
 
                 var part = Parts[i];
-                var placementFrame = PlacementFrames[i];
+
+                var placementFrame = Matrix.Identity;
+
+                if (i < PlacementFrames.Count)
+                    placementFrame = PlacementFrames[i];
 
                 var partVerts = part.VertexArray.Select(v => v.Position).ToList();
 

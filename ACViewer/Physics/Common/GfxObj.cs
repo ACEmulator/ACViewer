@@ -93,6 +93,24 @@ namespace ACE.Server.Physics.Collision
             return TransitionState.OK;
         }
 
+        public TransitionState FindObjCollisions_Draw(Transition transition, float scaleZ)
+        {
+            var path = transition.SpherePath;
+
+            // get overall drawing sphere from root node if needed
+            var drawingSphere = DrawingSphere ?? DrawingBSP.RootNode.Sphere;
+            
+            foreach (var localSpaceSphere in path.LocalSpaceSphere)
+            {
+                var offset = drawingSphere.Center - localSpaceSphere.Center;
+                var radsum = drawingSphere.Radius + localSpaceSphere.Radius;
+
+                if (offset.LengthSquared() - radsum * radsum < PhysicsGlobals.EPSILON)
+                    return TransitionState.Collided;
+            }
+            return TransitionState.OK;
+        }
+
         public void Init()
         {
             GfxBoundBox = new BBox();

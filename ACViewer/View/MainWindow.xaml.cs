@@ -77,5 +77,14 @@ namespace ACViewer.View
 
             Finder.Navigate(prevDID.Value.ToString("X8"));
         });
+
+        public static bool DebugMode { get; set; }
+        
+        public ICommand DebugCommand { get; } = new ActionCommand(() =>
+        {
+            DebugMode = !DebugMode;
+
+            Console.WriteLine($"Debug mode {(DebugMode ? "enabled" : "disabled")}");
+        });
     }
 }

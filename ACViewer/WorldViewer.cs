@@ -217,8 +217,9 @@ namespace ACViewer
 
         public void ShowLocation()
         {
-            var pos = Camera.GetPosition() ?? "unknown";
-            MainWindow.Status.WriteLine($"Location: {pos}");
+            var pos = Camera.GetPosition();
+
+            MainWindow.Status.WriteLine($"Location: {pos?.ToString() ?? "unknown"}");
         }
 
         public void Draw(GameTime time)

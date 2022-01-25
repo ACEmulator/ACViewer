@@ -373,20 +373,24 @@ namespace ACE.Server.Physics
             // not required for server physics?
         }
 
+        public static bool IsPicking { get; set; }
+
         public TransitionState FindObjCollisions(Transition transition)
         {
             bool ethereal = false;
 
-            if (State.HasFlag(PhysicsState.Ethereal) && State.HasFlag(PhysicsState.IgnoreCollisions))
+            if (State.HasFlag(PhysicsState.Ethereal) && State.HasFlag(PhysicsState.IgnoreCollisions) && !IsPicking)
                 return TransitionState.OK;
 
-            if (WeenieObj != null && transition.ObjectInfo.State.HasFlag(ObjectInfoState.IsViewer) && WeenieObj.IsCreature())
+            if (WeenieObj != null && transition.ObjectInfo.State.HasFlag(ObjectInfoState.IsViewer) && WeenieObj.IsCreature() && !IsPicking)
                 return TransitionState.OK;
 
             if (State.HasFlag(PhysicsState.Ethereal) || !State.HasFlag(PhysicsState.Static) && transition.ObjectInfo.Ethereal)
             {
+                // check path for picking
                 if (transition.SpherePath.StepDown)
                     return TransitionState.OK;
+
                 ethereal = true;
             }
             transition.SpherePath.ObstructionEthereal = ethereal;
@@ -402,46 +406,59 @@ namespace ACE.Server.Physics
             var missileIgnore = transition.ObjectInfo.MissileIgnore(this);
 
             var isCreature = State.HasFlag(PhysicsState.Missile) || WeenieObj != null && WeenieObj.IsCreature();
-            //isCreature = false; // hack?
 
-            if (!State.HasFlag(PhysicsState.HasPhysicsBSP) || missileIgnore || exemption)
+            if (IsPicking)
+                exemption = false;
+
+            if (PartArray == null || missileIgnore || exemption)
             {
-                if (PartArray == null || PartArray.GetNumCylsphere() == 0 || missileIgnore || exemption)
+                transition.SpherePath.ObstructionEthereal = false;
+                return TransitionState.OK;
+            }
+
+            if (IsPicking)
+            {
+                // acviewer custom
+                // tests for collision using initial DrawingSphere
+                // if that collides, perform more precise ray-polygon intersection tests
+                var collided = PartArray.FindObjCollisions_Draw(transition);
+
+                if (collided != TransitionState.OK)
                 {
-                    if (PartArray != null && PartArray.GetNumSphere() != 0 && !missileIgnore && !exemption)
-                    {
-                        var spheres = PartArray.GetSphere();
-                        for (var i = 0; i < PartArray.GetNumSphere(); i++)
-                        {
-                            var intersects = spheres[i].IntersectsSphere(Position, Scale, transition, isCreature);
-                            if (intersects != TransitionState.OK)
-                            {
-                                return FindObjCollisions_Inner(transition, intersects, ethereal, isCreature);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (PartArray != null && PartArray.GetNumCylsphere() != 0 && !missileIgnore && !exemption)
-                    {
-                        var cylSpheres = PartArray.GetCylSphere();
-                        for (var i = 0; i < PartArray.GetNumCylsphere(); i++)
-                        {
-                            var intersects = cylSpheres[i].IntersectsSphere(Position, Scale, transition);
-                            if (intersects != TransitionState.OK)
-                            {
-                                return FindObjCollisions_Inner(transition, intersects, ethereal, isCreature);
-                            }
-                        }
-                    }
+                    //Console.WriteLine($"***************** Collided with {PartArray.Setup._dat.Id:X8} @ {Position} ***********************");
+                    return FindObjCollisions_Inner(transition, collided, ethereal, isCreature);
                 }
             }
-            else if (PartArray != null)
+            else if (State.HasFlag(PhysicsState.HasPhysicsBSP))
             {
+                // physics bsp collision test
                 var collided = PartArray.FindObjCollisions(transition);
+
                 if (collided != TransitionState.OK)
                     return FindObjCollisions_Inner(transition, collided, ethereal, isCreature);
+            }
+            else if (PartArray.GetNumSphere() != 0)
+            {
+                // sphere collision test
+                var spheres = PartArray.GetSphere();
+                for (var i = 0; i < PartArray.GetNumSphere(); i++)
+                {
+                    var intersects = spheres[i].IntersectsSphere(Position, Scale, transition, isCreature);
+
+                    if (intersects != TransitionState.OK)
+                        return FindObjCollisions_Inner(transition, intersects, ethereal, isCreature);
+                }
+            }
+            else if (PartArray.GetNumCylsphere() != 0)
+            {
+                // cylsphere collision test
+                var cylSpheres = PartArray.GetCylSphere();
+                for (var i = 0; i < PartArray.GetNumCylsphere(); i++)
+                {
+                    var intersects = cylSpheres[i].IntersectsSphere(Position, Scale, transition);
+                    if (intersects != TransitionState.OK)
+                        return FindObjCollisions_Inner(transition, intersects, ethereal, isCreature);
+                }
             }
 
             transition.SpherePath.ObstructionEthereal = false;

@@ -10,13 +10,14 @@ using ACViewer.Enum;
 using ACViewer.Render;
 using ACViewer.View;
 
+using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
 
 namespace ACViewer
 {
     public class Camera
     {
-        public GameView GameView;
+        public GameView GameView { get; set; }
 
         public Matrix ViewMatrix { get; set; }
         public Matrix ProjectionMatrix { get; set; }
@@ -306,6 +307,11 @@ namespace ACViewer
                 PrevScrollWheelValue = mouseState.ScrollWheelValue;
             }
 
+            if (mouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton != ButtonState.Pressed)
+            {
+                Picker.HandleLeftClick(mouseState.X, mouseState.Y);
+            }
+
             if (mouseState.RightButton == ButtonState.Pressed)
             {
                 if (PrevMouseState.RightButton == ButtonState.Pressed)
@@ -317,6 +323,9 @@ namespace ACViewer
                     // pitch / y-rotation
                     Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Vector3.Cross(Up, Dir),
                         MathHelper.PiOver4 / 160 * (mouseState.Y - centerY)));
+
+                    if (MainWindow.DebugMode)
+                        Console.WriteLine($"MouseState.X = {mouseState.X}, MouseState.Y = {mouseState.Y}, Center.X = {centerX}, CenterY = {centerY}");
                 }
                 else
                 {
@@ -343,7 +352,7 @@ namespace ACViewer
         private int centerX => GameView.GraphicsDevice.Viewport.Width / 2;
         private int centerY => GameView.GraphicsDevice.Viewport.Height / 2;
 
-        public string GetPosition()
+        public Position GetPosition()
         {
             // 255 landblocks across * 192 meters for each landblock = 48,960 meters across Dereth
             if (Position.X < 0.0f || Position.Y < 0.0f || Position.X > 48960.0f || Position.Y > 48960.0f)
@@ -386,12 +395,14 @@ namespace ACViewer
                 foreach (var envCell in envCells)
                 {
                     if (envCell.point_in_cell(origin))
-                        return $"0x{envCell.ID:X8} [{blockPosX} {blockPosY} {Position.Z}] {q.W} {q.X} {q.Y} {q.Z}";
+                        //return $"0x{envCell.ID:X8} [{blockPosX} {blockPosY} {Position.Z}] {q.W} {q.X} {q.Y} {q.Z}";
+                        return new Position(envCell.ID, new AFrame(new System.Numerics.Vector3(blockPosX, blockPosY, Position.Z), q.ToNumerics()));
                 }
             }
 
             // return outdoor location
-            return $"0x{objCellId:X8} [{x} {y} {Position.Z}] {q.W} {q.X} {q.Y} {q.Z}";
+            //return $"0x{objCellId:X8} [{x} {y} {Position.Z}] {q.W} {q.X} {q.Y} {q.Z}";
+            return new Position(objCellId, new AFrame(new System.Numerics.Vector3(x, y, Position.Z), q.ToNumerics()));
         }
     }
 }
