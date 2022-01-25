@@ -10,6 +10,7 @@ using ACE.Entity;
 using ACE.Entity.Enum;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Common;
+using ACE.Server.Physics.Util;
 using ACE.Server.WorldObjects;
 
 using ACViewer.Enum;
@@ -81,6 +82,40 @@ namespace ACViewer
                 return;
             }
 
+            var maxSteps = 500;
+            var stepSize = 1.0f;
+            var i = 0;
+
+            var stepDir = (dir * stepSize).ToNumerics();
+
+            var singleBlock = WorldViewer.Instance.SingleBlock;
+
+            if (singleBlock != uint.MaxValue)
+            {
+                var landblock = LScape.get_landblock(singleBlock);
+                
+                // custom for single landblock IsDungeon
+                if (landblock.IsDungeon)
+                {
+                    if (startPos.Landblock != singleBlock >> 16)
+                        startPos.Reframe(singleBlock);
+                    
+                    var adjustCell = AdjustCell.Get(startPos.Landblock);
+
+                    for ( ; i < maxSteps; i++)
+                    {
+                        var foundCell = adjustCell.GetCell(startPos.Frame.Origin);
+
+                        if (foundCell != null)
+                        {
+                            startPos.ObjCellID = foundCell.Value;
+                            break;
+                        }
+                        startPos.Frame.Origin += stepDir;
+                    }
+                }
+            }
+
             // todo: make this static
             var pickerObj = PhysicsObj.makeObject(setupId, pickerGuid.Full, true);
             pickerObj.State |= PhysicsState.PathClipped;
@@ -94,29 +129,34 @@ namespace ACViewer
             var weenie = new WeenieObject(worldObj);
             pickerObj.set_weenie_obj(weenie);
 
-            var success = pickerObj.enter_world(startPos);
-
-            if (!success)
-            {
-                Console.WriteLine($"Failed to spawn picker @ {startPos}");
-                return;
-            }
-
-            //Console.WriteLine($"Successfully spawned picker @ {startPos}");
-
-            var maxSteps = 500;
-            var stepSize = 1.0f;
-
             // perform transition
             PhysicsObj.IsPicking = true;
 
             var showedMsg = false;
 
-            for (var i = 0; i < maxSteps; i++)
+            var spawned = false;
+
+            for ( ; i < maxSteps; i++)
             {
+                if (!spawned)
+                {
+                    var success = pickerObj.enter_world(startPos);
+
+                    if (!success)
+                    {
+                        startPos.Frame.Origin += stepDir;
+                        continue;
+                    }
+                    else
+                    {
+                        //Console.WriteLine($"Successfully spawned picker @ {startPos}");
+                        spawned = true;
+                    }
+                }
+
                 var nextPos = new ACE.Server.Physics.Common.Position(pickerObj.Position);
 
-                nextPos.Frame.Origin += (dir * stepSize).ToNumerics();
+                nextPos.Frame.Origin += stepDir;
 
                 var transition = pickerObj.transition(pickerObj.Position, nextPos, false);
 
@@ -151,7 +191,9 @@ namespace ACViewer
 
             PhysicsObj.IsPicking = false;
 
-            if (!showedMsg)
+            if (!spawned)
+                Console.WriteLine($"Failed to spawn picker @ {Camera.GetPosition()}");
+            else if (!showedMsg)
                 Console.WriteLine($"No collisions");
 
             // cleanup
@@ -209,6 +251,8 @@ namespace ACViewer
                     if (landblock != null)
                         FileInfo.Instance.SetInfo(new FileTypes.CellLandblock(landblock).BuildTree());
 
+//                    MainWindow.Instance.Status.WriteLine($"Selected {landCell.ID:X8}");
+
                     break;
 
                 case PickType.EnvCell:
@@ -238,7 +282,9 @@ namespace ACViewer
 
                     if (_envCell != null)
                         FileInfo.Instance.SetInfo(new FileTypes.EnvCell(_envCell).BuildTree());
-                    
+
+                    //MainWindow.Instance.Status.WriteLine($"Selected {envCell.ID:X8}");
+
                     break;
 
                 case PickType.GfxObj:
@@ -279,6 +325,8 @@ namespace ACViewer
 
                         if (setup != null)
                             FileInfo.Instance.SetInfo(new FileTypes.Setup(setup).BuildTree());
+
+                        //MainWindow.Instance.Status.WriteLine($"Selected {setupID:X8}");
                     }
                     else
                     {
@@ -289,6 +337,8 @@ namespace ACViewer
 
                         if (gfxObj != null)
                             FileInfo.Instance.SetInfo(new FileTypes.GfxObj(gfxObj).BuildTree());
+
+                        //MainWindow.Instance.Status.WriteLine($"Selected {gfxObjId:X8}");
                     }
                     //else
                         //Console.WriteLine($"Unknown model ID for object @ {PickResult.PhysicsObj.Position}");

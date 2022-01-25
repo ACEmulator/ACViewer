@@ -298,5 +298,19 @@ namespace ACE.Server.Physics.Common
         {
             return $"0x{ObjCellID:X8} [{Frame.Origin.X} {Frame.Origin.Y} {Frame.Origin.Z}]";
         }
+
+        public void Reframe(uint landblock)
+        {
+            var lbx = landblock >> 24;
+            var lby = landblock >> 16 & 0xFF;
+
+            var dx = (int)LandblockX - lbx;
+            var dy = (int)LandblockY - lby;
+
+            Frame.Origin.X += dx * 192;
+            Frame.Origin.Y += dy * 192;
+
+            ObjCellID = landblock & 0xFFFF0000;
+        }
     }
 }

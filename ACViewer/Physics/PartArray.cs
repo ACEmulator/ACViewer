@@ -626,7 +626,6 @@ namespace ACE.Server.Physics
                 Parts[i].Pos.Frame.Combine(frame, curPartFrame, Scale);
             }
         }
-
  
         public void UpdateViewerDistance(float cypt, Vector3 heading)
         {

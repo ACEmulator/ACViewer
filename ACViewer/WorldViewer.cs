@@ -44,6 +44,8 @@ namespace ACViewer
 
         public Model.BoundingBox BoundingBox { get; set; }
 
+        public uint SingleBlock { get; set; }
+
         public WorldViewer()
         {
             Instance = this;
@@ -113,6 +115,8 @@ namespace ACViewer
             else
                 Camera.InitLandblock(r_landblock);
 
+            SingleBlock = landblock.ID;
+
             FreeResources();
         }
 
@@ -173,6 +177,8 @@ namespace ACViewer
 
             Camera.InitLandblock(centerBlock);
             GameView.ViewMode = ViewMode.World;
+
+            SingleBlock = uint.MaxValue;
 
             FreeResources();
         }
