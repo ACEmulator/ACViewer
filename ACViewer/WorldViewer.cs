@@ -208,6 +208,11 @@ namespace ACViewer
                 ShowLocation();
             }
 
+            if (keyboardState.IsKeyDown(Keys.C) && !PrevKeyboardState.IsKeyDown(Keys.C))
+            {
+                Picker.ClearSelection();
+            }
+
             PrevKeyboardState = keyboardState;
 
             if (Camera != null)

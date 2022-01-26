@@ -370,5 +370,11 @@ namespace ACViewer
                 GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, HitVertices, 0, HitVertices.Length, HitIndices, 0, HitIndices.Length / 2);
             }
         }
+
+        public static void ClearSelection()
+        {
+            HitVertices = null;
+            HitIndices = null;
+        }
     }
 }
