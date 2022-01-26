@@ -794,22 +794,8 @@ float4 ParticleInstancePS(ParticleVertexShaderOutput input) : COLOR
 
     color.a *= input.OpacityActive.x;
     
-    // only output completely opaque pixels
-    // also discard inactive particles
-    clip(color.a < 1.0f || input.OpacityActive.y == 0 ? -1 : 1);
-
-    return color;
-}
-
-float4 ParticleInstanceTransPS(ParticleVertexShaderOutput input) : COLOR
-{
-    float4 color = xTextures.Sample(TextureSampler, input.TextureCoordIdx);
-
-    color.a *= input.OpacityActive.x;
-
-    // only output semi-transparent pixels
-    // also discard inactive particles
-    clip(color.a < 1.0f && input.OpacityActive.y > 0 ? 1 : -1);
+    // discard inactive particles
+    clip(input.OpacityActive.y == 0 ? -1 : 1);
 
     return color;
 }
@@ -818,17 +804,10 @@ technique ParticleInstance
 {
     pass Pass0
     {
-        ZWriteEnable = true;
-
-        VertexShader = compile vs_4_0 ParticleInstanceVS();
-        PixelShader = compile ps_4_0 ParticleInstancePS();
-    }
-    pass Pass1
-    {
         ZWriteEnable = false;
 
         VertexShader = compile vs_4_0 ParticleInstanceVS();
-        PixelShader = compile ps_4_0 ParticleInstanceTransPS();
+        PixelShader = compile ps_4_0 ParticleInstancePS();
     }
 }
 

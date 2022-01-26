@@ -142,8 +142,6 @@ namespace ACViewer
                 _graphicsDeviceManager.ApplyChanges();
             }
 
-            PrevKeyboardState = keyboardState;
-
             if (Player != null)
                 Player.Update(time);
 
@@ -165,6 +163,8 @@ namespace ACViewer
                     ParticleViewer.Update(time);
                     break;
             }
+
+            PrevKeyboardState = keyboardState;
         }
 
         private static readonly Color BackgroundColor = new Color(0, 0, 0);
