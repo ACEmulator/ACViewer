@@ -26,6 +26,20 @@ namespace ACViewer.Render
         public List<ushort> Indices { get; set; }
         public IndexBuffer IndexBuffer { get; set; }
 
+        private bool? hasWrappingUVs;
+
+        public bool HasWrappingUVs
+        {
+            get
+            {
+                if (hasWrappingUVs == null)
+                    hasWrappingUVs = CellStruct.VertexArray.HasWrappingUVs();
+
+                return hasWrappingUVs.Value;
+            }
+        }
+
+
         public R_CellStruct(CellStruct cellStruct)
         {
             // caching?

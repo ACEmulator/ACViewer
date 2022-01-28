@@ -241,6 +241,7 @@
     <Compile Include="ModelViewer.cs" />
     <Compile Include="Model\BoundingBox.cs" />
     <Compile Include="Model\Face.cs" />
+    <Compile Include="Model\InstanceBufferStats.cs" />
     <Compile Include="Model\LandVertex.cs" />
     <Compile Include="Model\Mesh.cs" />
     <Compile Include="Model\ParticleDeclaration.cs" />
@@ -275,21 +276,24 @@
     <Compile Include="Physics\Managers\ServerObjectManager.cs" />
     <Compile Include="Picker.cs" />
     <Compile Include="Render\Buffer.cs" />
+    <Compile Include="Render\GfxObjInstance_Shared.cs" />
+    <Compile Include="Render\GfxObjinstance_TextureFormat.cs" />
     <Compile Include="Render\ParticleBatch.cs" />
     <Compile Include="Render\ParticleBatchDraw.cs" />
     <Compile Include="Render\ParticleTextureFormat.cs" />
     <Compile Include="Render\PerfTimer.cs" />
     <Compile Include="Render\EffectParameters.cs" />
+    <Compile Include="Render\TerrainBatch.cs" />
+    <Compile Include="Render\TerrainBatchDraw.cs" />
+    <Compile Include="Render\TextureAtlas.cs" />
     <Compile Include="Render\TextureSet.cs" />
     <Compile Include="Render\InstanceBatch.cs" />
     <Compile Include="Render\InstanceBatchDraw.cs" />
-    <Compile Include="Render\RenderBatch.cs" />
     <Compile Include="Render\R_CellStruct.cs" />
     <Compile Include="Render\R_EnvCell.cs" />
     <Compile Include="Render\R_Environment.cs" />
     <Compile Include="Render\R_EnvironmentCache.cs" />
     <Compile Include="Render\R_Landblock.cs" />
-    <Compile Include="Render\TerrainBatch.cs" />
     <Compile Include="Model\VertexInstance.cs" />
     <Compile Include="Render\TextureFormat.cs" />
     <Compile Include="TextureViewer.cs" />
@@ -574,6 +578,9 @@
     <None Include="Content\Fonts\Consolas.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Content\texture_clamp.mgfxo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -587,6 +594,7 @@
     <Resource Include="Icons\Search_16x.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\texture_clamp.fx" />
     <Content Include="Data\Locations.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -78,7 +78,6 @@ namespace ACViewer.Model
             }
 
             //Console.WriteLine($"Poly verts: {_polygon.VertexIds.Count} ({IndexArray.Count})");
-
         }
 
         public void BuildIndexBuffer()

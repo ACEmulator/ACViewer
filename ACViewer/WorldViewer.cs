@@ -122,6 +122,8 @@ namespace ACViewer
 
         public async void LoadLandblocks(Vector2 startBlock, Vector2 endBlock)
         {
+            //Console.WriteLine($"LoadLandblocks({startBlock}, {endBlock})");
+            
             Render.Buffer.ClearBuffer();
             TextureCache.Init();
             
@@ -185,7 +187,6 @@ namespace ACViewer
 
         public void FreeResources()
         {
-            R_Landblock.Init();
             TextureCache.Init(false);
         }
 
@@ -211,6 +212,41 @@ namespace ACViewer
             if (keyboardState.IsKeyDown(Keys.C) && !PrevKeyboardState.IsKeyDown(Keys.C))
             {
                 Picker.ClearSelection();
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D1) && !PrevKeyboardState.IsKeyDown(Keys.D1))
+            {
+                ACViewer.Render.Buffer.drawTerrain = !ACViewer.Render.Buffer.drawTerrain;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D2) && !PrevKeyboardState.IsKeyDown(Keys.D2))
+            {
+                ACViewer.Render.Buffer.drawEnvCells = !ACViewer.Render.Buffer.drawEnvCells;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D3) && !PrevKeyboardState.IsKeyDown(Keys.D3))
+            {
+                ACViewer.Render.Buffer.drawStaticObjs = !ACViewer.Render.Buffer.drawStaticObjs;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D4) && !PrevKeyboardState.IsKeyDown(Keys.D4))
+            {
+                ACViewer.Render.Buffer.drawBuildings = !ACViewer.Render.Buffer.drawBuildings;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D5) && !PrevKeyboardState.IsKeyDown(Keys.D5))
+            {
+                ACViewer.Render.Buffer.drawScenery = !ACViewer.Render.Buffer.drawScenery;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D6) && !PrevKeyboardState.IsKeyDown(Keys.D6))
+            {
+                MainMenu.ToggleParticles();
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D0) && !PrevKeyboardState.IsKeyDown(Keys.D0))
+            {
+                ACViewer.Render.Buffer.drawAlpha = !ACViewer.Render.Buffer.drawAlpha;
             }
 
             PrevKeyboardState = keyboardState;
