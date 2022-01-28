@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using ACViewer.Model;
@@ -13,12 +12,13 @@ namespace ACViewer.Render
 
         public static Effect Effect => Render.Effect;
 
-        public EffectParameters EffectParameters { get; set; }
+        public static Effect Effect_Clamp => Render.Effect_Clamp;
 
-        //public List<VertexPositionNormalTexture> Vertices;
+        public Texture2D Textures { get; set; }
+
         public List<VertexPositionNormalTextures> Vertices { get; set; }
 
-        public VertexBuffer VertexBuffer { get; set; }
+        public VertexBuffer VertedBuffer { get; set; }
         public IndexBuffer IndexBuffer { get; set; }
 
         public TextureFormat TextureFormat { get; set; }
@@ -28,40 +28,16 @@ namespace ACViewer.Render
 
         public VertexBufferBinding[] Bindings { get; set; }
 
-        public InstanceBatchDraw()
+        public InstanceBatchDraw(TextureFormat textureFormat)
         {
-            Init();
-        }
+            TextureFormat = textureFormat;
 
-        public void Init()
-        {
-            EffectParameters = new EffectParameters();
-            //Vertices = new List<VertexPositionNormalTexture>();
             Vertices = new List<VertexPositionNormalTextures>();
+
             TextureIndex = new Dictionary<uint, byte>();
         }
 
-        public InstanceBatchDraw(Texture2D texture)
-        {
-            Init();
-
-            EffectParameters.Texture = texture;
-        }
-
-        public InstanceBatchDraw(TextureFormat textureFormat)
-        {
-            Init();
-
-            TextureFormat = textureFormat;
-        }
-
-        public void AddPolygon(List<VertexPositionNormalTexture> vertices, Polygon polygon, Matrix world)
-        {
-            //foreach (var idx in polygon.Indices)
-                //Vertices.Add(vertices[idx].Transform(world));
-        }
-
-        public void AddPolygon(List<VertexPositionNormalTexture> vertices, Polygon polygon, uint textureID, Matrix model)
+        public void AddPolygon(List<VertexPositionNormalTexture> vertices, Polygon polygon, uint textureID)
         {
             if (!TextureIndex.TryGetValue(textureID, out var textureIdx))
             {
@@ -70,14 +46,17 @@ namespace ACViewer.Render
             }
 
             foreach (var idx in polygon.Indices)
-                Vertices.Add(vertices[idx].Transform(model, textureIdx));
+            {
+                var v = vertices[idx];
+                Vertices.Add(new VertexPositionNormalTextures(v.Position, v.Normal, v.TextureCoordinate, textureIdx));
+            }
         }
 
         public void BuildTextures()
         {
             var bytesPerPixel = TextureFormat.GetBytesPerPixel();
 
-            var textures = new Texture2D(GraphicsDevice, TextureFormat.Width, TextureFormat.Height, false, TextureFormat.SurfaceFormat, TextureIndex.Count);
+            Textures = new Texture2D(GraphicsDevice, TextureFormat.Width, TextureFormat.Height, false, TextureFormat.SurfaceFormat, TextureIndex.Count);
 
             foreach (var kvp in TextureIndex)
             {
@@ -87,10 +66,8 @@ namespace ACViewer.Render
                 //Console.WriteLine($"Texture format: {texture.Format}");
                 var data = new byte[(int)(texture.Width * texture.Height * bytesPerPixel)];
                 texture.GetData(data);
-                textures.SetData(0, idx, null, data, 0, data.Length);
+                Textures.SetData(0, idx, null, data, 0, data.Length);
             }
-
-            EffectParameters.Texture = textures;
         }
 
         public void OnCompleted(VertexBuffer instanceBuffer)
@@ -101,9 +78,8 @@ namespace ACViewer.Render
 
         public void BuildBuffer()
         {
-            //VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), Vertices.Count, BufferUsage.WriteOnly);
-            VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTextures), Vertices.Count, BufferUsage.WriteOnly);
-            VertexBuffer.SetData(Vertices.ToArray());
+            VertedBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTextures), Vertices.Count, BufferUsage.WriteOnly);
+            VertedBuffer.SetData(Vertices.ToArray());
 
             var indices = new ushort[Vertices.Count];
             for (ushort i = 0; i < Vertices.Count; i++)
@@ -118,7 +94,7 @@ namespace ACViewer.Render
         public void BuildBindings(VertexBuffer instanceBuffer)
         {
             Bindings = new VertexBufferBinding[2];
-            Bindings[0] = new VertexBufferBinding(VertexBuffer);
+            Bindings[0] = new VertexBufferBinding(VertedBuffer);
             Bindings[1] = new VertexBufferBinding(instanceBuffer, 0, 1);
         }
 
@@ -127,9 +103,11 @@ namespace ACViewer.Render
             GraphicsDevice.SetVertexBuffers(Bindings);
             GraphicsDevice.Indices = IndexBuffer;
 
-            Effect.Parameters["xTextures"].SetValue(EffectParameters.Texture);
+            var effect = TextureFormat.HasWrappingUVs ? Effect : Effect_Clamp;
 
-            foreach (EffectPass pass in Effect.CurrentTechnique.Passes)
+            effect.Parameters["xTextures"].SetValue(Textures);
+
+            foreach (var pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
 
@@ -139,8 +117,8 @@ namespace ACViewer.Render
 
         public void Dispose()
         {
-            EffectParameters.Dispose();
-            VertexBuffer.Dispose();
+            Textures.Dispose();
+            VertedBuffer.Dispose();
             IndexBuffer.Dispose();
         }
     }

@@ -1,9 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer
 {
-    public struct VertexPositionNormalTextures : IVertexType
+    public struct VertexPositionNormalTextures : IVertexType, IEquatable<VertexPositionNormalTextures>
     {
         public Vector3 Position { get; set; }
         public Vector3 Normal { get; set; }
@@ -16,7 +18,7 @@ namespace ACViewer
             new VertexElement(sizeof(float) * 6, VertexElementFormat.Vector3, VertexElementUsage.TextureCoordinate, 0)
         );
 
-        public VertexPositionNormalTextures(Vector3 position, Vector3 normal, Vector2 uv, byte textureIdx)
+        public VertexPositionNormalTextures(Vector3 position, Vector3 normal, Vector2 uv, int textureIdx)
         {
             Position = position;
             Normal = normal;
@@ -24,5 +26,21 @@ namespace ACViewer
         }
 
         VertexDeclaration IVertexType.VertexDeclaration => VertexDeclaration;
+
+        public bool Equals(VertexPositionNormalTextures v)
+        {
+            return Position == v.Position && Normal == v.Normal && TextureCoord == v.TextureCoord;
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 0;
+
+            hash = (hash * 397) ^ Position.GetHashCode();
+            hash = (hash * 397) ^ Normal.GetHashCode();
+            hash = (hash * 397) ^ TextureCoord.GetHashCode();
+
+            return hash;
+        }
     }
 }

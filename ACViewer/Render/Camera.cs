@@ -88,7 +88,9 @@ namespace ACViewer
         {
             NearPlane = nearPlane;
             CreateProjection();
+            
             Render.Render.Effect.Parameters["xProjection"].SetValue(ProjectionMatrix);
+            Render.Render.Effect_Clamp.Parameters["xProjection"].SetValue(ProjectionMatrix);
         }
 
         public void InitLandblock(R_Landblock landblock)
@@ -245,6 +247,7 @@ namespace ACViewer
         {
             CreateProjection();
             Render.Render.Effect.Parameters["xProjection"].SetValue(ProjectionMatrix);
+            Render.Render.Effect_Clamp.Parameters["xProjection"].SetValue(ProjectionMatrix);
         }
 
         public Matrix CreateLookAt()

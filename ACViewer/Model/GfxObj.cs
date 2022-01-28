@@ -32,6 +32,19 @@ namespace ACViewer.Model
 
         public BoundingBox BoundingBox { get; set; }
 
+        private bool? hasWrappingUVs;
+        
+        public bool HasWrappingUVs
+        {
+            get
+            {
+                if (hasWrappingUVs == null)
+                    hasWrappingUVs = _gfxObj.VertexArray.HasWrappingUVs();
+
+                return hasWrappingUVs.Value;
+            }
+        }
+
         public GfxObj(uint gfxObjID, bool doBuild = true)
         {
             MainWindow.Instance.Status.WriteLine($"Loading GfxObj {gfxObjID:X8}");

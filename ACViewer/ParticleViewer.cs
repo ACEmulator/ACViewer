@@ -216,9 +216,9 @@ namespace ACViewer
             
             GraphicsDevice.SetVertexBuffer(gfxObj.VertexBuffer);
 
-            var translateWorld = Matrix.CreateScale(part.GfxObjScale.ToXna()) * Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna()) * Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna());
+            var translateWorld = Matrix.CreateScale(part.GfxObjScale.ToXna()) * Matrix.CreateFromQuaternion(part.Pos.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(part.Pos.Frame.Origin.ToXna());
 
-            Effect.CurrentTechnique = Effect.Techniques["TexturedNoShading"];
+            Effect.CurrentTechnique = Effect.Techniques["TexturedNoShadingAlphaOnly"];
             Effect.Parameters["xWorld"].SetValue(translateWorld);
             Effect.Parameters["xOpacity"].SetValue(1.0f - part.CurTranslucency);
 

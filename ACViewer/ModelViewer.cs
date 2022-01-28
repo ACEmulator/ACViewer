@@ -29,6 +29,8 @@ namespace ACViewer
         public R_Environment Environment { get; set; }
 
         public static Effect Effect => Render.Render.Effect;
+        public static Effect Effect_Clamp => Render.Render.Effect_Clamp;
+
         public static Camera Camera => GameView.Camera;
 
         public ViewObject ViewObject { get; set; }
@@ -196,11 +198,17 @@ namespace ACViewer
 
         public void Draw(GameTime time)
         {
+            Effect.CurrentTechnique = Effect.Techniques["TexturedNoShading"];
             Effect.Parameters["xWorld"].SetValue(Matrix.Identity);
             Effect.Parameters["xView"].SetValue(Camera.ViewMatrix);
             Effect.Parameters["xProjection"].SetValue(Camera.ProjectionMatrix);
             Effect.Parameters["xOpacity"].SetValue(1.0f);
-            Effect.CurrentTechnique = Effect.Techniques["TexturedNoShading"];
+
+            Effect_Clamp.CurrentTechnique = Effect_Clamp.Techniques["TexturedNoShading"];
+            Effect_Clamp.Parameters["xWorld"].SetValue(Matrix.Identity);
+            Effect_Clamp.Parameters["xView"].SetValue(Camera.ViewMatrix);
+            Effect_Clamp.Parameters["xProjection"].SetValue(Camera.ProjectionMatrix);
+            Effect_Clamp.Parameters["xOpacity"].SetValue(1.0f);
 
             switch (ModelType)
             {

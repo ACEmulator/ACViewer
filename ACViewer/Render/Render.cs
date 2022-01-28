@@ -25,6 +25,9 @@ namespace ACViewer.Render
 
         public static Effect Effect { get; set; }
 
+        // multiple SamplerStates in the same .fx file apparently don't work
+        public static Effect Effect_Clamp { get; set; }
+
         public Camera Camera
         {
             get => GameView.Camera;
@@ -41,11 +44,13 @@ namespace ACViewer.Render
         public void Init()
         {
             Effect = new Effect(GraphicsDevice, File.ReadAllBytes("Content/texture.mgfxo"));
+            Effect_Clamp = new Effect(GraphicsDevice, File.ReadAllBytes("Content/texture_clamp.mgfxo"));
 
             if (Camera == null)
                 Camera = new Camera(GameView.Instance);
 
             Effect.Parameters["xProjection"].SetValue(Camera.ProjectionMatrix);
+            Effect_Clamp.Parameters["xProjection"].SetValue(Camera.ProjectionMatrix);
 
             Buffer = new Buffer();
         }
@@ -70,8 +75,11 @@ namespace ACViewer.Render
         public void Draw()
         {
             GraphicsDevice.Clear(BackgroundColor);
+
             SetRasterizerState(false);
+            
             Effect.Parameters["xView"].SetValue(Camera.ViewMatrix);
+            Effect_Clamp.Parameters["xView"].SetValue(Camera.ViewMatrix);
 
             //landblock.Draw();
             Buffer.Draw();

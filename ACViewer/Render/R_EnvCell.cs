@@ -77,7 +77,7 @@ namespace ACViewer.Render
         {
             Effect.Parameters["xWorld"].SetValue(WorldTransform);
 
-            Environment.Draw(Textures);
+            Environment.Draw(EnvCell.CellStructureID, Textures);
         }
 
         public void DrawStaticObjs(Matrix landblock)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +12,7 @@ namespace ACViewer.Model
     {
         public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
         public static Effect Effect => Render.Render.Effect;
+        public static Effect Effect_Clamp => Render.Render.Effect_Clamp;
         public static Camera Camera => GameView.Camera;
 
         public Setup Setup { get; set; }
@@ -114,7 +116,10 @@ namespace ACViewer.Model
                     part.BuildVertexBuffer();
 
                 GraphicsDevice.SetVertexBuffer(part.VertexBuffer);
-                Effect.Parameters["xWorld"].SetValue(transform);
+
+                var effect = part.HasWrappingUVs ? Effect : Effect_Clamp;
+
+                effect.Parameters["xWorld"].SetValue(transform);
 
                 foreach (var polygon in part.Polygons)
                 {
@@ -128,9 +133,9 @@ namespace ACViewer.Model
                         polygon.BuildIndexBuffer();
 
                     GraphicsDevice.Indices = polygon.IndexBuffer;
-                    Effect.Parameters["xTextures"].SetValue(polygon.Texture);
+                    effect.Parameters["xTextures"].SetValue(polygon.Texture);
 
-                    foreach (var pass in Effect.CurrentTechnique.Passes)
+                    foreach (var pass in effect.CurrentTechnique.Passes)
                     {
                         pass.Apply();
 

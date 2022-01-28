@@ -4,17 +4,19 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer.Render
 {
-    public class TextureFormat: IEquatable<TextureFormat>
+    public class TextureFormat : IEquatable<TextureFormat>
     {
         public SurfaceFormat SurfaceFormat { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public bool HasWrappingUVs { get; set; }
 
-        public TextureFormat(SurfaceFormat surfaceFormat, int width, int height)
+        public TextureFormat(SurfaceFormat surfaceFormat, int width, int height, bool hasWrappingUVs)
         {
             SurfaceFormat = surfaceFormat;
             Width = width;
             Height = height;
+            HasWrappingUVs = hasWrappingUVs;
         }
 
         public float GetBytesPerPixel()
@@ -32,7 +34,7 @@ namespace ACViewer.Render
 
         public bool Equals(TextureFormat textureFormat)
         {
-            return SurfaceFormat == textureFormat.SurfaceFormat && Width == textureFormat.Width && Height == textureFormat.Height;
+            return SurfaceFormat == textureFormat.SurfaceFormat && Width == textureFormat.Width && Height == textureFormat.Height && HasWrappingUVs == textureFormat.HasWrappingUVs;
         }
 
         public override int GetHashCode()
@@ -42,13 +44,14 @@ namespace ACViewer.Render
             hash = (hash * 397) ^ SurfaceFormat.GetHashCode();
             hash = (hash * 397) ^ Width.GetHashCode();
             hash = (hash * 397) ^ Height.GetHashCode();
+            hash = (hash * 397) ^ HasWrappingUVs.GetHashCode();
 
             return hash;
         }
 
         public override string ToString()
         {
-            return $"SurfaceFormat: {SurfaceFormat}, Width: {Width}, Height: {Height}";
+            return $"SurfaceFormat: {SurfaceFormat}, Width: {Width}, Height: {Height}, HasWrappingUVs: {HasWrappingUVs}";
         }
     }
 }

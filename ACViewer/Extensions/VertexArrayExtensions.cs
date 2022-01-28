@@ -49,6 +49,19 @@ namespace ACViewer
             return uvLookupTable;
         }
 
+        public static bool HasWrappingUVs(this CVertexArray vertexArray)
+        {
+            foreach (var v in vertexArray.Vertices.Values)
+            {
+                foreach (var uv in v.UVs)
+                {
+                    if (uv.U < 0 || uv.U > 1 || uv.V < 0 || uv.V > 1)
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public static bool Verify(this CVertexArray vertexArray)
         {
             var keys = vertexArray.Vertices.Keys.ToList();
