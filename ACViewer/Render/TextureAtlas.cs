@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -41,8 +42,15 @@ namespace ACViewer.Render
         {
             if (Textures.Count == 0) return;
 
-            // TODO: determine when mipmaps can be used
             var useMipMaps = false;
+
+            if (TextureCache.UseMipMaps)
+            {
+                // pre-fetch first texture to determine if we can use mipmaps
+                var texture = TextureCache.Get(Textures.First().Key);
+                if (texture.LevelCount > 1)
+                    useMipMaps = true;
+            }
 
             // max size / # of textures?
             _Textures = new Texture2D(GraphicsDevice, TextureFormat.Width, TextureFormat.Height, useMipMaps, TextureFormat.SurfaceFormat, Textures.Count);
