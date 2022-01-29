@@ -168,6 +168,7 @@
     <Compile Include="Extensions\TextureExtensions.cs" />
     <Compile Include="Extensions\Vector2Extensions.cs" />
     <Compile Include="Extensions\VertexExtensions.cs" />
+    <Compile Include="FileExport.cs" />
     <Compile Include="FileTypes\CellLandblock.cs" />
     <Compile Include="FileTypes\ChatPoseTable.cs" />
     <Compile Include="FileTypes\CombatTable.cs" />
@@ -248,6 +249,7 @@
     <Compile Include="Model\PickResult.cs" />
     <Compile Include="Model\VertexInstanceEnv.cs" />
     <Compile Include="Model\VertexPositionNormalTextures.cs" />
+    <Compile Include="Model\VertexUV.cs" />
     <Compile Include="ParticleViewer.cs" />
     <Compile Include="Physics\Command\ACCmdInterp.cs" />
     <Compile Include="Physics\Command\CmdStruct.cs" />
@@ -598,6 +600,7 @@
     <Content Include="Data\Locations.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Icons\export-file.png" />
     <Resource Include="Icons\portal.png" />
     <None Include="Content\Images\highres.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

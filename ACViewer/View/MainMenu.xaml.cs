@@ -66,6 +66,46 @@ namespace ACViewer.View
             }
         }
 
+        private void Export_Click(object sender, RoutedEventArgs e)
+        {
+            // get currently selected file from FileExplorer
+            var selectedFileID = FileExplorer.Instance.Selected_FileID;
+
+            if (selectedFileID == 0)
+            {
+                MainWindow.Instance.AddStatusText($"You must first select a file to export");
+                return;
+            }
+
+            var saveFileDialog = new SaveFileDialog();
+
+            var isModel = selectedFileID >> 24 == 0x1 || selectedFileID >> 24 == 0x2;
+
+            if (isModel)
+            {
+                saveFileDialog.Filter = "OBJ files (*.obj)|*.obj|RAW files (*.raw)|*.raw";
+                saveFileDialog.FileName = $"{selectedFileID:X8}.obj";
+            }
+            else
+            {
+                saveFileDialog.Filter = "RAW files (*.raw)|*.raw";
+                saveFileDialog.FileName = $"{selectedFileID:X8}.raw";
+            }
+
+            var success = saveFileDialog.ShowDialog();
+
+            if (success != true) return;
+
+            var saveFilename = saveFileDialog.FileName;
+
+            MainWindow.Instance.AddStatusText($"Exporting {saveFilename}");
+
+            if (isModel && saveFileDialog.FilterIndex == 1)
+                FileExport.ExportModel(selectedFileID, saveFilename);
+            else
+                FileExport.ExportRaw(DatType.Portal, selectedFileID, saveFilename);
+        }
+
         public void ReadDATFile(string filename)
         {
             var fi = new System.IO.FileInfo(filename);

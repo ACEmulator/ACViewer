@@ -29,6 +29,11 @@
                         <Image Source="../Icons/portal.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="E_xport" Click="Export_Click">
+                    <MenuItem.Icon>
+                        <Image Source="../Icons/export-file.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_World Map" Click="WorldMap_Click" />
