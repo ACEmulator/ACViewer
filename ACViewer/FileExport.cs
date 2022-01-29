@@ -147,10 +147,16 @@ namespace ACViewer
             // vertices
             var vertices = gfxObj.VertexArray.Vertices.OrderBy(i => i.Key).Select(i => i.Value).ToList();
 
+            // directx -> opengl / left-hand -> right-hand
+            // model viewer also has y & z swapped
+            
+            // 0x020000A7 is a good test for maintaining UV's -- note the rivet locations on the top vs. sides
+            // 0x02000001 is also a good test for final model orientation
+
             foreach (var _v in vertices)
             {
                 var v = Vector3.Transform(_v.Origin, transform);
-                sb.AppendLine($"v {v.X} {v.Z} {v.Y}");
+                sb.AppendLine($"v {-v.X} {v.Z} {v.Y}");
             }
             sb.AppendLine();
 
@@ -176,7 +182,7 @@ namespace ACViewer
             foreach (var _v in gfxObj.VertexArray.Vertices.OrderBy(i => i.Key).Select(i => i.Value))
             {
                 var v = Vector3.Transform(_v.Normal, transform);
-                sb.AppendLine($"vn {v.X} {v.Z} {v.Y}");
+                sb.AppendLine($"vn {-v.X} {v.Z} {v.Y}");
             }
 
             var si = startIdx;

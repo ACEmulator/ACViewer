@@ -312,7 +312,8 @@ namespace ACViewer
 
             if (mouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton != ButtonState.Pressed)
             {
-                Picker.HandleLeftClick(mouseState.X, mouseState.Y);
+                if (GameView.ViewMode == ViewMode.World)
+                    Picker.HandleLeftClick(mouseState.X, mouseState.Y);
             }
 
             if (mouseState.RightButton == ButtonState.Pressed)
@@ -358,7 +359,7 @@ namespace ACViewer
         public Position GetPosition()
         {
             // 255 landblocks across * 192 meters for each landblock = 48,960 meters across Dereth
-            if (Position.X < 0.0f || Position.Y < 0.0f || Position.X > 48960.0f || Position.Y > 48960.0f)
+            if (GameView.ViewMode == ViewMode.World && (Position.X < 0.0f || Position.Y < 0.0f || Position.X > 48960.0f || Position.Y > 48960.0f))
                 return null;
             
             var lbx = (int)(Position.X / 192.0f);
