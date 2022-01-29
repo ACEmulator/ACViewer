@@ -164,7 +164,6 @@ namespace ACViewer
 
                     sb.AppendLine($"vt {uv.U} {-uv.V}");
                     vertexUVs.Add(new VertexUV(i, j), nextUvIdx++);
-
                 }
             }
             sb.AppendLine();
