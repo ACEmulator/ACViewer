@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -14,6 +15,7 @@ using ACE.Entity.Enum;
 using ACViewer.Enum;
 using ACViewer.Model;
 using ACViewer.Render;
+using ACViewer.View;
 
 namespace ACViewer
 {
@@ -57,6 +59,7 @@ namespace ACViewer
                     File.WriteAllBytes(outFilename, bytes);
                 }
             }
+            MainWindow.Instance.AddStatusText($"Wrote {outFilename}");
             return true;
         }
 
@@ -123,12 +126,13 @@ namespace ACViewer
             }
 
             File.WriteAllText(outFilename, sb.ToString());
+            MainWindow.Instance.AddStatusText($"Wrote {outFilename}");
 
             Console.Write(sb.ToString());
 
             Console.WriteLine();
 
-            var fi = new FileInfo(outFilename);
+            var fi = new System.IO.FileInfo(outFilename);
             var mtlFilename = fi.DirectoryName + Path.DirectorySeparatorChar + $"{fileID:X8}.mtl";
 
             ExportSurfaces(fileID, surfaceIDs, mtlFilename);
@@ -136,7 +140,7 @@ namespace ACViewer
             return true;
         }
 
-        public static void ExportGfxObj(uint gfxObjID, StringBuilder sb, ref int startIdx, ref int startUVIdx, Matrix4x4 transform, Dictionary<uint, bool> surfaceIDs)
+        private static void ExportGfxObj(uint gfxObjID, StringBuilder sb, ref int startIdx, ref int startUVIdx, Matrix4x4 transform, Dictionary<uint, bool> surfaceIDs)
         {
             var gfxObj = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.GfxObj>(gfxObjID);
 
@@ -221,9 +225,9 @@ namespace ACViewer
             }
         }
 
-        public static void ExportSurfaces(uint fileID, Dictionary<uint, bool> surfaceIDs, string outFilename)
+        private static void ExportSurfaces(uint fileID, Dictionary<uint, bool> surfaceIDs, string outFilename)
         {
-            var fi = new FileInfo(outFilename);
+            var fi = new System.IO.FileInfo(outFilename);
 
             var sb = new StringBuilder();
 
@@ -267,6 +271,83 @@ namespace ACViewer
                 Console.WriteLine($"Exported {surfaceID:X8}.png");
 
             Console.WriteLine();*/
+        }
+
+        public static bool ExportImage(uint fileID, string outFilename)
+        {
+            var fileType = fileID >> 24;
+            
+            if (fileType != 0x5 && fileType != 0x6 && fileType != 0x8)
+            {
+                Console.WriteLine($"Unknown image file: {fileID:X8}");
+                return false;
+            }
+
+            if (fileType == 0x8)
+            {
+                var surface = DatManager.PortalDat.ReadFromDat<Surface>(fileID);
+                fileID = surface.OrigTextureId;
+                fileType = 0x05;
+            }
+
+            Bitmap highRes = null;
+
+            if (fileType == 0x5)
+            {
+                var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(fileID);
+
+                // since previous file dialog had user enter a filename, 
+                // only export highest resolution texture as that filename
+
+                foreach (var textureID in surfaceTexture.Textures)
+                {
+                    var bitmap = GetBitmap(textureID);
+
+                    if (bitmap != null && (highRes == null || bitmap.Width * bitmap.Height > highRes.Width * highRes.Height))
+                        highRes = bitmap;
+                }
+            }
+            else
+                highRes = GetBitmap(fileID);
+
+            if (highRes == null) return false;
+
+            highRes.Save(outFilename);
+
+            MainWindow.Instance.AddStatusText($"Wrote {outFilename}");
+            return true;
+        }
+
+        private static Bitmap GetBitmap(uint textureID)
+        {
+            var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
+
+            if (texture.Id == 0 && DatManager.HighResDat != null)
+                texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
+
+            if (texture.Id == 0) return null;
+
+            return texture.GetBitmap();
+        }
+
+        public static bool ExportSound(uint fileID, string outFilename)
+        {
+            var fileType = fileID >> 24;
+
+            if (fileType != 0xA)
+            {
+                Console.WriteLine($"Unknown audio file: {fileID:X8}");
+                return false;
+            }
+            var sound = DatManager.PortalDat.ReadFromDat<Wave>(fileID);
+
+            using (var f = new FileStream(outFilename, FileMode.Create))
+            {
+                sound.ReadData(f);
+                f.Close();
+            }
+            MainWindow.Instance.AddStatusText($"Wrote {outFilename}");
+            return true;
         }
     }
 }
