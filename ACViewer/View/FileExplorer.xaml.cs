@@ -283,13 +283,22 @@ namespace ACViewer.View
                     break;
                 case 0x0A:
                     var sound = DatManager.PortalDat.ReadFromDat<Wave>(fileID);
-                    FileInfo.SetInfo(new FileTypes.Sound(sound).BuildTree(fileID));
-                    var stream = new MemoryStream();
-                    sound.ReadData(stream);
-                    var soundPlayer = new SoundPlayer(stream);
-                    stream.Seek(0, SeekOrigin.Begin);
-                    soundPlayer.Play();
-                    stream.Close();
+                    FileInfo.SetInfo(new Sound(sound).BuildTree(fileID));
+                    using (var stream = new MemoryStream())
+                    {
+                        sound.ReadData(stream);
+                        var soundPlayer = new SoundPlayer(stream);
+                        stream.Seek(0, SeekOrigin.Begin);
+                        try
+                        {
+                            soundPlayer.Play();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e);
+                        }
+                        stream.Close();
+                    }
                     break;
                 case 0x0D:
                     var environment = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Environment>(fileID);

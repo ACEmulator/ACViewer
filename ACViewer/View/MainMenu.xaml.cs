@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 
 using ACE.DatLoader;
+using ACE.DatLoader.FileTypes;
 
 using ACViewer.Enum;
 using ACViewer.Render;
@@ -64,6 +65,71 @@ namespace ACViewer.View
 
                 GameView.PostInit();
             }
+        }
+
+        private void Export_Click(object sender, RoutedEventArgs e)
+        {
+            // get currently selected file from FileExplorer
+            var selectedFileID = FileExplorer.Instance.Selected_FileID;
+
+            if (selectedFileID == 0)
+            {
+                MainWindow.Instance.AddStatusText($"You must first select a file to export");
+                return;
+            }
+
+            var saveFileDialog = new SaveFileDialog();
+
+            var fileType = selectedFileID >> 24;
+            var isModel = fileType == 0x1 || fileType == 0x2;
+            var isImage = fileType == 0x5 || fileType == 0x6 || fileType == 08;
+            var isSound = fileType == 0xA;
+
+            if (isModel)
+            {
+                saveFileDialog.Filter = "OBJ files (*.obj)|*.obj|RAW files (*.raw)|*.raw";
+                saveFileDialog.FileName = $"{selectedFileID:X8}.obj";
+            }
+            else if (isImage)
+            {
+                saveFileDialog.Filter = "PNG files (*.png)|*.png|RAW files (*.raw)|*.raw";
+                saveFileDialog.FileName = $"{selectedFileID:X8}.png";
+            }
+            else if (isSound)
+            {
+                var sound = DatManager.PortalDat.ReadFromDat<Wave>(selectedFileID);
+
+                if (sound.Header[0] == 0x55)
+                {
+                    saveFileDialog.Filter = "MP3 files (*.mp3)|*.mp3|RAW files (*.raw)|*.raw";
+                    saveFileDialog.FileName = $"{selectedFileID:X8}.mp3";
+                }
+                else
+                {
+                    saveFileDialog.Filter = "WAV files (*.wav)|*.wav|RAW files (*.raw)|*.raw";
+                    saveFileDialog.FileName = $"{selectedFileID:X8}.wav";
+                }
+            }
+            else
+            {
+                saveFileDialog.Filter = "RAW files (*.raw)|*.raw";
+                saveFileDialog.FileName = $"{selectedFileID:X8}.raw";
+            }
+
+            var success = saveFileDialog.ShowDialog();
+
+            if (success != true) return;
+
+            var saveFilename = saveFileDialog.FileName;
+
+            if (isModel && saveFileDialog.FilterIndex == 1)
+                FileExport.ExportModel(selectedFileID, saveFilename);
+            else if (isImage && saveFileDialog.FilterIndex == 1)
+                FileExport.ExportImage(selectedFileID, saveFilename);
+            else if (isSound && saveFileDialog.FilterIndex == 1)
+                FileExport.ExportSound(selectedFileID, saveFilename);
+            else
+                FileExport.ExportRaw(DatType.Portal, selectedFileID, saveFilename);
         }
 
         public void ReadDATFile(string filename)

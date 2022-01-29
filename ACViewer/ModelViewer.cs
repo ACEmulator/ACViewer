@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+using MonoGame.Framework.WpfInterop.Input;
 
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
@@ -30,6 +34,15 @@ namespace ACViewer
 
         public static Effect Effect => Render.Render.Effect;
         public static Effect Effect_Clamp => Render.Render.Effect_Clamp;
+
+        public WpfKeyboard Keyboard => GameView.Instance._keyboard;
+        public WpfMouse Mouse => GameView.Instance._mouse;
+
+        public KeyboardState PrevKeyboardState
+        {
+            get => GameView.Instance.PrevKeyboardState;
+            set => GameView.Instance.PrevKeyboardState = value;
+        }
 
         public static Camera Camera => GameView.Camera;
 
@@ -194,6 +207,19 @@ namespace ACViewer
 
             if (Camera != null)
                 Camera.Update(time);
+
+            var keyboardState = Keyboard.GetState();
+
+            if (keyboardState.IsKeyDown(Keys.OemPeriod) && !PrevKeyboardState.IsKeyDown(Keys.OemPeriod))
+            {
+                PolyIdx++;
+                Console.WriteLine($"PolyIdx: {PolyIdx}");
+            }
+            if (keyboardState.IsKeyDown(Keys.OemComma) && !PrevKeyboardState.IsKeyDown(Keys.OemComma))
+            {
+                PolyIdx--;
+                Console.WriteLine($"PolyIdx: {PolyIdx}");
+            }
         }
 
         public void Draw(GameTime time)
@@ -222,6 +248,9 @@ namespace ACViewer
                     DrawEnvCell();
                     break;
             }
+
+            if (MainMenu.ShowHUD)
+                GameView.Instance.Render.DrawHUD();
         }
 
         // for debugging
