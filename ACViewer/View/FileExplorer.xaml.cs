@@ -47,10 +47,7 @@ namespace ACViewer.View
 
         public List<string> FileIDs
         {
-            get
-            {
-                return _fileIDs;
-            }
+            get => _fileIDs;
             set
             {
                 _fileIDs = value;
@@ -177,7 +174,7 @@ namespace ACViewer.View
             MainWindow.Status.WriteLine($"{selected.Name}s: {FileIDs.Count:N0}");
         }
 
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

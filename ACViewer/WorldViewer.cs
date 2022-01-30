@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.Xna.Framework;
@@ -142,7 +140,7 @@ namespace ACViewer
             var landblockID = centerX << 24 | centerY << 16 | 0xFFFF;
 
             MainWindow.Status.WriteLine($"Loading {numBlocks} landblocks");
-            await Task.Run(() => Thread.Sleep(50));
+            await Task.Delay(1);
 
             //Landblocks = new Dictionary<uint, R_Landblock>();
             R_Landblock r_landblock = null;

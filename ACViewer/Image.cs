@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -32,12 +33,10 @@ namespace ACViewer
             return colors;
         }
 
-        public static Texture2D GetTextureFromBitmap(GraphicsDevice device, Bitmap bitmap)
+        public static Texture2D GetTextureFromBitmap(GraphicsDevice device, string filename)
         {
-            var colors = GetColors(bitmap).ToArray();
-            var texture = new Texture2D(device, bitmap.Width, bitmap.Height, false, SurfaceFormat.Color);
-            texture.SetData(colors);
-            return texture;
+            using (var fs = new FileStream(filename, FileMode.Open))
+                return Texture2D.FromStream(device, fs);
         }
 
         public static Texture2D GetTexture2DFromBitmap(GraphicsDevice device, Bitmap bitmap)
