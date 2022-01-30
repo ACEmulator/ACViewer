@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -157,6 +158,8 @@ namespace ACViewer.View
             var di = fi.Attributes.HasFlag(System.IO.FileAttributes.Directory) ? new System.IO.DirectoryInfo(filename) : fi.Directory;
 
             var loadCell = true;
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             DatManager.Initialize(di.FullName, true, loadCell);
         }
 
