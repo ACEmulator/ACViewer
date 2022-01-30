@@ -34,6 +34,8 @@ namespace ACViewer.Config
 
         public static void LoadConfig()
         {
+            if (!File.Exists(Filename)) return;
+
             var json = File.ReadAllText(Filename);
 
             var _config = JsonConvert.DeserializeObject<Config>(json);
