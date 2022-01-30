@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <None Remove="Content\Content.mgcb" />
-    <None Remove="Content\Fonts\password.ttf" />
     <None Remove="Icons\about.png" />
     <None Remove="Icons\export-file.png" />
     <None Remove="Icons\help.png" />
@@ -44,7 +43,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Content\Fonts\password.ttf" />
     <Resource Include="Icons\about.png" />
     <Resource Include="Icons\export-file.png" />
     <Resource Include="Icons\help.png" />
