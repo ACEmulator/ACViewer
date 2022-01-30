@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -42,29 +42,48 @@ namespace ACViewer.View
             Instance = this;
         }
 
-        private async void OpenFile_Click(object sender, RoutedEventArgs e)
+        private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "DAT files (*.dat)|*.dat|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
+
+            var success = openFileDialog.ShowDialog();
+
+            if (success != true) return;
+
+            var filenames = openFileDialog.FileNames;
+            
+            if (filenames.Length < 1) return;
+            
+            var filename = filenames[0];
+
+            LoadDATs(filename);
+        }
+
+        public void LoadDATs(string filename)
+        {
+            MainWindow.Status.WriteLine("Reading " + filename);
+
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) =>
             {
-                var files = openFileDialog.FileNames;
-                if (files.Length < 1) return;
-                var file = files[0];
+                ReadDATFile(filename);
+            };
 
-                MainWindow.Status.WriteLine("Reading " + file);
+            worker.RunWorkerCompleted += (sender, runWorkerCompletedEventArgs) =>
+            {
+                /*var cellFiles = DatManager.CellDat.AllFiles.Count;
+                var portalFiles = DatManager.PortalDat.AllFiles.Count;
 
-                await Task.Run(() => ReadDATFile(file));
-
-                //var cellFiles = DatManager.CellDat.AllFiles.Count;
-                //var portalFiles = DatManager.PortalDat.AllFiles.Count;
-
-                //MainWindow.Status.WriteLine($"CellFiles={cellFiles}, PortalFiles={portalFiles}");
+                MainWindow.Status.WriteLine($"CellFiles={cellFiles}, PortalFiles={portalFiles}");*/
 
                 MainWindow.Status.WriteLine("Done");
 
                 GameView.PostInit();
-            }
+            };
+            
+            worker.RunWorkerAsync();
         }
 
         private void Export_Click(object sender, RoutedEventArgs e)
@@ -132,10 +151,10 @@ namespace ACViewer.View
                 FileExport.ExportRaw(DatType.Portal, selectedFileID, saveFilename);
         }
 
-        public void ReadDATFile(string filename)
+        public static void ReadDATFile(string filename)
         {
             var fi = new System.IO.FileInfo(filename);
-            var di = fi.Directory;
+            var di = fi.Attributes.HasFlag(System.IO.FileAttributes.Directory) ? new System.IO.DirectoryInfo(filename) : fi.Directory;
 
             var loadCell = true;
             DatManager.Initialize(di.FullName, true, loadCell);
@@ -144,6 +163,7 @@ namespace ACViewer.View
         private void Options_Click(object sender, RoutedEventArgs e)
         {
             Options = new Options();
+            Options.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             Options.ShowDialog();
         }
 
@@ -206,6 +226,7 @@ namespace ACViewer.View
         private void About_Click(object sender, RoutedEventArgs e)
         {
             var about = new About();
+            about.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             about.ShowDialog();
         }
 

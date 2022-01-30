@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
+using ACViewer.Config;
+
 namespace ACViewer.View
 {
     /// <summary>
@@ -20,6 +22,20 @@ namespace ACViewer.View
             DataContext = this;
 
             //WpfGame.UseASingleSharedGraphicsDevice = true;
+
+            LoadConfig();
+        }
+
+        private static Config.Config Config => ConfigManager.Config;
+        
+        private static void LoadConfig()
+        {
+            ConfigManager.LoadConfig();
+
+            if (Config.AutomaticallyLoadDATsOnStartup)
+            {
+                MainMenu.Instance.LoadDATs(Config.ACFolder);
+            }
         }
 
         private DateTime lastUpdateTime { get; set; }

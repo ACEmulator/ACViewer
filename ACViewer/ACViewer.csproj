@@ -66,6 +66,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ActionCommand.cs" />
+    <Compile Include="Config\Config.cs" />
+    <Compile Include="Config\ConfigManager.cs" />
     <Compile Include="Data\DIDTable.cs" />
     <Compile Include="Data\DIDTables.cs" />
     <Compile Include="Data\TeleportLocationType.cs" />
@@ -593,13 +595,18 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\OpenFile_16x.png" />
-    <Resource Include="Icons\Search_16x.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\texture_clamp.fx" />
     <Content Include="Data\Locations.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Icons\about.png" />
+    <Resource Include="Icons\HelpApplication_16x.png" />
+    <Resource Include="Icons\help.png" />
+    <Resource Include="Icons\Question_16x.png" />
+    <Resource Include="Icons\Settings_16x.png" />
+    <Resource Include="Icons\Search_16x.png" />
     <Resource Include="Icons\export-file.png" />
     <Resource Include="Icons\portal.png" />
     <None Include="Content\Images\highres.png">
@@ -614,6 +621,9 @@
   <ItemGroup>
     <PackageReference Include="MonoGame.Framework.WpfInterop">
       <Version>1.7.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

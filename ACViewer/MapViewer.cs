@@ -67,7 +67,7 @@ namespace ACViewer
 
         public void LoadContent()
         {
-            WorldMap = Image.GetTextureFromBitmap(GraphicsDevice, new Bitmap(new FileStream(@"Content\Images\highres.png", FileMode.Open)));
+            WorldMap = Image.GetTextureFromBitmap(GraphicsDevice, @"Content\Images\highres.png");
 
             Highlight = new Texture2D(GraphicsDevice, 1, 1);
             Highlight.SetData(new Microsoft.Xna.Framework.Color[1] { Microsoft.Xna.Framework.Color.Red });
