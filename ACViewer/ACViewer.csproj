@@ -36,9 +36,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ACViewer_framework\ACE\Source\ACE.Common\ACE.Common.csproj" />
-    <ProjectReference Include="..\..\..\ACViewer_framework\ACE\Source\ACE.DatLoader\ACE.DatLoader.csproj" />
-    <ProjectReference Include="..\..\..\ACViewer_framework\ACE\Source\ACE.Entity\ACE.Entity.csproj" />
+    <ProjectReference Include="..\ACE\Source\ACE.Common\ACE.Common.csproj" />
+    <ProjectReference Include="..\ACE\Source\ACE.DatLoader\ACE.DatLoader.csproj" />
+    <ProjectReference Include="..\ACE\Source\ACE.Entity\ACE.Entity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
