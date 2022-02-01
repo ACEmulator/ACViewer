@@ -66,6 +66,8 @@ namespace ACViewer
                 {
                     var wo = WorldObjectFactory.CreateNewWorldObject(instance.WeenieClassId);
 
+                    if (wo == null) continue;
+
                     wo.InitPhysicsObj();
 
                     var objCellId = instance.ObjCellId;
@@ -161,6 +163,8 @@ namespace ACViewer
                 foreach (var encounter in encounters)
                 {
                     var wo = WorldObjectFactory.CreateNewWorldObject(encounter.WeenieClassId);
+
+                    if (wo == null) continue;
 
                     wo.InitPhysicsObj();
 
