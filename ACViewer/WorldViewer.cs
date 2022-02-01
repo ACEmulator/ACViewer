@@ -52,6 +52,7 @@ namespace ACViewer
         public void LoadLandblock(uint landblockID, uint radius = 1)
         {
             Render.Buffer.ClearBuffer();
+            Server.Init();
             TextureCache.Init();
 
             LScape.unload_landblocks_all();
@@ -123,6 +124,7 @@ namespace ACViewer
             //Console.WriteLine($"LoadLandblocks({startBlock}, {endBlock})");
             
             Render.Buffer.ClearBuffer();
+            Server.Init();
             TextureCache.Init();
             
             LScape.unload_landblocks_all();
@@ -242,6 +244,16 @@ namespace ACViewer
                 MainMenu.ToggleParticles();
             }
 
+            if (keyboardState.IsKeyDown(Keys.D7) && !PrevKeyboardState.IsKeyDown(Keys.D7))
+            {
+                ACViewer.Render.Buffer.drawInstances = !ACViewer.Render.Buffer.drawInstances;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D8) && !PrevKeyboardState.IsKeyDown(Keys.D8))
+            {
+                ACViewer.Render.Buffer.drawEncounters = !ACViewer.Render.Buffer.drawEncounters;
+            }
+
             if (keyboardState.IsKeyDown(Keys.D0) && !PrevKeyboardState.IsKeyDown(Keys.D0))
             {
                 ACViewer.Render.Buffer.drawAlpha = !ACViewer.Render.Buffer.drawAlpha;
@@ -253,6 +265,8 @@ namespace ACViewer
                 Camera.Update(time);
 
             Render.UpdateEmitters();
+
+            Server.Update();
 
             if (PerfTimer.Update())
             {

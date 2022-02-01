@@ -25,7 +25,7 @@ namespace ACViewer
 
             uint modelID = setupID;
 
-            uint runSkill = 300;
+            //uint runSkill = 300;
             float scale = 1.0f;
 
             if (modelID >> 24 == 0x1)
@@ -40,9 +40,9 @@ namespace ACViewer
             PhysicsObj.CurCell = new ObjCell();
 
             var worldObj = new WorldObject();
-            worldObj.Name = $"Obj {setupID:X8}";
-            worldObj.RunSkill = runSkill;
-            worldObj.IsCreature = true;
+            //worldObj.Name = $"Obj {setupID:X8}";
+            //worldObj.RunSkill = runSkill;
+            //worldObj.IsCreature = true;
 
             var weenie = new WeenieObject(worldObj);
             PhysicsObj.set_weenie_obj(weenie);

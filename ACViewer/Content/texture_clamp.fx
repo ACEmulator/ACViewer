@@ -132,100 +132,13 @@ struct VertexPositionNormalTextures
 
 struct VertexInstance
 {
-    float4 Position : POSITION1;
-    float2 HeadingScale : TEXCOORD1;
+    float3 Position : POSITION1;
+    float4 Orientation : TEXCOORD1;
+    float3 Scale : TEXCOORD2;
 };
 
+
 //------- Technique: TexturedInstance --------
-
-VertexShaderOutput TexturedInstanceVS(VertexPositionNormalTextures model, VertexInstance instance)
-{
-    VertexShaderOutput output = (VertexShaderOutput)0;
-
-    matrix<float, 4, 4> translation =
-    {
-        1, 0, 0, 0,
-        0, 1, 0, 0,
-        0, 0, 1, 0,
-        instance.Position.x, instance.Position.y, instance.Position.z, 1
-    };
-
-    matrix<float, 4, 4> rotation =
-    {
-        cos(instance.HeadingScale.x), -sin(instance.HeadingScale.x), 0, 0,
-        sin(instance.HeadingScale.x), cos(instance.HeadingScale.x), 0, 0,
-        0, 0, 1, 0,
-        0, 0, 0, 1
-    };
-
-    matrix<float, 4, 4> scale =
-    {
-        instance.HeadingScale.y, 0, 0, 0,
-        0, instance.HeadingScale.y, 0, 0,
-        0, 0, instance.HeadingScale.y, 0,
-        0, 0, 0, 1
-    };
-
-    float4 instancePos = mul(mul(mul(model.Position, rotation), scale), translation);
-
-    float4x4 preViewProjection = mul(xView, xProjection);
-    float4x4 preWorldViewProjection = mul(xWorld, preViewProjection);
-
-    output.Position = mul(instancePos, preWorldViewProjection);
-    //output.Normal = input.Normal;
-    output.TextureCoord = model.TextureCoord;
-
-    float3 normal = normalize(mul(model.Normal, xWorld)).xyz;
-    output.LightingFactor = dot(normal, -xLightDirection);
-
-    return output;
-}
-
-float4 TexturedInstancePS(VertexShaderOutput input) : COLOR
-{
-    float4 color = xTextures.Sample(TextureSampler, input.TextureCoord);
-
-    // only output completely opaque pixels
-    clip(color.a < 1.0f ? -1 : 1);
-
-    color.rgb *= saturate(input.LightingFactor) + xAmbient;
-
-    return color;
-}
-
-float4 TexturedInstanceTransPS(VertexShaderOutput input) : COLOR
-{
-    float4 color = xTextures.Sample(TextureSampler, input.TextureCoord);
-
-    // only output semi-transparent pixels
-    clip(color.a < 1.0f ? 1 : -1);
-
-    color.rgb *= saturate(input.LightingFactor) + xAmbient;
-
-    return color;
-}
-
-technique TexturedInstance
-{
-    pass Pass0
-    {
-        ZWriteEnable = true;
-
-        VertexShader = compile vs_4_0 TexturedInstanceVS();
-        PixelShader = compile ps_4_0 TexturedInstancePS();
-    }
-    pass Pass1
-    {
-        ZWriteEnable = false;
-
-        AlphaBlendEnable = true;
-        DestBlend = InvSrcAlpha;
-        SrcBlend = SrcAlpha;
-
-        VertexShader = compile vs_4_0 TexturedInstanceVS();
-        PixelShader = compile ps_4_0 TexturedInstanceTransPS();
-    }
-}
 
 matrix<float, 4, 4> QuaternionToMatrix(float4 q)
 {
@@ -256,6 +169,98 @@ matrix<float, 4, 4> QuaternionToMatrix(float4 q)
     };
 
     return result;
+}
+
+VertexShaderOutput TexturedInstanceVS(VertexPositionNormalTextures model, VertexInstance instance)
+{
+    VertexShaderOutput output = (VertexShaderOutput)0;
+
+    // pre-compute matrix?
+    matrix<float, 4, 4> translation =
+    {
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
+        instance.Position.x, instance.Position.y, instance.Position.z, 1
+    };
+
+    matrix<float, 4, 4> rotation = QuaternionToMatrix(instance.Orientation);
+
+    matrix<float, 4, 4> scale =
+    {
+        instance.Scale.x, 0, 0, 0,
+        0, instance.Scale.y, 0, 0,
+        0, 0, instance.Scale.z, 0,
+        0, 0, 0, 1
+    };
+
+    float4 instancePos = mul(mul(mul(model.Position, rotation), scale), translation);
+
+    output.Position = mul(mul(instancePos, xView), xProjection);
+
+    //output.Normal = input.Normal;
+    output.TextureCoord = model.TextureCoord;
+
+    output.LightingFactor = saturate(dot(model.Normal.xyz, -xLightDirection)) + xAmbient;
+
+    return output;
+}
+
+float4 TexturedInstancePS(VertexShaderOutput input) : COLOR
+{
+    float4 color = xTextures.Sample(TextureSampler, input.TextureCoord);
+
+    // only output completely opaque pixels
+    clip(color.a < 1.0f ? -1 : 1);
+
+    color.rgb *= input.LightingFactor;
+
+    return color;
+}
+
+float4 TexturedInstanceTransPS(VertexShaderOutput input) : COLOR
+{
+    float4 color = xTextures.Sample(TextureSampler, input.TextureCoord);
+
+    // only output semi-transparent pixels
+    clip(color.a < 1.0f ? 1 : -1);
+
+    color.rgb *= input.LightingFactor;
+
+    return color;
+}
+
+technique TexturedInstance
+{
+    pass Pass0
+    {
+        ZWriteEnable = true;
+
+        VertexShader = compile vs_4_0 TexturedInstanceVS();
+        PixelShader = compile ps_4_0 TexturedInstancePS();
+    }
+}
+
+technique TexturedInstanceAlpha
+{
+    pass Pass0
+    {
+        ZWriteEnable = true;
+
+        VertexShader = compile vs_4_0 TexturedInstanceVS();
+        PixelShader = compile ps_4_0 TexturedInstancePS();
+    }
+    pass Pass1
+    {
+        ZWriteEnable = false;
+
+        AlphaBlendEnable = true;
+        DestBlend = InvSrcAlpha;
+        SrcBlend = SrcAlpha;
+
+        VertexShader = compile vs_4_0 TexturedInstanceVS();
+        PixelShader = compile ps_4_0 TexturedInstanceTransPS();
+    }
 }
 
 struct VertexInstanceEnv

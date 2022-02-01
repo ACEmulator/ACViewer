@@ -249,5 +249,31 @@ namespace ACViewer.View
             var teleport = new Teleport();
             teleport.ShowDialog();
         }
+
+        private void LoadInstances_Click(object sender, RoutedEventArgs e)
+        {
+            if (Server.InstancesLoaded || Server.Initting) return;
+            
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) => Server.LoadInstances();
+
+            worker.RunWorkerCompleted += (sender, runWorkerCompletedEventArgs) => Server.LoadInstances_Finalize();
+
+            worker.RunWorkerAsync();
+        }
+
+        private void LoadEncounters_Click(object sender, RoutedEventArgs e)
+        {
+            if (Server.EncountersLoaded || Server.Initting) return;
+            
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) => Server.LoadEncounters();
+
+            worker.RunWorkerCompleted += (sender, runWorkerCompletedEventArgs) => Server.LoadEncounters_Finalize();
+
+            worker.RunWorkerAsync();
+        }
     }
 }

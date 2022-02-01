@@ -14,7 +14,7 @@ namespace ACViewer
         // this isn't an actual instance, but rather the set of Polygons in a GfxObj for a TextureFormat
         public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public static Effect Effect => Render.Render.Effect;
+        public Effect Effect { get; set; }
 
         public TextureAtlas TextureAtlas { get; set; }
 
@@ -29,11 +29,16 @@ namespace ACViewer
             TextureAtlas = textureAtlas;
 
             Indices = new List<short>();
+
+            if (textureAtlas.TextureFormat.HasWrappingUVs)
+                Effect = Render.Render.Effect;
+            else
+                Effect = Render.Render.Effect_Clamp;
         }
 
-        public void AddPolygon(Polygon polygon, List<VertexPositionNormalTexture> vertices, uint surfaceID, List<VertexPositionNormalTextures> outVertices, Dictionary<VertexPositionNormalTextures, short> vertexTable)
+        public void AddPolygon(Polygon polygon, List<VertexPositionNormalTexture> vertices, uint surfaceID, List<VertexPositionNormalTextures> outVertices, Dictionary<VertexPositionNormalTextures, short> vertexTable, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
         {
-            var textureIdx = TextureAtlas.GetTextureIdx(surfaceID);
+            var textureIdx = TextureAtlas.GetTextureIdx(surfaceID, textureChanges, paletteChanges);
 
             foreach (var idx in polygon.Indices)
             {

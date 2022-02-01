@@ -124,7 +124,7 @@ namespace ACViewer
             pickerObj.set_object_guid(pickerGuid);
 
             var worldObj = new WorldObject();
-            worldObj.Name = "Picker";
+            //worldObj.Name = "Picker";
 
             var weenie = new WeenieObject(worldObj);
             pickerObj.set_weenie_obj(weenie);

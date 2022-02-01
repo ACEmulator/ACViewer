@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,11 +37,7 @@ namespace ACViewer
         public WpfKeyboard Keyboard => GameView.Instance._keyboard;
         public WpfMouse Mouse => GameView.Instance._mouse;
 
-        public KeyboardState PrevKeyboardState
-        {
-            get => GameView.Instance.PrevKeyboardState;
-            set => GameView.Instance.PrevKeyboardState = value;
-        }
+        public KeyboardState PrevKeyboardState => GameView.Instance.PrevKeyboardState;
 
         public static Camera Camera => GameView.Camera;
 
@@ -77,76 +72,28 @@ namespace ACViewer
         /// <summary>
         /// Load a model with a ClothingTable
         /// </summary>
-        public void LoadModel(uint id, ClothingTable clothingBase, uint palTemplate, float shade)
+        public void LoadModel(uint setupID, ClothingTable clothingBase, PaletteTemplate paletteTemplate, float shade)
         {
             TextureCache.Init();
 
             // assumed to be in Setup mode for ClothingBase
             GfxObjMode = false;
 
-            // create the objDesc, describing the "Changed" items to the base setup.
-            // We won't bother loading the palette stuff, we'll just create that dictionary directly
-            FileTypes.ObjDesc objDesc = new FileTypes.ObjDesc();
+            // create the ObjDesc, describing any changes to palettes / textures / gfxobj parts
+            var objDesc = new Model.ObjDesc(setupID, clothingBase.Id, paletteTemplate, shade);
 
-            var cbe = clothingBase.ClothingBaseEffects[id].CloObjectEffects;
+            Setup = new SetupInstance(setupID, objDesc);
 
-            foreach (var objEffect in cbe)
+            if (ViewObject == null || ViewObject.PhysicsObj.PartArray.Setup._dat.Id != setupID)
             {
-                ACE.DatLoader.Entity.AnimationPartChange apChange = new ACE.DatLoader.Entity.AnimationPartChange();
-                apChange.PartID = objEffect.ModelId;
-                apChange.PartIndex = (byte)objEffect.Index;
-
-                objDesc.AnimPartChanges.Add(apChange.PartIndex, apChange);
-
-                foreach(var texEffect in objEffect.CloTextureEffects)
-                {
-                    ACE.DatLoader.Entity.TextureMapChange tmChange = new ACE.DatLoader.Entity.TextureMapChange();
-                    tmChange.PartIndex = apChange.PartIndex;
-                    tmChange.OldTexture = texEffect.OldTexture;
-                    tmChange.NewTexture = texEffect.NewTexture;
-
-                    if (!objDesc.TextureChanges.TryGetValue(tmChange.PartIndex, out var tmChanges))
-                    {
-                        tmChanges = new List<ACE.DatLoader.Entity.TextureMapChange>();
-                        objDesc.TextureChanges.Add(tmChange.PartIndex, tmChanges);
-                    }
-                    tmChanges.Add(tmChange);
-                }
-            }
-
-            // To hold our Custom Palette (palette swaps)
-            Dictionary<int, uint> customPaletteColors = new Dictionary<int, uint>();
-
-            // Load all the custom palette colors...
-            var subPalEffect = clothingBase.ClothingSubPalEffects[palTemplate];
-            foreach (var subPals in subPalEffect.CloSubPalettes)
-            {
-                var palSet = DatManager.PortalDat.ReadFromDat<PaletteSet>(subPals.PaletteSet);
-                uint palId = palSet.GetPaletteID(shade);
-                // Load our palette dictated by the shade in the palset
-                var palette = DatManager.PortalDat.ReadFromDat<Palette>(palId);
-                foreach (var range in subPals.Ranges)
-                {
-                    int offset = (int)range.Offset;
-                    int numColors = (int)range.NumColors;
-                    // add the appropriate colors to our custom palette
-                    for (int i = 0; i < numColors; i++)
-                        customPaletteColors.Add(i + offset, palette.Colors[i + offset]);
-                }
-            }
-
-            Setup = new SetupInstance(id, objDesc, customPaletteColors);
-
-            if (ViewObject == null || ViewObject.PhysicsObj.PartArray.Setup._dat.Id != id)
-            {
-                InitObject(id);
+                InitObject(setupID);
 
                 Camera.InitModel(Setup.Setup.BoundingBox);
             }
 
             ModelType = ModelType.Setup;
 
-            MainWindow.Status.WriteLine($"Loading {id:X8} with ClothingBase {clothingBase.Id:X8}, PaletteTemplate {palTemplate}, and Shade {shade}");
+            MainWindow.Status.WriteLine($"Loading {setupID:X8} with ClothingBase {clothingBase.Id:X8}, PaletteTemplate {paletteTemplate}, and Shade {shade}");
         }
 
         public void LoadEnvironment(uint envID)
@@ -220,6 +167,17 @@ namespace ACViewer
                 PolyIdx--;
                 Console.WriteLine($"PolyIdx: {PolyIdx}");
             }
+
+            if (keyboardState.IsKeyDown(Keys.OemQuestion) && !PrevKeyboardState.IsKeyDown(Keys.OemQuestion))
+            {
+                PartIdx++;
+                Console.WriteLine($"PartIdx: {PartIdx}");
+            }
+            if (keyboardState.IsKeyDown(Keys.M) && !PrevKeyboardState.IsKeyDown(Keys.M))
+            {
+                PartIdx--;
+                Console.WriteLine($"PartIdx: {PartIdx}");
+            }
         }
 
         public void Draw(GameTime time)
@@ -256,11 +214,13 @@ namespace ACViewer
         // for debugging
         public static int PolyIdx { get; set; } = -1;
 
+        public static int PartIdx { get; set; } = -1;
+
         public void DrawModel()
         {
             if (Setup == null) return;
 
-            Setup.Draw(PolyIdx);
+            Setup.Draw(PolyIdx, PartIdx);
 
             if (ViewObject.PhysicsObj.ParticleManager != null)
                 ParticleViewer.Instance.DrawParticles(ViewObject.PhysicsObj);

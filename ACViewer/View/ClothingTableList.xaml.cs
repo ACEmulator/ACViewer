@@ -121,9 +121,11 @@ namespace ACViewer.View
             if (CurrentClothingItem == null) return;
 
             if (SetupIds.SelectedIndex == -1) return;
+
             if (PaletteTemplates.SelectedIndex == -1) return;
 
             float shade = 0;
+            
             if (Shades.IsEnabled)
             {
                 shade = (float)(Shades.Value / Shades.Maximum);
@@ -132,12 +134,12 @@ namespace ACViewer.View
             }
 
             var selectedSetup = SetupIds.SelectedItem as ListBoxItem;
-            uint setupId = (uint)selectedSetup.DataContext;
+            var setupId = (uint)selectedSetup.DataContext;
 
-            var selectedPalTemp = PaletteTemplates.SelectedItem as ListBoxItem;
-            uint palTemplate = (uint)selectedPalTemp.DataContext;
+            var selectedPalette = PaletteTemplates.SelectedItem as ListBoxItem;
+            var paletteTemplate = (PaletteTemplate)(uint)selectedPalette.DataContext;
 
-            ModelViewer.LoadModel(setupId, CurrentClothingItem, palTemplate, shade);
+            ModelViewer.LoadModel(setupId, CurrentClothingItem, paletteTemplate, shade);
         }
 
         private void Shades_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

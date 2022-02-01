@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using ACE.DatLoader.Entity;
 using ACE.Server.Physics;
 
 using ACViewer.Enum;
@@ -26,6 +27,9 @@ namespace ACViewer.Render
 
         public ParticleBatch RB_Particles { get; set; }
 
+        public Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> RB_Instances { get; set; }
+        public Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> RB_Encounters { get; set; }
+
         public static Effect Effect { get => Render.Effect; }
 
         public static Effect Effect_Clamp { get => Render.Effect_Clamp; }
@@ -36,6 +40,8 @@ namespace ACViewer.Render
         public static bool drawBuildings { get; set; } = true;
         public static bool drawScenery { get; set; } = true;
         public static bool drawAlpha { get; set; } = true;
+        public static bool drawInstances { get; set; } = true;
+        public static bool drawEncounters { get; set; } = true;
 
         public Buffer()
         {
@@ -64,6 +70,9 @@ namespace ACViewer.Render
             RB_Scenery = new Dictionary<uint, GfxObjInstance_Shared>();
 
             RB_Particles = new ParticleBatch();
+
+            RB_Instances = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
+            RB_Encounters = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
         }
 
         public void ClearBuffer()
@@ -78,6 +87,9 @@ namespace ACViewer.Render
 
             ClearBuffer(RB_Particles);
 
+            ClearBuffer(RB_Instances);
+            ClearBuffer(RB_Encounters);
+
             foreach (var textureAtlas in TextureAtlases.Values)
                 textureAtlas.Dispose();
 
@@ -91,6 +103,12 @@ namespace ACViewer.Render
         }
 
         public void ClearBuffer(Dictionary<uint, GfxObjInstance_Shared> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.Dispose();
+        }
+
+        public void ClearBuffer(Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches)
         {
             foreach (var batch in batches.Values)
                 batch.Dispose();
@@ -143,6 +161,44 @@ namespace ACViewer.Render
             }
         }
 
+        public void AddInstanceObj(R_PhysicsObj obj, Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches, Model.ObjDesc objDesc = null)
+        {
+            for (var i = 0; i < obj.PartArray.Parts.Count; i++)
+            {
+                var part = obj.PartArray.Parts[i];
+
+                var gfxObjId = part.R_GfxObj.GfxObj.ID;
+
+                Dictionary<uint, uint> textureChanges = null;
+                PaletteChanges paletteChanges = objDesc?.PaletteChanges;
+
+                if (objDesc?.PartChanges != null && objDesc.PartChanges.TryGetValue((uint)part.PhysicsPart.PhysObjIndex, out var partChange))
+                {
+                    gfxObjId = partChange.NewGfxObjId;
+                    textureChanges = partChange.TextureChanges;
+                }
+
+                var gfxObjTexturePalette = new GfxObjTexturePalette(gfxObjId, textureChanges, paletteChanges);
+
+                if (!batches.TryGetValue(gfxObjTexturePalette, out var batch))
+                {
+                    var _gfxObj = GfxObjCache.Get(gfxObjId);
+
+                    batch = new GfxObjInstance_Shared(_gfxObj, TextureAtlases, textureChanges, paletteChanges);
+                    batches.Add(gfxObjTexturePalette, batch);
+                }
+
+                var position = part.PhysicsPart.Pos.GetWorldPos();
+                var orientation = part.PhysicsPart.Pos.Frame.Orientation.ToXna();
+                var scale = part.PhysicsPart.GfxObjScale.ToXna();
+
+                batch.AddInstance(position, orientation, scale);
+
+                part.PhysicsPart.Buffer = batch;
+                part.PhysicsPart.BufferIdx = batch.Instances.Count - 1;
+            }
+        }
+
         public void AddInstanceObj(R_EnvCell envCell, Dictionary<TextureSet, InstanceBatch> batches)
         {
             var textureSet = new TextureSet(envCell);
@@ -191,6 +247,16 @@ namespace ACViewer.Render
                 return;
             }
             RB_Particles.AddEmitter(emitter);
+        }
+
+        public void AddInstance(R_PhysicsObj instance, Model.ObjDesc objDesc = null)
+        {
+            AddInstanceObj(instance, RB_Instances, objDesc);
+        }
+
+        public void AddEncounter(R_PhysicsObj encounter, Model.ObjDesc objDesc = null)
+        {
+            AddInstanceObj(encounter, RB_Encounters, objDesc);
         }
 
         public void BuildTerrain()
@@ -281,6 +347,12 @@ namespace ACViewer.Render
                 batch.OnCompleted();
         }
 
+        public void BuildBuffer(Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.OnCompleted();
+        }
+
         public void BuildParticleBuffer()
         {
             RB_Particles.OnCompleted();
@@ -330,6 +402,12 @@ namespace ACViewer.Render
             if (drawScenery)
                 DrawBuffer(RB_Scenery);
 
+            if (drawInstances && Server.InstancesLoaded)
+                DrawBuffer(RB_Instances);
+
+            if (drawEncounters && Server.EncountersLoaded)
+                DrawBuffer(RB_Encounters);
+
             if (Picker.HitVertices != null)
                 Picker.DrawHitPoly();
 
@@ -344,6 +422,14 @@ namespace ACViewer.Render
         }
 
         public void DrawBuffer(Dictionary<uint, GfxObjInstance_Shared> batches)
+        {
+            SetRasterizerState(CullMode.None);
+
+            foreach (var batch in batches.Values)
+                batch.Draw();
+        }
+
+        public void DrawBuffer(Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches)
         {
             SetRasterizerState(CullMode.None);
 

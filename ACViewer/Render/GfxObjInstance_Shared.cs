@@ -15,6 +15,8 @@ namespace ACViewer.Render
         public GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
         public Effect Effect => Render.Effect;
+        
+        public Effect Effect_Clamp => Render.Effect_Clamp;
 
         public GfxObj GfxObj { get; set; }
 
@@ -26,24 +28,26 @@ namespace ACViewer.Render
 
         public List<VertexInstance> Instances { get; set; }
 
+        public VertexInstance[] Instances_ { get; set; }
+
         public VertexBuffer Shared_VB { get; set; }
 
         public VertexBuffer Instances_VB { get; set; }
 
         public VertexBufferBinding[] Bindings { get; set; }
 
-        public GfxObjInstance_Shared(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlas> textureAtlases)
+        public GfxObjInstance_Shared(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlas> textureAtlases, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
         {
             GfxObj = gfxObj;
 
-            BuildStatic(gfxObj, textureAtlases);
+            BuildStatic(gfxObj, textureAtlases, textureChanges, paletteChanges);
 
             Instances = new List<VertexInstance>();
         }
 
         public static readonly SurfaceType AlphaSurfaceTypes = SurfaceType.Base1ClipMap | SurfaceType.Translucent | SurfaceType.Alpha | SurfaceType.Additive;
 
-        public void BuildStatic(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlas> textureAtlases)
+        public void BuildStatic(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlas> textureAtlases, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
         {
             BaseFormats_Solid = new Dictionary<TextureFormat, GfxObjInstance_TextureFormat>();
 
@@ -55,16 +59,20 @@ namespace ACViewer.Render
 
             foreach (var poly in gfxObj.Polygons)
             {
-                var textureFormat = new TextureFormat(poly.Texture.Format, poly.Texture.Width, poly.Texture.Height, gfxObj.HasWrappingUVs);
+                // get actual transformed texture -- cannot rely on poly.Texture original format
+                var surfaceIdx = poly._polygon.PosSurface;
+                var surfaceID = gfxObj._gfxObj.Surfaces[surfaceIdx];
+
+                var textureId = TextureCache.GetSurfaceTextureID(surfaceID, textureChanges);
+                var texture = TextureCache.Get(surfaceID, textureId, paletteChanges);
+                
+                var textureFormat = new TextureFormat(texture.Format, texture.Width, texture.Height, gfxObj.HasWrappingUVs);
 
                 if (!textureAtlases.TryGetValue(textureFormat, out var textureAtlas))
                 {
                     textureAtlas = new TextureAtlas(textureFormat);
                     textureAtlases.Add(textureFormat, textureAtlas);
                 }
-
-                var surfaceIdx = poly._polygon.PosSurface;
-                var surfaceID = gfxObj._gfxObj.Surfaces[surfaceIdx];
 
                 var surface = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Surface>(surfaceID);
 
@@ -76,7 +84,7 @@ namespace ACViewer.Render
                     baseFormats.Add(textureFormat, baseFormat);
                 }
 
-                baseFormat.AddPolygon(poly, gfxObj.VertexArray, surfaceID, Vertices, vertexTable);
+                baseFormat.AddPolygon(poly, gfxObj.VertexArray, surfaceID, Vertices, vertexTable, textureChanges, paletteChanges);
             }
         }
 
@@ -109,8 +117,9 @@ namespace ACViewer.Render
 
             //
             // build instances
+            Instances_ = Instances.ToArray();
             Instances_VB = new VertexBuffer(GraphicsDevice, typeof(VertexInstance), Instances.Count, BufferUsage.WriteOnly);
-            Instances_VB.SetData(Instances.ToArray());
+            Instances_VB.SetData(Instances_);
         }
 
         private void BuildBindings()
@@ -120,17 +129,37 @@ namespace ACViewer.Render
             Bindings[1] = new VertexBufferBinding(Instances_VB, 0, 1);
         }
 
+        private bool isDirty { get; set; }
+        
+        public void UpdateInstance(int idx, Vector3 position, Quaternion orientation, Vector3 scale)
+        {
+            Instances_[idx].Position = position;
+            Instances_[idx].Orientation = new Vector4(orientation.X, orientation.Y, orientation.Z, orientation.W);
+            Instances_[idx].Scale = scale;
+            isDirty = true;
+        }
+
         public void Draw()
         {
+            if (isDirty)
+            {
+                Instances_VB.SetData(Instances_);
+                isDirty = false;
+            }
+            
             GraphicsDevice.SetVertexBuffers(Bindings);
 
             Effect.CurrentTechnique = Effect.Techniques["TexturedInstance"];
+            Effect_Clamp.CurrentTechnique = Effect_Clamp.Techniques["TexturedInstance"];
 
             foreach (var baseFormat in BaseFormats_Solid.Values)
                 baseFormat.Draw(Instances.Count);
 
             if (Buffer.drawAlpha)
+            {
                 Effect.CurrentTechnique = Effect.Techniques["TexturedInstanceAlpha"];
+                Effect_Clamp.CurrentTechnique = Effect_Clamp.Techniques["TexturedInstanceAlpha"];
+            }
 
             foreach (var baseFormat in BaseFormats_Alpha.Values)
                 baseFormat.Draw(Instances.Count);

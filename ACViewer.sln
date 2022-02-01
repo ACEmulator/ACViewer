@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31911.196
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ACViewer", "ACViewer\ACViewer.csproj", "{CB472F47-B605-4188-9204-100D6D92B72D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACViewer", "ACViewer\ACViewer.csproj", "{CB472F47-B605-4188-9204-100D6D92B72D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACE.DatLoader", "ACE\Source\ACE.DatLoader\ACE.DatLoader.csproj", "{C36342EB-30C7-4BC0-A11A-A61BD808C8AB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACE.Common", "ACE\Source\ACE.Common\ACE.Common.csproj", "{C7076669-CC0C-4732-9986-6403517BCE10}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACE.Entity", "ACE\Source\ACE.Entity\ACE.Entity.csproj", "{311AED30-58DD-4C6A-9D0A-5ED91C1F5BE9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ACE.Database", "ACE\Source\ACE.Database\ACE.Database.csproj", "{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{311AED30-58DD-4C6A-9D0A-5ED91C1F5BE9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{311AED30-58DD-4C6A-9D0A-5ED91C1F5BE9}.Release|x64.ActiveCfg = Release|Any CPU
 		{311AED30-58DD-4C6A-9D0A-5ED91C1F5BE9}.Release|x64.Build.0 = Release|Any CPU
+		{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}.Debug|x64.Build.0 = Debug|Any CPU
+		{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}.Release|x64.ActiveCfg = Release|Any CPU
+		{931E7745-19C8-4FD6-AD0C-552DCF1B9D96}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

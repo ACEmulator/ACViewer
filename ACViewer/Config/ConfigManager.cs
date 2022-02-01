@@ -47,5 +47,17 @@ namespace ACViewer.Config
             }
             config = _config;
         }
+
+        public static bool HasDBInfo
+        {
+            get
+            {
+                return config != null && config.Database != null && !string.IsNullOrWhiteSpace(config.Database.Host) &&
+                    config.Database.Port > 0 &&
+                    !string.IsNullOrWhiteSpace(config.Database.DatabaseName) &&
+                    !string.IsNullOrWhiteSpace(config.Database.Username) &&
+                    !string.IsNullOrWhiteSpace(config.Database.Password);
+            }
+        }
     }
 }

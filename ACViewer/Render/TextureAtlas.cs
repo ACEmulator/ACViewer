@@ -4,6 +4,8 @@ using System.Linq;
 
 using Microsoft.Xna.Framework.Graphics;
 
+using ACViewer.Model;
+
 namespace ACViewer.Render
 {
     public class TextureAtlas
@@ -12,7 +14,7 @@ namespace ACViewer.Render
 
         public TextureFormat TextureFormat { get; set; }
 
-        public Dictionary<uint, int> Textures { get; set; }    // surface id => texture idx
+        public Dictionary<SurfaceTexturePalette, int> Textures { get; set; }    // surface id => texture idx
 
         public Texture2D _Textures { get; set; }
 
@@ -20,15 +22,19 @@ namespace ACViewer.Render
         {
             TextureFormat = textureFormat;
 
-            Textures = new Dictionary<uint, int>();
+            Textures = new Dictionary<SurfaceTexturePalette, int>();
         }
 
-        public int GetTextureIdx(uint surfaceID)
+        public int GetTextureIdx(uint surfaceID, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
         {
-            if (!Textures.TryGetValue(surfaceID, out var idx))
+            var surfaceTextureId = TextureCache.GetSurfaceTextureID(surfaceID, textureChanges);
+
+            var surfaceTexturePalette = new SurfaceTexturePalette(surfaceID, surfaceTextureId, paletteChanges);
+            
+            if (!Textures.TryGetValue(surfaceTexturePalette, out var idx))
             {
                 idx = Textures.Count;
-                Textures.Add(surfaceID, idx);
+                Textures.Add(surfaceTexturePalette, idx);
             }
             return idx;
         }
@@ -47,7 +53,8 @@ namespace ACViewer.Render
             if (TextureCache.UseMipMaps)
             {
                 // pre-fetch first texture to determine if we can use mipmaps
-                var texture = TextureCache.Get(Textures.First().Key);
+                var stp = Textures.First().Key;
+                var texture = TextureCache.Get(stp.OrigSurfaceId, stp.SurfaceTextureId, stp.PaletteChanges);
                 if (texture.LevelCount > 1)
                     useMipMaps = true;
             }
@@ -57,12 +64,12 @@ namespace ACViewer.Render
 
             foreach (var kvp in Textures)
             {
-                var textureID = kvp.Key;
+                var stp = kvp.Key;
                 var textureIdx = kvp.Value;
 
                 //Console.WriteLine($"Adding {textureID:X8}");
 
-                var texture = TextureCache.Get(textureID);
+                var texture = TextureCache.Get(stp.OrigSurfaceId, stp.SurfaceTextureId, stp.PaletteChanges);
                 var numLevels = texture.LevelCount;
                 var numColors = texture.Width * texture.Height;
 
