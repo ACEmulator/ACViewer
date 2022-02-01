@@ -14,7 +14,27 @@ Texture2DArray xAlphas;
 SamplerState TextureSampler
 {
     Texture = <xTextures>;
+    MinFilter = Anisotropic;
+    MagFilter = Linear;
+    MipFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+    MaxAnisotropy = 16;
+};
+
+SamplerState TextureSampler_Overlays
+{
     Texture = <xOverlays>;
+    MinFilter = Anisotropic;
+    MagFilter = Linear;
+    MipFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+    MaxAnisotropy = 16;
+};
+
+SamplerState TextureSampler_Alphas
+{
     Texture = <xAlphas>;
     MinFilter = Anisotropic;
     MagFilter = Linear;

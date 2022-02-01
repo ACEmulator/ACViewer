@@ -5,7 +5,7 @@ branches:
   only:
   - master
 skip_tags: true
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration:
 - Release
 - Debug
@@ -19,7 +19,7 @@ build:
   project: ACViewer.sln
   verbosity: minimal
 artifacts:
-- path: ACViewer\bin\x64\$(configuration)
+- path: ACViewer\bin\$(configuration)\net5.0-windows
   name: ACViewer-v$(appveyor_build_version)-$(configuration)
 deploy:
 - provider: GitHub
