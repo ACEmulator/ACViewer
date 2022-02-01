@@ -10,6 +10,7 @@ using ACE.Entity.Enum.Properties;
 using ACE.Entity.Models;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Common;
+using ACE.Server.Physics.Util;
 
 namespace ACE.Server.WorldObjects
 {
@@ -142,6 +143,27 @@ namespace ACE.Server.WorldObjects
 
             if (BumpVelocity)
                 PhysicsObj.Velocity = new Vector3(0, 0, 0.5f);
+        }
+
+        // todo: This should really be an extension method for Position, or a static method within Position or even AdjustPos
+        public static bool AdjustDungeonCells(Physics.Common.Position pos)
+        {
+            if (pos == null) return false;
+
+            var landblock = LScape.get_landblock(pos.ObjCellID);
+            if (landblock == null || !landblock.HasDungeon) return false;
+
+            var dungeonID = pos.ObjCellID >> 16;
+
+            var adjustCell = AdjustCell.Get(dungeonID);
+            var cellID = adjustCell.GetCell(pos.Frame.Origin);
+
+            if (cellID != null && pos.ObjCellID != cellID.Value)
+            {
+                pos.ObjCellID = cellID.Value;
+                return true;
+            }
+            return false;
         }
 
         public virtual bool EnterWorld()

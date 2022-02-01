@@ -88,6 +88,8 @@ namespace ACViewer
                     location.Frame.Origin = new Vector3(instance.OriginX, instance.OriginY, instance.OriginZ);
                     location.Frame.Orientation = new Quaternion(instance.AnglesX, instance.AnglesY, instance.AnglesZ, instance.AnglesW);
 
+                    WorldObject.AdjustDungeonCells(location);
+
                     var success = wo.PhysicsObj.enter_world(location);
 
                     if (!success || wo.PhysicsObj.CurCell == null)
