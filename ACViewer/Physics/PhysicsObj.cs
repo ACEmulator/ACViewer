@@ -178,6 +178,8 @@ namespace ACE.Server.Physics
             State = PhysicsGlobals.DefaultState;
         }
 
+        public bool IsDestroyed;
+        
         /// <summary>
         /// Called to completely remove a PhysicsObj from the server
         /// </summary>
@@ -189,6 +191,9 @@ namespace ACE.Server.Physics
             exit_world();
 
             ObjMaint.DestroyObject();
+
+            // acviewer custom
+            IsDestroyed = true;
         }
 
         public void AddObjectToSingleCell(ObjCell objCell)

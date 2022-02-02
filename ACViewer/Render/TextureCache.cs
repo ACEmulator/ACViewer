@@ -135,7 +135,7 @@ namespace ACViewer.Render
                     tex = new Texture2D(GameView.Instance.GraphicsDevice, 1, 1, false, SurfaceFormat.Alpha8);
                     var alpha = new byte[1];
                     alpha[0] = 255;
-                    tex.SetData(alpha);
+                    tex.SetDataAsync(alpha);
                 }
                 else
                 {
@@ -145,7 +145,7 @@ namespace ACViewer.Render
                     color[0].R = data[2];
                     color[0].G = data[1];
                     color[0].B = data[0];
-                    tex.SetData(color);
+                    tex.SetDataAsync(color);
                 }
             }
             else
@@ -155,7 +155,7 @@ namespace ACViewer.Render
                 else
                 {
                     tex = new Texture2D(GameView.Instance.GraphicsDevice, texture.Width, texture.Height, false, surfaceFormat);
-                    tex.SetData(data);
+                    tex.SetDataAsync(data);
                 }
             }
             return tex;
@@ -166,7 +166,7 @@ namespace ACViewer.Render
             var colors = LoadPaletteColors(paletteID, out var width, out var height);
 
             var texture = new Texture2D(GameView.Instance.GraphicsDevice, width, height, false, SurfaceFormat.Color);
-            texture.SetData(colors);
+            texture.SetDataAsync(colors);
 
             return texture;
         }
@@ -193,7 +193,7 @@ namespace ACViewer.Render
             var setHeight = colors.Count / setWidth;
 
             var texture = new Texture2D(GameView.Instance.GraphicsDevice, setWidth, setHeight, false, SurfaceFormat.Color);
-            texture.SetData(colors.ToArray());
+            texture.SetDataAsync(colors.ToArray());
 
             return texture;
         }
@@ -252,7 +252,7 @@ namespace ACViewer.Render
             Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
 
             // copy our buffer to the texture
-            tex.SetData(bytes);
+            tex.SetDataAsync(bytes);
 
             // unlock the bitmap data
             bitmap.UnlockBits(data);
@@ -369,7 +369,7 @@ namespace ACViewer.Render
                 var g = (surface.ColorValue >> 8) & 0xFF;
                 var b = surface.ColorValue & 0xFF;
                 a = 0;
-                swatch.SetData(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
+                swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
                 return swatch;
             }
 
@@ -402,7 +402,7 @@ namespace ACViewer.Render
                     var r = (surface.ColorValue >> 16) & 0xFF;
                     var g = (surface.ColorValue >> 8) & 0xFF;
                     var b = surface.ColorValue & 0xFF;
-                    swatch.SetData(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
+                    swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
                     return swatch;
                 }
 
@@ -453,7 +453,7 @@ namespace ACViewer.Render
                     var g = (surface.ColorValue >> 8) & 0xFF;
                     var b = surface.ColorValue & 0xFF;
                     a = 0;
-                    swatch.SetData(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
+                    swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
                     return swatch;
                 }
 
@@ -491,10 +491,10 @@ namespace ACViewer.Render
         public static Texture2D GenerateMipMaps(byte[] data, int size)
         {
             var source = new Texture2D(GraphicsDevice, size, size, false, SurfaceFormat.Color);
-            source.SetData(data);
+            source.SetDataAsync(data);
 
             var texture = new Texture2D(GraphicsDevice, size, size, true, SurfaceFormat.Color);
-            texture.SetData(0, null, data, 0, data.Length);
+            texture.SetDataAsync(0, null, data, 0, data.Length);
 
             var miplevel = new List<byte[]>();
             var mipsize = size / 2;
@@ -512,7 +512,7 @@ namespace ACViewer.Render
 
             for (var i = 0; i < miplevel.Count; i++)
             {
-                texture.SetData(i + 1, null, miplevel[i], 0, miplevel[i].Length);
+                texture.SetDataAsync(i + 1, null, miplevel[i], 0, miplevel[i].Length);
             }
             return texture;
         }

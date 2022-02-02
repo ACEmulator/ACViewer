@@ -235,7 +235,7 @@ namespace ACViewer.View
 
         private void Guide_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(@"docs\index.html");
+            Process.Start("cmd", @"/c docs\index.html");
         }
 
         private void FindDID_Click(object sender, RoutedEventArgs e)

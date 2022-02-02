@@ -275,7 +275,7 @@ namespace ACViewer
 
                 updateObj.update_object();
 
-                if (updateObj.InitialUpdates > 1)
+                if (updateObj.InitialUpdates > 1 || !updateObj.TransientState.HasFlag(TransientStateFlags.Active) || updateObj.IsDestroyed)
                     UpdateObjs.RemoveAt(i);
             }
         }
