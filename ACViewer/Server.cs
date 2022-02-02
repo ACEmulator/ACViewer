@@ -16,6 +16,7 @@ using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
 using ACE.Server.WorldObjects;
 
+using ACViewer.Enum;
 using ACViewer.Model;
 using ACViewer.Render;
 using ACViewer.View;
@@ -28,7 +29,7 @@ namespace ACViewer
 
         public static Render.Buffer Buffer => GameView.Instance.Render.Buffer;
 
-        public static List<PhysicsObj> UpdateObjs { get; set; }
+        public static List<WorldObject> UpdateObjs { get; set; }
 
         public static bool Initting { get; set; }
 
@@ -94,53 +95,57 @@ namespace ACViewer
                     location.Frame.Origin = new Vector3(instance.OriginX, instance.OriginY, instance.OriginZ);
                     location.Frame.Orientation = new Quaternion(instance.AnglesX, instance.AnglesY, instance.AnglesZ, instance.AnglesW);
 
-                    WorldObject.AdjustDungeonCells(location);
+                    var success = wo.AddPhysicsObj(location);
 
-                    var success = wo.PhysicsObj.enter_world(location);
-
-                    if (!success || wo.PhysicsObj.CurCell == null)
+                    if (!success)
                     {
-                        wo.PhysicsObj.DestroyObject();
-                        wo.PhysicsObj = null;
                         Console.WriteLine($"LoadInstances({lbid:X8}).AddPhysicsObj({wo.Name}, {location}) - failed to spawn");
                         continue;
                     }
 
                     Console.WriteLine($"Spawned {instance.WeenieClassId} - {wo.Name} @ {location}");
-                    Instances.Add(wo);
 
-                    var objDesc = new ObjDesc(wo.SetupTableId, wo.ClothingBase ?? 0, (PaletteTemplate)(wo.PaletteTemplate ?? 0), (float)(wo.Shade ?? 0.0));
-
-                    if (wo is Creature creature)
-                    {
-                        objDesc.AddBaseModelData(wo);
-
-                        var equippedObjects = creature.EquippedObjects.Values.OrderBy(i => (int)(i.ClothingPriority ?? 0)).ToList();
-
-                        foreach (var equippedObject in equippedObjects)
-                        {
-                            if ((equippedObject.CurrentWieldedLocation & EquipMask.Selectable) != 0)
-                                continue;
-
-                            objDesc.Add(equippedObject.ClothingBase ?? 0, (PaletteTemplate)(equippedObject.PaletteTemplate ?? 0), (float)(equippedObject.Shade ?? 0.0));
-                        }
-                    }
-
-                    wo.PhysicsObj.UpdateObjDesc(objDesc);
-                    
-                    var r_PhysicsObj = new R_PhysicsObj(wo.PhysicsObj);
-                    Buffer.AddInstance(r_PhysicsObj, objDesc);
-
-                    if (UpdateObjs == null)
-                        UpdateObjs = new List<PhysicsObj>();
-
-                    UpdateObjs.Add(wo.PhysicsObj);
+                    AddInstance(wo);
                 }
             }
+
+            TickGenerators(GeneratorTickMode.Instances);
 
             timer.Stop();
 
             Console.WriteLine($"Completed in {timer.Elapsed.TotalSeconds}s");
+        }
+
+        public static void AddInstance(WorldObject wo)
+        {
+            Instances.Add(wo);
+
+            var objDesc = new ObjDesc(wo.SetupTableId, wo.ClothingBase ?? 0, (PaletteTemplate)(wo.PaletteTemplate ?? 0), (float)(wo.Shade ?? 0.0));
+
+            if (wo is Creature creature)
+            {
+                objDesc.AddBaseModelData(wo);
+
+                var equippedObjects = creature.EquippedObjects.Values.OrderBy(i => (int)(i.ClothingPriority ?? 0)).ToList();
+
+                foreach (var equippedObject in equippedObjects)
+                {
+                    if ((equippedObject.CurrentWieldedLocation & EquipMask.Selectable) != 0)
+                        continue;
+
+                    objDesc.Add(equippedObject.ClothingBase ?? 0, (PaletteTemplate)(equippedObject.PaletteTemplate ?? 0), (float)(equippedObject.Shade ?? 0.0));
+                }
+            }
+
+            wo.PhysicsObj.UpdateObjDesc(objDesc);
+
+            var r_PhysicsObj = new R_PhysicsObj(wo.PhysicsObj);
+            Buffer.AddInstance(r_PhysicsObj, objDesc);
+
+            if (UpdateObjs == null)
+                UpdateObjs = new List<WorldObject>();
+
+            UpdateObjs.Add(wo);
         }
 
         public static void LoadInstances_Finalize()
@@ -197,47 +202,53 @@ namespace ACViewer
                     if (sortCell != null && sortCell.has_building())
                         continue;
 
-                    var success = wo.PhysicsObj.enter_world(pos);
-
-                    if (!success || wo.PhysicsObj.CurCell == null)
+                    var success = wo.AddPhysicsObj(pos);
+                    
+                    if (!success)
                     {
-                        wo.PhysicsObj.DestroyObject();
-                        wo.PhysicsObj = null;
                         Console.WriteLine($"LoadEncounters({lbid:X8}).AddPhysicsObj({wo.Name}, {pos}) - failed to spawn");
                         continue;
                     }
 
                     Console.WriteLine($"Spawned {encounter.WeenieClassId} - {wo.Name} @ {pos}");
-                    Encounters.Add(wo);
 
-                    var objDesc = new ObjDesc(wo.SetupTableId, wo.ClothingBase ?? 0, (PaletteTemplate)(wo.PaletteTemplate ?? 0), (float)(wo.Shade ?? 0.0));
-
-                    if (wo is Creature creature)
-                    {
-                        foreach (var equippedObject in creature.EquippedObjects.Values.OrderBy(i => (int)(i.ClothingPriority ?? 0)))
-                        {
-                            if ((equippedObject.CurrentWieldedLocation & EquipMask.Selectable) != 0)
-                                continue;
-
-                            objDesc.Add(equippedObject.ClothingBase ?? 0, (PaletteTemplate)(equippedObject.PaletteTemplate ?? 0), (float)(equippedObject.Shade ?? 0.0));
-                        }
-                    }
-
-                    wo.PhysicsObj.UpdateObjDesc(objDesc);
-
-                    var r_PhysicsObj = new R_PhysicsObj(wo.PhysicsObj);
-                    Buffer.AddEncounter(r_PhysicsObj, objDesc);
-
-                    if (UpdateObjs == null)
-                        UpdateObjs = new List<PhysicsObj>();
-
-                    UpdateObjs.Add(wo.PhysicsObj);
+                    AddEncounter(wo);
                 }
             }
+
+            TickGenerators(GeneratorTickMode.Encounters);
 
             timer.Stop();
 
             Console.WriteLine($"Completed in {timer.Elapsed.TotalSeconds}s");
+        }
+
+        public static void AddEncounter(WorldObject wo)
+        {
+            Encounters.Add(wo);
+
+            var objDesc = new ObjDesc(wo.SetupTableId, wo.ClothingBase ?? 0, (PaletteTemplate)(wo.PaletteTemplate ?? 0), (float)(wo.Shade ?? 0.0));
+
+            if (wo is Creature creature)
+            {
+                foreach (var equippedObject in creature.EquippedObjects.Values.OrderBy(i => (int)(i.ClothingPriority ?? 0)))
+                {
+                    if ((equippedObject.CurrentWieldedLocation & EquipMask.Selectable) != 0)
+                        continue;
+
+                    objDesc.Add(equippedObject.ClothingBase ?? 0, (PaletteTemplate)(equippedObject.PaletteTemplate ?? 0), (float)(equippedObject.Shade ?? 0.0));
+                }
+            }
+
+            wo.PhysicsObj.UpdateObjDesc(objDesc);
+
+            var r_PhysicsObj = new R_PhysicsObj(wo.PhysicsObj);
+            Buffer.AddEncounter(r_PhysicsObj, objDesc);
+
+            if (UpdateObjs == null)
+                UpdateObjs = new List<WorldObject>();
+
+            UpdateObjs.Add(wo);
         }
 
         public static void LoadEncounters_Finalize()
@@ -273,9 +284,9 @@ namespace ACViewer
             {
                 var updateObj = UpdateObjs[i];
 
-                updateObj.update_object();
+                updateObj.PhysicsObj.update_object();
 
-                if (updateObj.InitialUpdates > 1 || !updateObj.TransientState.HasFlag(TransientStateFlags.Active) || updateObj.IsDestroyed)
+                if (updateObj.PhysicsObj.InitialUpdates > 1 || !updateObj.PhysicsObj.TransientState.HasFlag(TransientStateFlags.Active) || updateObj.PhysicsObj.IsDestroyed)
                     UpdateObjs.RemoveAt(i);
             }
         }
@@ -333,6 +344,54 @@ namespace ACViewer
 
             EncountersLoaded = false;
             Encounters = null;
+        }
+
+        public static GeneratorTickMode GeneratorTickMode { get; set; }
+        
+        public static void TickGenerators(GeneratorTickMode generatorTickMode)
+        {
+            GeneratorTickMode = generatorTickMode;
+            
+            for (var i = 0; i < UpdateObjs.Count; i++)
+            {
+                var updateObj = UpdateObjs[i];
+                
+                if (!updateObj.IsGenerator) continue;
+
+                updateObj.Generator_Update();
+
+                updateObj.Generator_Regeneration();
+            }
+
+            GeneratorTickMode = GeneratorTickMode.Undef;
+        }
+
+        public static bool EnterWorld(WorldObject wo)
+        {
+            // called by generators
+            wo.InitPhysicsObj();
+            
+            var success = wo.AddPhysicsObj(new Position(wo.Location));
+
+            if (success)
+            {
+                switch (GeneratorTickMode)
+                {
+                    case GeneratorTickMode.Instances:
+                        AddInstance(wo);
+                        break;
+
+                    case GeneratorTickMode.Encounters:
+                        AddEncounter(wo);
+                        break;
+
+                    default:
+                        Console.WriteLine($"Server.EnterWorld({wo.WeenieClassId} - {wo.Name}) - GeneratorTickMode.{GeneratorTickMode}");
+                        break;
+                }
+            }
+
+            return success;
         }
     }
 }

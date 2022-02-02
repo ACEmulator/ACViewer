@@ -312,5 +312,14 @@ namespace ACE.Server.Physics.Common
 
             ObjCellID = landblock & 0xFFFF0000;
         }
+
+        public ACE.Entity.Position ToACE()
+        {
+            var position = new ACE.Entity.Position();
+            position.LandblockId = new ACE.Entity.LandblockId(ObjCellID);
+            position.Pos = Frame.Origin;
+            position.Rotation = Frame.Orientation;
+            return position;
+        }
     }
 }
