@@ -89,7 +89,7 @@ namespace ACViewer.Render
                 return;
 
             VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), Vertices.Length, BufferUsage.WriteOnly);
-            VertexBuffer.SetData<VertexPositionColor>(Vertices);
+            VertexBuffer.SetData(Vertices);
 
             IndexBuffer = new IndexBuffer(GraphicsDevice, typeof(int), Indices.Length, BufferUsage.WriteOnly);
             IndexBuffer.SetData(Indices);

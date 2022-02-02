@@ -39,6 +39,10 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
+            <MenuItem Header="_Server">
+                <MenuItem Header="Load _Instances" Click="LoadInstances_Click"/>
+                <MenuItem Header="Load _Encounters" Click="LoadEncounters_Click"/>
+            </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_World Map" Click="WorldMap_Click" />
                 <MenuItem x:Name="optionUseMipMaps" Header="Use _Mipmaps" Click="UseMipMaps_Click" />

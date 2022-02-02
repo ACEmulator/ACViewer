@@ -36,6 +36,9 @@ namespace ACViewer.View
             {
                 MainMenu.Instance.LoadDATs(Config.ACFolder);
             }
+
+            if (ConfigManager.HasDBInfo)
+                Server.TryPrimeDatabase();
         }
 
         private DateTime lastUpdateTime { get; set; }
@@ -48,8 +51,12 @@ namespace ACViewer.View
 
         private bool pendingUpdate { get; set; }
 
+        public bool SuppressStatusText { get; set; }
+
         public async void AddStatusText(string line)
         {
+            if (SuppressStatusText) return;
+            
             statusLines.Add(line);
 
             var timeSinceLastUpdate = DateTime.Now - lastUpdateTime;

@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework;
 
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
-
 using ACE.Entity.Enum;
 
 namespace ACViewer.Model
@@ -53,7 +52,7 @@ namespace ACViewer.Model
             BuildBoundingBox();
         }
 
-        public Setup(uint setupID, FileTypes.ObjDesc objDesc, Dictionary<int, uint> customPaletteColors)
+        public Setup(uint setupID, ObjDesc objDesc)
         {
             // make simple setup if gfxobj. These don't have 
             if (setupID >> 24 == 0x1)
@@ -66,18 +65,15 @@ namespace ACViewer.Model
 
             Parts = new List<GfxObj>();
 
-            for (byte i = 0; i < _setup.Parts.Count; i++)
+            for (var i = 0; i < _setup.Parts.Count; i++)
             {
                 GfxObj gfxObj;
 
-                if (objDesc.AnimPartChanges.TryGetValue(i, out var apChange))
+                if (objDesc.PartChanges.TryGetValue((uint)i, out var partChange))
                 {
-                    var gfxObjID = apChange.PartID;
-                    gfxObj = new GfxObj(gfxObjID, false);
+                    gfxObj = new GfxObj(partChange.NewGfxObjId, false);
 
-                    objDesc.TextureChanges.TryGetValue(i, out var tmChanges);
-                   
-                    gfxObj.LoadTextures(tmChanges, customPaletteColors, false);
+                    gfxObj.LoadTextures(partChange.TextureChanges, objDesc.PaletteChanges);
 
                     gfxObj.BuildPolygons();
                 }
@@ -86,7 +82,7 @@ namespace ACViewer.Model
                     var gfxObjID = _setup.Parts[i];
                     gfxObj = new GfxObj(gfxObjID, false);
 
-                    gfxObj.LoadTextures(null, customPaletteColors);
+                    gfxObj.LoadTextures(null, objDesc.PaletteChanges);
 
                     gfxObj.BuildPolygons();
                 }

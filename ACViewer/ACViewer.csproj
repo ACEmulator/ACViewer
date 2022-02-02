@@ -10,7 +10,9 @@
 
   <ItemGroup>
     <None Remove="Content\Content.mgcb" />
+    <None Remove="Content\Fonts\password.ttf" />
     <None Remove="Icons\about.png" />
+    <None Remove="Icons\Checkmark_16x.png" />
     <None Remove="Icons\export-file.png" />
     <None Remove="Icons\help.png" />
     <None Remove="Icons\HelpApplication_16x.png" />
@@ -20,6 +22,7 @@
     <None Remove="Icons\Question_16x.png" />
     <None Remove="Icons\Search_16x.png" />
     <None Remove="Icons\Settings_16x.png" />
+    <None Remove="Icons\StatusCriticalError_16x.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,12 +41,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ACE\Source\ACE.Common\ACE.Common.csproj" />
+    <ProjectReference Include="..\ACE\Source\ACE.Database\ACE.Database.csproj" />
     <ProjectReference Include="..\ACE\Source\ACE.DatLoader\ACE.DatLoader.csproj" />
     <ProjectReference Include="..\ACE\Source\ACE.Entity\ACE.Entity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Content\Fonts\password.ttf" />
     <Resource Include="Icons\about.png" />
+    <Resource Include="Icons\Checkmark_16x.png" />
     <Resource Include="Icons\export-file.png" />
     <Resource Include="Icons\help.png" />
     <Resource Include="Icons\HelpApplication_16x.png" />
@@ -53,6 +59,7 @@
     <Resource Include="Icons\Question_16x.png" />
     <Resource Include="Icons\Search_16x.png" />
     <Resource Include="Icons\Settings_16x.png" />
+    <Resource Include="Icons\StatusCriticalError_16x.png" />
   </ItemGroup>
 
   <ItemGroup>

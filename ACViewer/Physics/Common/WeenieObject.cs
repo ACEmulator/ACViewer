@@ -32,7 +32,7 @@ namespace ACE.Server.Physics.Common
         {
             WorldObject = worldObject;
 
-            /*if (!(worldObject is Creature creature))
+            if (!(worldObject is Creature creature))
                 return;
 
             IsCombatPet = worldObject is CombatPet;
@@ -45,7 +45,7 @@ namespace ACE.Server.Physics.Common
 
             FoeType = creature.FoeType;
 
-            PlayerKillerStatus = creature.PlayerKillerStatus;*/
+            PlayerKillerStatus = creature.PlayerKillerStatus;
         }
 
         public bool SameFaction(PhysicsObj obj)
@@ -55,9 +55,8 @@ namespace ACE.Server.Physics.Common
 
         public bool PotentialFoe(PhysicsObj obj)
         {
-            /*return FoeType != null && FoeType == obj.WeenieObj.WorldObject?.CreatureType ||
-                obj.WeenieObj.FoeType != null && obj.WeenieObj.FoeType == WorldObject?.CreatureType;*/
-            return false;
+            return FoeType != null && FoeType == obj.WeenieObj.WorldObject?.CreatureType ||
+                obj.WeenieObj.FoeType != null && obj.WeenieObj.FoeType == WorldObject?.CreatureType;
         }
 
         public bool CanJump(float extent)
@@ -69,12 +68,10 @@ namespace ACE.Server.Physics.Common
         {
             velocity_z = 0.0f;
 
-            /*var player = WorldObject as Player;
+            var player = WorldObject as Player;
 
             if (player == null)
-                return false;*/
-
-            /*if (!WorldObject.IsPlayer) return false;
+                return false;
 
             var burden = InqBurden();
             if (burden == null)
@@ -91,8 +88,7 @@ namespace ACE.Server.Physics.Common
 
             velocity_z = (float)Math.Sqrt(height * 19.6);
 
-            return true;*/
-            return false;
+            return true;
         }
 
         /// <summary>
@@ -101,7 +97,7 @@ namespace ACE.Server.Physics.Common
         /// </summary>
         public float? InqBurden()
         {
-            /*var player = WorldObject as Player;
+            var player = WorldObject as Player;
 
             if (player == null)
                 return null;
@@ -116,18 +112,15 @@ namespace ACE.Server.Physics.Common
 
             var burden = EncumbranceSystem.GetBurden(capacity, encumbrance);
 
-            return burden;*/
-            return null;
+            return burden;
         }
 
         public bool InqRunRate(ref float rate)
         {
             // get run skill from WorldObject
             uint runSkill = 0;
-            /*if (WorldObject is Creature creature)
-                runSkill = creature.GetCreatureSkill(Skill.Run).Current;*/
-            if (WorldObject?.IsCreature ?? false)
-                runSkill = WorldObject.RunSkill;
+            if (WorldObject is Creature creature)
+                runSkill = creature.GetCreatureSkill(Skill.Run).Current;
 
             //rate = (float)MovementSystem.GetRunRate(0.0f, 300, 1.0f);
             rate = (float)MovementSystem.GetRunRate(0.0f, (int)runSkill, 1.0f);
@@ -137,44 +130,37 @@ namespace ACE.Server.Physics.Common
 
         public bool IsCorpse()
         {
-            //return WorldObject is Corpse;
-            return false;
+            return WorldObject is Corpse;
         }
 
         public bool IsImpenetrable()
         {
-            //return WorldObject is Player player && player.PlayerKillerStatus == PlayerKillerStatus.Free;
-            return false;
+            return WorldObject is Player player && player.PlayerKillerStatus == PlayerKillerStatus.Free;
         }
 
         public bool IsPK()
         {
-            //return WorldObject is Player player && player.IsPK;
-            return false;
+            return WorldObject is Player player && player.IsPK;
         }
 
         public bool IsPKLite()
         {
-            //return WorldObject is Player player && player.IsPKL;
-            return false;
+            return WorldObject is Player player && player.IsPKL;
         }
 
         public bool IsPlayer()
         {
-            //return WorldObject is Player;
-            return WorldObject?.IsPlayer ?? false;
+            return WorldObject is Player;
         }
 
         public bool IsCreature()
         {
-            //return WorldObject is Creature;
-            return WorldObject?.IsCreature ?? false;
+            return WorldObject is Creature;
         }
 
         public bool IsStorage()
         {
-            //return WorldObject is Storage;
-            return false;
+            return WorldObject is Storage;
         }
 
         public float JumpStaminaCost(float extent, int staminaCost)
@@ -188,22 +174,19 @@ namespace ACE.Server.Physics.Common
                 return;
 
             prof.WCID = ID;
-            //prof.ItemType = WorldObject.ItemType;
+            prof.ItemType = WorldObject.ItemType;
 
-            //if (WorldObject is Creature)
-            if (WorldObject.IsCreature)
+            if (WorldObject is Creature)
                 prof.Flags |= ObjCollisionProfileFlags.Creature;
 
-            //if (WorldObject is Player)
-            if (WorldObject.IsPlayer)
+            if (WorldObject is Player)
                 prof.Flags |= ObjCollisionProfileFlags.Player;
 
-            //if (WorldObject.Attackable)
-            if (WorldObject.IsCreature)
+            if (WorldObject.Attackable)
                 prof.Flags |= ObjCollisionProfileFlags.Attackable;
 
-            //if (WorldObject is Door)
-                //prof.Flags |= ObjCollisionProfileFlags.Door;
+            if (WorldObject is Door)
+                prof.Flags |= ObjCollisionProfileFlags.Door;
         }
 
         public int DoCollision(ObjCollisionProfile prof, ObjectGuid guid, PhysicsObj target)
@@ -226,7 +209,7 @@ namespace ACE.Server.Physics.Common
             Console.WriteLine("Source: " + WorldObject.Name);
             Console.WriteLine("Target: " + obj.WeenieObj.WorldObject.Name);*/
 
-            //wo.OnCollideObject(targetWO);
+            wo.OnCollideObject(targetWO);
 
             return 0;
         }
@@ -245,8 +228,8 @@ namespace ACE.Server.Physics.Common
 
             /*if (wo is Player player)
                 player.HandleFallingDamage(prof);
-            else
-                wo.OnCollideEnvironment();*/
+            else*/
+                wo.OnCollideEnvironment();
 
             return 0;
         }
@@ -277,8 +260,8 @@ namespace ACE.Server.Physics.Common
         public bool CanBypassMoveRestrictions()
         {
             // acclient checks both of these here
-            //return WorldObject.IgnoreHouseBarriers/* && WorldObject is Admin*/;
-            return true;
+            return WorldObject.IgnoreHouseBarriers && WorldObject is Admin;
+            //return true;
         }
 
         public bool CanMoveInto(WeenieObject mover)

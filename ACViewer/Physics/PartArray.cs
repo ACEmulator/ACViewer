@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+
 using ACE.DatLoader.Entity;
 using ACE.Entity.Enum;
 using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Collision;
 using ACE.Server.Physics.Common;
+
+using ACViewer;
 
 namespace ACE.Server.Physics
 {
@@ -465,7 +468,7 @@ namespace ACE.Server.Physics
             }
         }
 
-        public bool SetPart(List<DatLoader.Entity.AnimationPartChange> changes)
+        public bool SetPart(List<AnimationPartChange> changes)
         {
             if (Setup == null) return false;
 
@@ -627,6 +630,9 @@ namespace ACE.Server.Physics
                 var curPartFrame = curFrame != null ? new AFrame(curFrame.Frames[i]) : new AFrame(Vector3.Zero, Quaternion.Identity);
 
                 Parts[i].Pos.Frame.Combine(frame, curPartFrame, Scale);
+
+                if (Parts[i].Buffer != null)
+                    Parts[i].Buffer.UpdateInstance(Parts[i].BufferIdx, Parts[i].Pos.GetWorldPos(), Parts[i].Pos.Frame.Orientation.ToXna(), Parts[i].GfxObjScale.ToXna());
             }
         }
  

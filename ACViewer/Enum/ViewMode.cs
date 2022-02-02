@@ -8,5 +8,6 @@
         World,
         Map,
         Particle,
+        WorldObject,
     };
 }

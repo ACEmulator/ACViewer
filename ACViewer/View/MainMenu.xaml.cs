@@ -235,7 +235,7 @@ namespace ACViewer.View
 
         private void Guide_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start(@"docs\index.html");
+            Process.Start("cmd", @"/c docs\index.html");
         }
 
         private void FindDID_Click(object sender, RoutedEventArgs e)
@@ -248,6 +248,36 @@ namespace ACViewer.View
         {
             var teleport = new Teleport();
             teleport.ShowDialog();
+        }
+
+        private void LoadInstances_Click(object sender, RoutedEventArgs e)
+        {
+            if (Server.Initting) return;
+
+            Server.ClearInstances();
+            
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) => Server.LoadInstances();
+
+            worker.RunWorkerCompleted += (sender, runWorkerCompletedEventArgs) => Server.LoadInstances_Finalize();
+
+            worker.RunWorkerAsync();
+        }
+
+        private void LoadEncounters_Click(object sender, RoutedEventArgs e)
+        {
+            if (Server.Initting) return;
+
+            Server.ClearEncounters();
+
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) => Server.LoadEncounters();
+
+            worker.RunWorkerCompleted += (sender, runWorkerCompletedEventArgs) => Server.LoadEncounters_Finalize();
+
+            worker.RunWorkerAsync();
         }
     }
 }

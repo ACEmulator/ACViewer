@@ -13,9 +13,9 @@ namespace ACViewer.Render
 
         public static Effect Effect => Render.Effect_Clamp;
 
-        public TextureAtlas OverlayAtlas { get; set; }
+        public TextureAtlasChain OverlayAtlasChain { get; set; }
 
-        public TextureAtlas AlphaAtlas { get; set; }
+        public TextureAtlasChain AlphaAtlasChain { get; set; }
 
         public List<LandVertex> Vertices { get; set; }
 
@@ -27,11 +27,11 @@ namespace ACViewer.Render
 
         public const int MaxVertices = int.MaxValue / SizeOfLandVertexPlus;   // 18,512,790 vertices
 
-        public TerrainBatchDraw(TextureAtlas overlayAtlas, TextureAtlas alphaAtlas)
+        public TerrainBatchDraw(TextureAtlasChain overlayAtlasChain, TextureAtlasChain alphaAtlasChain)
         {
-            OverlayAtlas = overlayAtlas;
+            OverlayAtlasChain = overlayAtlasChain;
 
-            AlphaAtlas = alphaAtlas;
+            AlphaAtlasChain = alphaAtlasChain;
 
             Init();
         }
@@ -112,7 +112,7 @@ namespace ACViewer.Render
             // base terrain
             var texID = surfInfo.TerrainBase.TexGID;
 
-            var overlayIdx = OverlayAtlas.GetTextureIdx(texID);
+            var overlayIdx = OverlayAtlasChain.GetTextureIdx(texID);
 
             v.TexCoord0.Z = overlayIdx;
 
@@ -121,7 +121,7 @@ namespace ACViewer.Render
             {
                 var overlayID = surfInfo.TerrainOverlays[i].TexGID;
 
-                overlayIdx = OverlayAtlas.GetTextureIdx(overlayID);
+                overlayIdx = OverlayAtlasChain.GetTextureIdx(overlayID);
 
                 if (i == 0)
                     v.TexCoord1.Z = overlayIdx;
@@ -136,9 +136,12 @@ namespace ACViewer.Render
             {
                 var overlayID = surfInfo.RoadOverlay.TexGID;
 
-                overlayIdx = OverlayAtlas.GetTextureIdx(overlayID);
+                overlayIdx = OverlayAtlasChain.GetTextureIdx(overlayID);
 
                 v.TexCoord4.Z = overlayIdx;
+
+                if (surfInfo.RoadAlphaOverlays.Count > 1)
+                    v.TexCoord5.Z = overlayIdx;
             }
 
             // terrain alphas (max 3)
@@ -146,7 +149,7 @@ namespace ACViewer.Render
             {
                 var alphaID = surfInfo.TerrainAlphaOverlays[i].TexGID;
 
-                var alphaIdx = AlphaAtlas.GetTextureIdx(alphaID);
+                var alphaIdx = AlphaAtlasChain.GetTextureIdx(alphaID);
 
                 if (i == 0)
                     v.TexCoord1.W = alphaIdx;
@@ -161,7 +164,7 @@ namespace ACViewer.Render
             {
                 var alphaID = surfInfo.RoadAlphaOverlays[i].RoadTexGID;
 
-                var alphaIdx = AlphaAtlas.GetTextureIdx(alphaID);
+                var alphaIdx = AlphaAtlasChain.GetTextureIdx(alphaID);
 
                 if (i == 0)
                     v.TexCoord4.W = alphaIdx;

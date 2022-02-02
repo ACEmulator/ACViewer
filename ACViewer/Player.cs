@@ -21,15 +21,15 @@ namespace ACViewer
             // player
             uint modelID = 0x02000001;
             uint mTableID = 0x09000001;
-            uint runSkill = 300;
+            //uint runSkill = 300;
             float scale = 1.0f;
 
             PhysicsObj.makeAnimObject(modelID, true);
 
             var worldObj = new WorldObject();
-            worldObj.Name = "Player";
-            worldObj.RunSkill = runSkill;
-            worldObj.IsCreature = true;
+            //worldObj.Name = "Player";
+            //worldObj.RunSkill = runSkill;
+            //worldObj.IsCreature = true;
 
             var weenie = new WeenieObject(worldObj);
             PhysicsObj.set_weenie_obj(weenie);

@@ -22,7 +22,7 @@ namespace ACViewer.Render
         public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
         public static SpriteBatch SpriteBatch => GameView.Instance.SpriteBatch;
 
-        public static Dictionary<uint, Texture2D> Textures { get; set; }
+        public static Dictionary<TexturePalette, Texture2D> Textures { get; set; }
 
         public static List<Texture2D> Uncached { get; set; }
 
@@ -53,11 +53,11 @@ namespace ACViewer.Render
             GfxObjCache.Init();
             SetupCache.Init();
 
-            Textures = new Dictionary<uint, Texture2D>();
+            Textures = new Dictionary<TexturePalette, Texture2D>();
             Uncached = new List<Texture2D>();
         }
 
-        private static Texture2D LoadTexture(uint textureID, bool useDummy = false, Surface surface = null, Dictionary<int, uint> customPaletteColors = null)
+        private static Texture2D LoadTexture(uint textureID, bool useDummy = false, Surface surface = null, PaletteChanges paletteChanges = null)
         {
             //Console.WriteLine($"--> TextureCache.LoadTexture({textureID:X8})");
 
@@ -73,9 +73,6 @@ namespace ACViewer.Render
             var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
             if (texture.SourceData == null)
                 texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
-
-            if (customPaletteColors != null)
-                texture.CustomPaletteColors = customPaletteColors;
 
             var surfaceFormat = SurfaceFormat.Color;
             switch (texture.Format)
@@ -112,9 +109,8 @@ namespace ACViewer.Render
                         data = AddAlpha(data);
                         break;
                     case SurfacePixelFormat.PFID_INDEX16:
-                        data = IndexToColor(texture, isClipMap);
+                        data = IndexToColor(texture, isClipMap, paletteChanges);
                         break;
-
                     case SurfacePixelFormat.PFID_CUSTOM_RAW_JPEG:
                     case SurfacePixelFormat.PFID_R5G6B5:
                     case SurfacePixelFormat.PFID_A4R4G4B4:
@@ -139,7 +135,7 @@ namespace ACViewer.Render
                     tex = new Texture2D(GameView.Instance.GraphicsDevice, 1, 1, false, SurfaceFormat.Alpha8);
                     var alpha = new byte[1];
                     alpha[0] = 255;
-                    tex.SetData(alpha);
+                    tex.SetDataAsync(alpha);
                 }
                 else
                 {
@@ -149,7 +145,7 @@ namespace ACViewer.Render
                     color[0].R = data[2];
                     color[0].G = data[1];
                     color[0].B = data[0];
-                    tex.SetData(color);
+                    tex.SetDataAsync(color);
                 }
             }
             else
@@ -159,7 +155,7 @@ namespace ACViewer.Render
                 else
                 {
                     tex = new Texture2D(GameView.Instance.GraphicsDevice, texture.Width, texture.Height, false, surfaceFormat);
-                    tex.SetData(data);
+                    tex.SetDataAsync(data);
                 }
             }
             return tex;
@@ -170,7 +166,7 @@ namespace ACViewer.Render
             var colors = LoadPaletteColors(paletteID, out var width, out var height);
 
             var texture = new Texture2D(GameView.Instance.GraphicsDevice, width, height, false, SurfaceFormat.Color);
-            texture.SetData(colors);
+            texture.SetDataAsync(colors);
 
             return texture;
         }
@@ -197,7 +193,7 @@ namespace ACViewer.Render
             var setHeight = colors.Count / setWidth;
 
             var texture = new Texture2D(GameView.Instance.GraphicsDevice, setWidth, setHeight, false, SurfaceFormat.Color);
-            texture.SetData(colors.ToArray());
+            texture.SetDataAsync(colors.ToArray());
 
             return texture;
         }
@@ -256,7 +252,7 @@ namespace ACViewer.Render
             Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
 
             // copy our buffer to the texture
-            tex.SetData(bytes);
+            tex.SetDataAsync(bytes);
 
             // unlock the bitmap data
             bitmap.UnlockBits(data);
@@ -289,20 +285,34 @@ namespace ACViewer.Render
             }
         }
 
-        private static byte[] IndexToColor(ACE.DatLoader.FileTypes.Texture texture, bool isClipMap = false)
+        private static byte[] IndexToColor(ACE.DatLoader.FileTypes.Texture texture, bool isClipMap = false, PaletteChanges paletteChanges = null)
         {
             var colors = GetColors(texture);
             
             var palette = DatManager.PortalDat.ReadFromDat<Palette>((uint)texture.DefaultPaletteId);
 
             // Make a copy of the Palette Colors, so we don't inadvertently save them back to the dat File Cache
-            List<uint> paletteColors = palette.Colors.ToList();
+            var paletteColors = palette.Colors.ToList();
 
             // Apply any custom palette colors, if any, to our loaded palette (note, this may be all of them!)
-            if (texture.CustomPaletteColors.Count > 0)
-                foreach (var entry in texture.CustomPaletteColors)
-                    if (entry.Key <= paletteColors.Count)
-                        paletteColors[entry.Key] = entry.Value;
+            if (paletteChanges != null)
+            {
+                for (var i = 0; i < paletteChanges.CloSubPalettes.Count; i++)
+                {
+                    var subpalette = paletteChanges.CloSubPalettes[i];
+
+                    var newPalette = DatManager.PortalDat.ReadFromDat<Palette>(paletteChanges.PaletteIds[i]);
+
+                    foreach (var range in subpalette.Ranges)
+                    {
+                        var offset = (int)range.Offset;
+                        var numColors = (int)range.NumColors;
+
+                        for (var j = 0; j < numColors; j++)
+                            paletteColors[j + offset] = newPalette.Colors[j + offset];
+                    }
+                }
+            }
 
             var output = new byte[texture.Width * texture.Height * 4];
 
@@ -343,11 +353,36 @@ namespace ACViewer.Render
             return colors;
         }
 
+        public static Texture2D Get(uint surfaceID, uint surfaceTextureID, PaletteChanges paletteChanges)
+        {
+            if (surfaceID >> 24 != 0x8)
+                return Get(surfaceID);
+            
+            var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
+
+            if (surface.ColorValue != 0)
+            {
+                // swatch
+                var swatch = new Texture2D(GameView.Instance.GraphicsDevice, 1, 1);
+                var a = surface.ColorValue >> 24;
+                var r = (surface.ColorValue >> 16) & 0xFF;
+                var g = (surface.ColorValue >> 8) & 0xFF;
+                var b = surface.ColorValue & 0xFF;
+                a = 0;
+                swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
+                return swatch;
+            }
+
+            var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(surfaceTextureID);
+
+            return GetTexture(surfaceTexture.Textures[0], surface, paletteChanges);
+        }
+        
         // 0x08 - Surface - contains a 0x05 SurfaceTexture, along with additional type info (clipmask)
         // 0x05 - SurfaceTexture - contains a list of 0x06 textures
         // 0x06 - Texture - image format and data
 
-        public static Texture2D Get(uint fileID, List<ACE.DatLoader.Entity.TextureMapChange> textureMapChanges = null, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
+        public static Texture2D Get(uint fileID, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null, bool useCache = true)
         {
             //Console.WriteLine($"TextureCache.Get({fileID:X8})");
             
@@ -367,17 +402,14 @@ namespace ACViewer.Render
                     var r = (surface.ColorValue >> 16) & 0xFF;
                     var g = (surface.ColorValue >> 8) & 0xFF;
                     var b = surface.ColorValue & 0xFF;
-                    swatch.SetData(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
+                    swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
                     return swatch;
                 }
 
-                uint textureId = surface.OrigTextureId;
-                if (textureMapChanges != null)
-                {
-                    var tmChange = textureMapChanges.Where(t => t.OldTexture == surface.OrigTextureId).FirstOrDefault();
-                    if (tmChange != null)
-                        textureId = tmChange.NewTexture;
-                }
+                var textureId = surface.OrigTextureId;
+
+                if (textureChanges != null && textureChanges.TryGetValue(textureId, out var newTextureId))
+                    textureId = newTextureId;
 
                 var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(textureId);
 
@@ -399,12 +431,12 @@ namespace ACViewer.Render
                 // surface texture
                 var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(fileID);
 
-                return GetTexture(surfaceTexture.Textures[0], null, customPaletteColors, useCache);
+                return GetTexture(surfaceTexture.Textures[0], null, paletteChanges, useCache);
             }
             else if (fileID >> 24 == 0x06)
             {
                 // texture
-                return GetTexture(fileID, null, customPaletteColors, useCache);
+                return GetTexture(fileID, null, paletteChanges, useCache);
             }
 
             else if (fileID >> 24 == 0x08)
@@ -421,35 +453,35 @@ namespace ACViewer.Render
                     var g = (surface.ColorValue >> 8) & 0xFF;
                     var b = surface.ColorValue & 0xFF;
                     a = 0;
-                    swatch.SetData(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
+                    swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
                     return swatch;
                 }
 
-                uint textureId = surface.OrigTextureId;
-                if (textureMapChanges != null)
-                {
-                    var tmChange = textureMapChanges.Where(t => t.OldTexture == surface.OrigTextureId).FirstOrDefault();
-                    if (tmChange != null)
-                        textureId = tmChange.NewTexture;
-                }
+                var textureId = surface.OrigTextureId;
+
+                if (textureChanges != null && textureChanges.TryGetValue(textureId, out var newTextureId))
+                    textureId = newTextureId;
+
                 var surfaceTexture = DatManager.PortalDat.ReadFromDat<SurfaceTexture>(textureId);
 
-                return GetTexture(surfaceTexture.Textures[0], surface, customPaletteColors, useCache);
+                return GetTexture(surfaceTexture.Textures[0], surface, paletteChanges, useCache);
             }
             return null;
         }
 
-        private static Texture2D GetTexture(uint textureID, Surface surface = null, Dictionary<int, uint> customPaletteColors = null, bool useCache = true)
+        private static Texture2D GetTexture(uint textureID, Surface surface = null, PaletteChanges paletteChanges = null, bool useCache = true)
         {
             //Console.WriteLine($"-> GetTexture({textureID:X8})");
 
-            if (useCache && Textures.TryGetValue(textureID, out var cached))
+            var texturePalette = new TexturePalette(textureID, paletteChanges);
+
+            if (useCache && Textures.TryGetValue(texturePalette, out var cached))
                 return cached;
 
-            var texture = LoadTexture(textureID, false, surface, customPaletteColors);
+            var texture = LoadTexture(textureID, false, surface, paletteChanges);
 
             if (useCache)
-                Textures.Add(textureID, texture);
+                Textures.Add(texturePalette, texture);
             else
                 Uncached.Add(texture);
 
@@ -459,10 +491,10 @@ namespace ACViewer.Render
         public static Texture2D GenerateMipMaps(byte[] data, int size)
         {
             var source = new Texture2D(GraphicsDevice, size, size, false, SurfaceFormat.Color);
-            source.SetData(data);
+            source.SetDataAsync(data);
 
             var texture = new Texture2D(GraphicsDevice, size, size, true, SurfaceFormat.Color);
-            texture.SetData(0, null, data, 0, data.Length);
+            texture.SetDataAsync(0, null, data, 0, data.Length);
 
             var miplevel = new List<byte[]>();
             var mipsize = size / 2;
@@ -480,7 +512,7 @@ namespace ACViewer.Render
 
             for (var i = 0; i < miplevel.Count; i++)
             {
-                texture.SetData(i + 1, null, miplevel[i], 0, miplevel[i].Length);
+                texture.SetDataAsync(i + 1, null, miplevel[i], 0, miplevel[i].Length);
             }
             return texture;
         }
@@ -497,6 +529,27 @@ namespace ACViewer.Render
 
             GraphicsDevice.SetRenderTarget(null);
             return renderTarget;
+        }
+
+        public static uint GetSurfaceTextureID(uint surfaceID, Dictionary<uint, uint> textureChanges = null)
+        {
+            if (surfaceID >> 24 == 0x5 && textureChanges != null && textureChanges.TryGetValue(surfaceID, out var newSurfaceTextureId))
+                return newSurfaceTextureId;
+            
+            if (surfaceID >> 24 != 0x8)
+                return surfaceID;
+            
+            var surface = DatManager.PortalDat.ReadFromDat<Surface>(surfaceID);
+
+            if (surface.OrigTextureId == 0)
+                return surfaceID;
+
+            var surfaceTextureId = surface.OrigTextureId;
+            
+            if (textureChanges != null && textureChanges.TryGetValue(surfaceTextureId, out newSurfaceTextureId))
+                surfaceTextureId = newSurfaceTextureId;
+
+            return surfaceTextureId;
         }
     }
 }

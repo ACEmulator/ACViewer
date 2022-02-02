@@ -5,7 +5,6 @@ using System.Numerics;
 
 using ACE.Common;
 using ACE.Entity.Enum;
-using ACE.Entity.Enum.Properties;
 using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Collision;
 using ACE.Server.Physics.Combat;
@@ -14,6 +13,7 @@ using ACE.Server.Physics.Hooks;
 using ACE.Server.Physics.Managers;
 
 using ACViewer.Extensions;
+using ACViewer.Model;
 
 using Landblock = ACE.Server.Physics.Common.Landblock;
 using ObjectGuid = ACE.Entity.ObjectGuid;
@@ -178,6 +178,8 @@ namespace ACE.Server.Physics
             State = PhysicsGlobals.DefaultState;
         }
 
+        public bool IsDestroyed;
+        
         /// <summary>
         /// Called to completely remove a PhysicsObj from the server
         /// </summary>
@@ -189,6 +191,9 @@ namespace ACE.Server.Physics
             exit_world();
 
             ObjMaint.DestroyObject();
+
+            // acviewer custom
+            IsDestroyed = true;
         }
 
         public void AddObjectToSingleCell(ObjCell objCell)
@@ -4437,6 +4442,39 @@ namespace ACE.Server.Physics
         public override string ToString()
         {
             return $"{Name} ({ID:X8})";
+        }
+
+        // acviewer custom
+        public void UpdateObjDesc(ObjDesc objDesc, bool debug = false)
+        {
+            if (objDesc.PartChanges == null) return;
+            
+            foreach (var kvp in objDesc.PartChanges)
+            {
+                var partIdx = kvp.Key;
+                var partChange = kvp.Value;
+
+                // some setups are not stored in sequential order, ie. 0200004E
+                var origPartIdx = PartArray.Parts.FindIndex(i => i.PhysObjIndex == partIdx);
+
+                if (origPartIdx == -1)
+                {
+                    Console.WriteLine($"UpdateObjDesc: origPartIdx == -1 for {partIdx} -- this shouldn't happen!");
+                    continue;
+                }
+                var part = PartArray.Parts[origPartIdx];
+
+                if (part.GfxObj.ID == partChange.NewGfxObjId)
+                    continue;
+
+                var newPart = PhysicsPart.MakePhysicsPart(partChange.NewGfxObjId);
+                newPart.PhysicsObj = part.PhysicsObj;
+                newPart.PhysObjIndex = part.PhysObjIndex;
+                newPart.GfxObjScale = part.GfxObjScale;
+                newPart.Pos = part.Pos;
+
+                PartArray.Parts[origPartIdx] = newPart;
+            }
         }
     }
 }

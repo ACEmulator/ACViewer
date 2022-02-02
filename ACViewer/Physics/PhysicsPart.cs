@@ -11,6 +11,7 @@ using ACE.Server.Physics.Entity;
 
 using ACViewer;
 using ACViewer.Enum;
+using ACViewer.Render;
 
 namespace ACE.Server.Physics
 {
@@ -42,6 +43,10 @@ namespace ACE.Server.Physics
         public bool NoDraw;
 
         public static PhysicsObj PlayerObject;
+
+        // acviewer custom
+        public GfxObjInstance_Shared Buffer { get; set; }
+        public int BufferIdx { get; set; }
 
         public PhysicsPart()
         {

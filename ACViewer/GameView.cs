@@ -36,6 +36,7 @@ namespace ACViewer
         public static ModelViewer ModelViewer { get; set; }
         public static TextureViewer TextureViewer { get; set; }
         public static ParticleViewer ParticleViewer { get; set; }
+        public static WorldObjectViewer WorldObjectViewer { get; set; }
 
         private static ViewMode _viewMode { get; set; }
 
@@ -48,7 +49,7 @@ namespace ACViewer
                 
                 _viewMode = value;
 
-                if (_viewMode == ViewMode.Model)
+                if (_viewMode == ViewMode.Model || _viewMode == ViewMode.WorldObject)
                 {
                     Camera.Position = new Vector3(-10, -10, 10);
                     Camera.Dir = Vector3.Normalize(-Camera.Position);
@@ -117,6 +118,7 @@ namespace ACViewer
             ModelViewer = new ModelViewer();
             TextureViewer = new TextureViewer();
             ParticleViewer = new ParticleViewer();
+            WorldObjectViewer = new WorldObjectViewer();
         }
 
         public void InitPlayer()
@@ -135,6 +137,12 @@ namespace ACViewer
                 // this handles both ParticleViewer and ModelViewer
                 Player.PhysicsObj.destroy_particle_manager();
             }
+
+            /*if (keyboardState.IsKeyDown(Keys.L) && !PrevKeyboardState.IsKeyDown(Keys.L))
+            {
+                ViewMode = ViewMode.WorldObject;
+                WorldObjectViewer.Instance.LoadModel(44896);
+            }*/
 
             if (!_graphicsDeviceManager.PreferMultiSampling && UseMSAA && DateTime.Now - LastResizeEvent >= TimeSpan.FromSeconds(1))
             {
@@ -161,6 +169,9 @@ namespace ACViewer
                     break;
                 case ViewMode.Particle:
                     ParticleViewer.Update(time);
+                    break;
+                case ViewMode.WorldObject:
+                    WorldObjectViewer.Update(time);
                     break;
             }
 
@@ -189,6 +200,9 @@ namespace ACViewer
                     break;
                 case ViewMode.Particle:
                     ParticleViewer.Draw(time);
+                    break;
+                case ViewMode.WorldObject:
+                    WorldObjectViewer.Draw(time);
                     break;
             }
         }

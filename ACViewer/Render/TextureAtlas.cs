@@ -10,27 +10,17 @@ namespace ACViewer.Render
     {
         public GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public TextureFormat TextureFormat { get; set; }
+        public TextureFormatChain TextureFormatChain { get; set; }
 
-        public Dictionary<uint, int> Textures { get; set; }    // surface id => texture idx
+        public Dictionary<SurfaceTexturePalette, int> Textures { get; set; }    // surface id => texture idx
 
         public Texture2D _Textures { get; set; }
 
-        public TextureAtlas(TextureFormat textureFormat)
+        public TextureAtlas(TextureFormat textureFormat, int atlasIdx)
         {
-            TextureFormat = textureFormat;
+            TextureFormatChain = new TextureFormatChain(textureFormat, atlasIdx);
 
-            Textures = new Dictionary<uint, int>();
-        }
-
-        public int GetTextureIdx(uint surfaceID)
-        {
-            if (!Textures.TryGetValue(surfaceID, out var idx))
-            {
-                idx = Textures.Count;
-                Textures.Add(surfaceID, idx);
-            }
-            return idx;
+            Textures = new Dictionary<SurfaceTexturePalette, int>();
         }
 
         public void OnCompleted()
@@ -42,27 +32,38 @@ namespace ACViewer.Render
         {
             if (Textures.Count == 0) return;
 
+            if (_Textures != null)
+                _Textures.Dispose();
+
             var useMipMaps = false;
 
             if (TextureCache.UseMipMaps)
             {
                 // pre-fetch first texture to determine if we can use mipmaps
-                var texture = TextureCache.Get(Textures.First().Key);
+                var stp = Textures.First().Key;
+                var texture = TextureCache.Get(stp.OrigSurfaceId, stp.SurfaceTextureId, stp.PaletteChanges);
                 if (texture.LevelCount > 1)
                     useMipMaps = true;
             }
 
             // max size / # of textures?
-            _Textures = new Texture2D(GraphicsDevice, TextureFormat.Width, TextureFormat.Height, useMipMaps, TextureFormat.SurfaceFormat, Textures.Count);
+            // Textures.Count max 2048, regardless of width/height/surfaceformat/mipmaps?
+            var textureFormat = TextureFormatChain.TextureFormat;
+            _Textures = new Texture2D(GraphicsDevice, textureFormat.Width, textureFormat.Height, useMipMaps, textureFormat.SurfaceFormat, Textures.Count);
 
+            var firstIdx = -1;
+            
             foreach (var kvp in Textures)
             {
-                var textureID = kvp.Key;
+                var stp = kvp.Key;
                 var textureIdx = kvp.Value;
+
+                if (firstIdx == -1)
+                    firstIdx = textureIdx;
 
                 //Console.WriteLine($"Adding {textureID:X8}");
 
-                var texture = TextureCache.Get(textureID);
+                var texture = TextureCache.Get(stp.OrigSurfaceId, stp.SurfaceTextureId, stp.PaletteChanges);
                 var numLevels = texture.LevelCount;
                 var numColors = texture.Width * texture.Height;
 
@@ -83,7 +84,7 @@ namespace ACViewer.Render
                     var mipData = texture.GetMipData(numColors);
 
                     for (var i = 0; i < numLevels; i++)
-                        _Textures.SetData(i, textureIdx, null, mipData[i], 0, mipData[i].Length);
+                        _Textures.SetData(i, textureIdx - firstIdx, null, mipData[i], 0, mipData[i].Length);
                 }
             }
         }

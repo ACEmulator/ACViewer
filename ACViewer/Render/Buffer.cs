@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using ACE.DatLoader.Entity;
 using ACE.Server.Physics;
 
 using ACViewer.Enum;
@@ -15,7 +16,7 @@ namespace ACViewer.Render
     {
         public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public Dictionary<TextureFormat, TextureAtlas> TextureAtlases { get; set; }
+        public Dictionary<TextureFormat, TextureAtlasChain> TextureAtlasChains { get; set; }
 
         public TerrainBatch TerrainBatch { get; set; }
 
@@ -25,6 +26,11 @@ namespace ACViewer.Render
         public Dictionary<uint, GfxObjInstance_Shared> RB_Scenery { get; set; }
 
         public ParticleBatch RB_Particles { get; set; }
+
+        public Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> RB_Instances { get; set; }
+        public Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> RB_Encounters { get; set; }
+
+        public Dictionary<TextureFormat, TextureAtlasChain> InstanceTextureAtlasChains { get; set; }
 
         public static Effect Effect { get => Render.Effect; }
 
@@ -36,6 +42,8 @@ namespace ACViewer.Render
         public static bool drawBuildings { get; set; } = true;
         public static bool drawScenery { get; set; } = true;
         public static bool drawAlpha { get; set; } = true;
+        public static bool drawInstances { get; set; } = true;
+        public static bool drawEncounters { get; set; } = true;
 
         public Buffer()
         {
@@ -44,18 +52,18 @@ namespace ACViewer.Render
 
         public void Init()
         {
-            TextureAtlases = new Dictionary<TextureFormat, TextureAtlas>();
+            TextureAtlasChains = new Dictionary<TextureFormat, TextureAtlasChain>();
 
             var overlayFormat = new TextureFormat(SurfaceFormat.Color, 512, 512, false);
             var alphaFormat = new TextureFormat(SurfaceFormat.Alpha8, 512, 512, false);
 
-            var overlayAtlas = new TextureAtlas(overlayFormat);
-            var alphaAtlas = new TextureAtlas(alphaFormat);
+            var overlayAtlasChain = new TextureAtlasChain(overlayFormat);
+            var alphaAtlasChain = new TextureAtlasChain(alphaFormat);
 
-            TextureAtlases.Add(overlayFormat, overlayAtlas);
-            TextureAtlases.Add(alphaFormat, alphaAtlas);
+            TextureAtlasChains.Add(overlayFormat, overlayAtlasChain);
+            TextureAtlasChains.Add(alphaFormat, alphaAtlasChain);
 
-            TerrainBatch = new TerrainBatch(overlayAtlas, alphaAtlas);
+            TerrainBatch = new TerrainBatch(overlayAtlasChain, alphaAtlasChain);
 
             RB_EnvCell = new Dictionary<TextureSet, InstanceBatch>();
 
@@ -64,6 +72,11 @@ namespace ACViewer.Render
             RB_Scenery = new Dictionary<uint, GfxObjInstance_Shared>();
 
             RB_Particles = new ParticleBatch();
+
+            RB_Instances = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
+            RB_Encounters = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
+
+            InstanceTextureAtlasChains = new Dictionary<TextureFormat, TextureAtlasChain>();
         }
 
         public void ClearBuffer()
@@ -78,8 +91,14 @@ namespace ACViewer.Render
 
             ClearBuffer(RB_Particles);
 
-            foreach (var textureAtlas in TextureAtlases.Values)
-                textureAtlas.Dispose();
+            ClearBuffer(RB_Instances);
+            ClearBuffer(RB_Encounters);
+
+            foreach (var textureAtlasChain in TextureAtlasChains.Values)
+                textureAtlasChain.Dispose();
+
+            foreach (var textureAtlasChain in InstanceTextureAtlasChains.Values)
+                textureAtlasChain.Dispose();
 
             Init();
         }
@@ -91,6 +110,12 @@ namespace ACViewer.Render
         }
 
         public void ClearBuffer(Dictionary<uint, GfxObjInstance_Shared> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.Dispose();
+        }
+
+        public void ClearBuffer(Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches)
         {
             foreach (var batch in batches.Values)
                 batch.Dispose();
@@ -131,7 +156,7 @@ namespace ACViewer.Render
                 {
                     var _gfxObj = GfxObjCache.Get(gfxObjId);
 
-                    batch = new GfxObjInstance_Shared(_gfxObj, TextureAtlases);
+                    batch = new GfxObjInstance_Shared(_gfxObj, TextureAtlasChains);
                     batches.Add(gfxObjId, batch);
                 }
 
@@ -140,6 +165,46 @@ namespace ACViewer.Render
                 var scale = part.PhysicsPart.GfxObjScale.ToXna();
 
                 batch.AddInstance(position, orientation, scale);
+            }
+        }
+
+        public void AddInstanceObj(R_PhysicsObj obj, Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches, Model.ObjDesc objDesc = null, Dictionary<TextureFormat, TextureAtlasChain> textureAtlasChains = null)
+        {
+            textureAtlasChains ??= TextureAtlasChains;
+
+            for (var i = 0; i < obj.PartArray.Parts.Count; i++)
+            {
+                var part = obj.PartArray.Parts[i];
+
+                var gfxObjId = part.R_GfxObj.GfxObj.ID;
+
+                Dictionary<uint, uint> textureChanges = null;
+                PaletteChanges paletteChanges = objDesc?.PaletteChanges;
+
+                if (objDesc?.PartChanges != null && objDesc.PartChanges.TryGetValue((uint)part.PhysicsPart.PhysObjIndex, out var partChange))
+                {
+                    gfxObjId = partChange.NewGfxObjId;
+                    textureChanges = partChange.TextureChanges;
+                }
+
+                var gfxObjTexturePalette = new GfxObjTexturePalette(gfxObjId, textureChanges, paletteChanges);
+
+                if (!batches.TryGetValue(gfxObjTexturePalette, out var batch))
+                {
+                    var _gfxObj = GfxObjCache.Get(gfxObjId);
+
+                    batch = new GfxObjInstance_Shared(_gfxObj, textureAtlasChains, textureChanges, paletteChanges);
+                    batches.Add(gfxObjTexturePalette, batch);
+                }
+
+                var position = part.PhysicsPart.Pos.GetWorldPos();
+                var orientation = part.PhysicsPart.Pos.Frame.Orientation.ToXna();
+                var scale = part.PhysicsPart.GfxObjScale.ToXna();
+
+                batch.AddInstance(position, orientation, scale);
+
+                part.PhysicsPart.Buffer = batch;
+                part.PhysicsPart.BufferIdx = batch.Instances.Count - 1;
             }
         }
 
@@ -193,6 +258,16 @@ namespace ACViewer.Render
             RB_Particles.AddEmitter(emitter);
         }
 
+        public void AddInstance(R_PhysicsObj instance, Model.ObjDesc objDesc = null)
+        {
+            AddInstanceObj(instance, RB_Instances, objDesc, InstanceTextureAtlasChains);
+        }
+
+        public void AddEncounter(R_PhysicsObj encounter, Model.ObjDesc objDesc = null)
+        {
+            AddInstanceObj(encounter, RB_Encounters, objDesc);
+        }
+
         public void BuildTerrain()
         {
             TerrainBatch.OnCompleted();
@@ -213,9 +288,11 @@ namespace ACViewer.Render
             QueryBuffers();
         }
 
-        public void BuildTextureAtlases()
+        public void BuildTextureAtlases(Dictionary<TextureFormat, TextureAtlasChain> textureAtlasChains = null)
         {
-            foreach (var textureAtlas in TextureAtlases.Values)
+            textureAtlasChains ??= TextureAtlasChains;
+            
+            foreach (var textureAtlas in textureAtlasChains.Values)
                 textureAtlas.OnCompleted();
         }
 
@@ -281,6 +358,12 @@ namespace ACViewer.Render
                 batch.OnCompleted();
         }
 
+        public void BuildBuffer(Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches)
+        {
+            foreach (var batch in batches.Values)
+                batch.OnCompleted();
+        }
+
         public void BuildParticleBuffer()
         {
             RB_Particles.OnCompleted();
@@ -330,6 +413,12 @@ namespace ACViewer.Render
             if (drawScenery)
                 DrawBuffer(RB_Scenery);
 
+            if (drawInstances && Server.InstancesLoaded)
+                DrawBuffer(RB_Instances);
+
+            if (drawEncounters && Server.EncountersLoaded)
+                DrawBuffer(RB_Encounters);
+
             if (Picker.HitVertices != null)
                 Picker.DrawHitPoly();
 
@@ -344,6 +433,14 @@ namespace ACViewer.Render
         }
 
         public void DrawBuffer(Dictionary<uint, GfxObjInstance_Shared> batches)
+        {
+            SetRasterizerState(CullMode.None);
+
+            foreach (var batch in batches.Values)
+                batch.Draw();
+        }
+
+        public void DrawBuffer(Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches)
         {
             SetRasterizerState(CullMode.None);
 
