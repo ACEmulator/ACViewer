@@ -16,7 +16,7 @@ namespace ACViewer.Render
     {
         public static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
 
-        public Dictionary<TextureFormat, TextureAtlas> TextureAtlases { get; set; }
+        public Dictionary<TextureFormat, TextureAtlasChain> TextureAtlasChains { get; set; }
 
         public TerrainBatch TerrainBatch { get; set; }
 
@@ -29,6 +29,8 @@ namespace ACViewer.Render
 
         public Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> RB_Instances { get; set; }
         public Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> RB_Encounters { get; set; }
+
+        public Dictionary<TextureFormat, TextureAtlasChain> InstanceTextureAtlasChains { get; set; }
 
         public static Effect Effect { get => Render.Effect; }
 
@@ -50,18 +52,18 @@ namespace ACViewer.Render
 
         public void Init()
         {
-            TextureAtlases = new Dictionary<TextureFormat, TextureAtlas>();
+            TextureAtlasChains = new Dictionary<TextureFormat, TextureAtlasChain>();
 
             var overlayFormat = new TextureFormat(SurfaceFormat.Color, 512, 512, false);
             var alphaFormat = new TextureFormat(SurfaceFormat.Alpha8, 512, 512, false);
 
-            var overlayAtlas = new TextureAtlas(overlayFormat);
-            var alphaAtlas = new TextureAtlas(alphaFormat);
+            var overlayAtlasChain = new TextureAtlasChain(overlayFormat);
+            var alphaAtlasChain = new TextureAtlasChain(alphaFormat);
 
-            TextureAtlases.Add(overlayFormat, overlayAtlas);
-            TextureAtlases.Add(alphaFormat, alphaAtlas);
+            TextureAtlasChains.Add(overlayFormat, overlayAtlasChain);
+            TextureAtlasChains.Add(alphaFormat, alphaAtlasChain);
 
-            TerrainBatch = new TerrainBatch(overlayAtlas, alphaAtlas);
+            TerrainBatch = new TerrainBatch(overlayAtlasChain, alphaAtlasChain);
 
             RB_EnvCell = new Dictionary<TextureSet, InstanceBatch>();
 
@@ -73,6 +75,8 @@ namespace ACViewer.Render
 
             RB_Instances = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
             RB_Encounters = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
+
+            InstanceTextureAtlasChains = new Dictionary<TextureFormat, TextureAtlasChain>();
         }
 
         public void ClearBuffer()
@@ -90,8 +94,11 @@ namespace ACViewer.Render
             ClearBuffer(RB_Instances);
             ClearBuffer(RB_Encounters);
 
-            foreach (var textureAtlas in TextureAtlases.Values)
-                textureAtlas.Dispose();
+            foreach (var textureAtlasChain in TextureAtlasChains.Values)
+                textureAtlasChain.Dispose();
+
+            foreach (var textureAtlasChain in InstanceTextureAtlasChains.Values)
+                textureAtlasChain.Dispose();
 
             Init();
         }
@@ -149,7 +156,7 @@ namespace ACViewer.Render
                 {
                     var _gfxObj = GfxObjCache.Get(gfxObjId);
 
-                    batch = new GfxObjInstance_Shared(_gfxObj, TextureAtlases);
+                    batch = new GfxObjInstance_Shared(_gfxObj, TextureAtlasChains);
                     batches.Add(gfxObjId, batch);
                 }
 
@@ -161,8 +168,10 @@ namespace ACViewer.Render
             }
         }
 
-        public void AddInstanceObj(R_PhysicsObj obj, Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches, Model.ObjDesc objDesc = null)
+        public void AddInstanceObj(R_PhysicsObj obj, Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches, Model.ObjDesc objDesc = null, Dictionary<TextureFormat, TextureAtlasChain> textureAtlasChains = null)
         {
+            textureAtlasChains ??= TextureAtlasChains;
+
             for (var i = 0; i < obj.PartArray.Parts.Count; i++)
             {
                 var part = obj.PartArray.Parts[i];
@@ -184,7 +193,7 @@ namespace ACViewer.Render
                 {
                     var _gfxObj = GfxObjCache.Get(gfxObjId);
 
-                    batch = new GfxObjInstance_Shared(_gfxObj, TextureAtlases, textureChanges, paletteChanges);
+                    batch = new GfxObjInstance_Shared(_gfxObj, textureAtlasChains, textureChanges, paletteChanges);
                     batches.Add(gfxObjTexturePalette, batch);
                 }
 
@@ -251,7 +260,7 @@ namespace ACViewer.Render
 
         public void AddInstance(R_PhysicsObj instance, Model.ObjDesc objDesc = null)
         {
-            AddInstanceObj(instance, RB_Instances, objDesc);
+            AddInstanceObj(instance, RB_Instances, objDesc, InstanceTextureAtlasChains);
         }
 
         public void AddEncounter(R_PhysicsObj encounter, Model.ObjDesc objDesc = null)
@@ -279,9 +288,11 @@ namespace ACViewer.Render
             QueryBuffers();
         }
 
-        public void BuildTextureAtlases()
+        public void BuildTextureAtlases(Dictionary<TextureFormat, TextureAtlasChain> textureAtlasChains = null)
         {
-            foreach (var textureAtlas in TextureAtlases.Values)
+            textureAtlasChains ??= TextureAtlasChains;
+            
+            foreach (var textureAtlas in textureAtlasChains.Values)
                 textureAtlas.OnCompleted();
         }
 

@@ -252,7 +252,9 @@ namespace ACViewer.View
 
         private void LoadInstances_Click(object sender, RoutedEventArgs e)
         {
-            if (Server.InstancesLoaded || Server.Initting) return;
+            if (Server.Initting) return;
+
+            Server.ClearInstances();
             
             var worker = new BackgroundWorker();
 
@@ -265,8 +267,10 @@ namespace ACViewer.View
 
         private void LoadEncounters_Click(object sender, RoutedEventArgs e)
         {
-            if (Server.EncountersLoaded || Server.Initting) return;
-            
+            if (Server.Initting) return;
+
+            Server.ClearEncounters();
+
             var worker = new BackgroundWorker();
 
             worker.DoWork += (sender, doWorkEventArgs) => Server.LoadEncounters();

@@ -38,10 +38,15 @@ namespace ACViewer.Model
             
             foreach (var subpalette in subPalettes)
             {
-                var paletteSet = DatManager.PortalDat.ReadFromDat<PaletteSet>(subpalette.PaletteSet);
-                var paletteId = paletteSet.GetPaletteID(shade);
+                if (subpalette.PaletteSet >> 24 == 0xF)
+                {
+                    var paletteSet = DatManager.PortalDat.ReadFromDat<PaletteSet>(subpalette.PaletteSet);
+                    var paletteId = paletteSet.GetPaletteID(shade);
 
-                paletteIDs.Add(paletteId);
+                    paletteIDs.Add(paletteId);
+                }
+                else
+                    paletteIDs.Add(subpalette.PaletteSet);
             }
             return paletteIDs;
         }

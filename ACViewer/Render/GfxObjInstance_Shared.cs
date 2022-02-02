@@ -20,9 +20,9 @@ namespace ACViewer.Render
 
         public GfxObj GfxObj { get; set; }
 
-        public Dictionary<TextureFormat, GfxObjInstance_TextureFormat> BaseFormats_Solid { get; set; }
+        public Dictionary<TextureFormatChain, GfxObjInstance_TextureFormat> BaseFormats_Solid { get; set; }
 
-        public Dictionary<TextureFormat, GfxObjInstance_TextureFormat> BaseFormats_Alpha { get; set; }
+        public Dictionary<TextureFormatChain, GfxObjInstance_TextureFormat> BaseFormats_Alpha { get; set; }
 
         public List<VertexPositionNormalTextures> Vertices { get; set; }
 
@@ -36,22 +36,22 @@ namespace ACViewer.Render
 
         public VertexBufferBinding[] Bindings { get; set; }
 
-        public GfxObjInstance_Shared(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlas> textureAtlases, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
+        public GfxObjInstance_Shared(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlasChain> textureAtlasChains, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
         {
             GfxObj = gfxObj;
 
-            BuildStatic(gfxObj, textureAtlases, textureChanges, paletteChanges);
+            BuildStatic(gfxObj, textureAtlasChains, textureChanges, paletteChanges);
 
             Instances = new List<VertexInstance>();
         }
 
         public static readonly SurfaceType AlphaSurfaceTypes = SurfaceType.Base1ClipMap | SurfaceType.Translucent | SurfaceType.Alpha | SurfaceType.Additive;
 
-        public void BuildStatic(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlas> textureAtlases, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
+        public void BuildStatic(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlasChain> textureAtlasChains, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
         {
-            BaseFormats_Solid = new Dictionary<TextureFormat, GfxObjInstance_TextureFormat>();
+            BaseFormats_Solid = new Dictionary<TextureFormatChain, GfxObjInstance_TextureFormat>();
 
-            BaseFormats_Alpha = new Dictionary<TextureFormat, GfxObjInstance_TextureFormat>();
+            BaseFormats_Alpha = new Dictionary<TextureFormatChain, GfxObjInstance_TextureFormat>();
 
             Vertices = new List<VertexPositionNormalTextures>();
 
@@ -68,23 +68,33 @@ namespace ACViewer.Render
                 
                 var textureFormat = new TextureFormat(texture.Format, texture.Width, texture.Height, gfxObj.HasWrappingUVs);
 
-                if (!textureAtlases.TryGetValue(textureFormat, out var textureAtlas))
+                if (!textureAtlasChains.TryGetValue(textureFormat, out var textureAtlasChain))
                 {
-                    textureAtlas = new TextureAtlas(textureFormat);
-                    textureAtlases.Add(textureFormat, textureAtlas);
+                    textureAtlasChain = new TextureAtlasChain(textureFormat);
+                    textureAtlasChains.Add(textureFormat, textureAtlasChain);
                 }
 
                 var surface = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Surface>(surfaceID);
 
+                var surfaceTextureId = TextureCache.GetSurfaceTextureID(surfaceID, textureChanges);
+
+                var surfaceTexturePalette = new SurfaceTexturePalette(surfaceID, surfaceTextureId, paletteChanges);
+
+                var atlasIdx = textureAtlasChain.GetAtlasIdx(surfaceTexturePalette);
+
+                var textureAtlas = textureAtlasChain.TextureAtlases[atlasIdx];
+
                 var baseFormats = (surface.Type & AlphaSurfaceTypes) == 0 ? BaseFormats_Solid : BaseFormats_Alpha;
-                
-                if (!baseFormats.TryGetValue(textureFormat, out var baseFormat))
+
+                if (!baseFormats.TryGetValue(textureAtlas.TextureFormatChain, out var baseFormat))
                 {
                     baseFormat = new GfxObjInstance_TextureFormat(textureAtlas);
-                    baseFormats.Add(textureFormat, baseFormat);
+                    baseFormats.Add(textureAtlas.TextureFormatChain, baseFormat);
                 }
 
-                baseFormat.AddPolygon(poly, gfxObj.VertexArray, surfaceID, Vertices, vertexTable, textureChanges, paletteChanges);
+                var textureIdx = textureAtlas.Textures[surfaceTexturePalette];
+
+                baseFormat.AddPolygon(poly, gfxObj.VertexArray, surfaceID, Vertices, vertexTable, textureIdx);
             }
         }
 

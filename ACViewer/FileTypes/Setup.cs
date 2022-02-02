@@ -26,8 +26,8 @@ namespace ACViewer.FileTypes
                 treeView.Items.Add(flags);
 
             var parts = new TreeNode("Parts:");
-            foreach (var part in _setup.Parts)
-                parts.Items.Add(new TreeNode($"{part:X8}", clickable: true));
+            for (var i = 0; i < _setup.Parts.Count; i++)
+                parts.Items.Add(new TreeNode($"{i} - {_setup.Parts[i]:X8}", clickable: true));
 
             treeView.Items.Add(parts);
 

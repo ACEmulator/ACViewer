@@ -1,4 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+using ACE.Entity.Enum;
 
 using ACViewer.Entity;
 
@@ -28,6 +32,29 @@ namespace ACViewer.FileTypes
             if (_texture.DefaultPaletteId != null)
                 treeView.Items.Add(new TreeNode($"DefaultPalette: {_texture.DefaultPaletteId:X8}", clickable: true));
 
+            if (_texture.Format == SurfacePixelFormat.PFID_INDEX16)
+            {
+                var sb = new StringBuilder();
+
+                using (var reader = new BinaryReader(new MemoryStream(_texture.SourceData)))
+                {
+                    for (var y = 0; y < _texture.Height; y++)
+                    {
+                        for (var x = 0; x < _texture.Width; x++)
+                        {
+                            if (x == 0)
+                                sb.Append((reader.ReadInt16() / 8).ToString().PadLeft(3, ' '));
+                            else
+                                sb.Append(", " + (reader.ReadInt16() / 8).ToString().PadLeft(3, ' '));
+                        }
+                        sb.AppendLine();
+                    }
+                }
+                var colorIndices = new TreeNode("Color indices:");
+                colorIndices.Items = new List<TreeNode>();
+                colorIndices.Items.Add(new TreeNode(sb.ToString()));
+                treeView.Items.Add(colorIndices);
+            }
             return treeView;
         }
     }

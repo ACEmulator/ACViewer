@@ -30,16 +30,14 @@ namespace ACViewer
 
             Indices = new List<short>();
 
-            if (textureAtlas.TextureFormat.HasWrappingUVs)
+            if (textureAtlas.TextureFormatChain.TextureFormat.HasWrappingUVs)
                 Effect = Render.Render.Effect;
             else
                 Effect = Render.Render.Effect_Clamp;
         }
 
-        public void AddPolygon(Polygon polygon, List<VertexPositionNormalTexture> vertices, uint surfaceID, List<VertexPositionNormalTextures> outVertices, Dictionary<VertexPositionNormalTextures, short> vertexTable, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
+        public void AddPolygon(Polygon polygon, List<VertexPositionNormalTexture> vertices, uint surfaceID, List<VertexPositionNormalTextures> outVertices, Dictionary<VertexPositionNormalTextures, short> vertexTable, int textureIdx)
         {
-            var textureIdx = TextureAtlas.GetTextureIdx(surfaceID, textureChanges, paletteChanges);
-
             foreach (var idx in polygon.Indices)
             {
                 var v = new VertexPositionNormalTextures(vertices[idx].Position, vertices[idx].Normal, vertices[idx].TextureCoordinate, textureIdx);

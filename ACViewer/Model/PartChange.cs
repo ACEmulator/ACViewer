@@ -11,5 +11,13 @@ namespace ACViewer.Model
         {
             NewGfxObjId = newGfxObjId;
         }
+
+        public void AddTexture(uint oldTexture, uint newTexture)
+        {
+            if (TextureChanges == null)
+                TextureChanges = new Dictionary<uint, uint>();
+
+            TextureChanges.Add(oldTexture, newTexture);
+        }
     }
 }

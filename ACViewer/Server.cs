@@ -36,6 +36,10 @@ namespace ACViewer
 
         public static bool EncountersLoaded { get; set; }
 
+        public static List<WorldObject> Instances { get; set; }
+
+        public static List<WorldObject> Encounters { get; set; }
+
         public static void Init()
         {
             InstancesLoaded = false;
@@ -48,6 +52,8 @@ namespace ACViewer
             MainWindow.Instance.SuppressStatusText = true;
             
             SetDatabaseConfig();
+
+            Instances = new List<WorldObject>();
 
             var timer = Stopwatch.StartNew();
             
@@ -101,11 +107,14 @@ namespace ACViewer
                     }
 
                     Console.WriteLine($"Spawned {instance.WeenieClassId} - {wo.Name} @ {location}");
+                    Instances.Add(wo);
 
                     var objDesc = new ObjDesc(wo.SetupTableId, wo.ClothingBase ?? 0, (PaletteTemplate)(wo.PaletteTemplate ?? 0), (float)(wo.Shade ?? 0.0));
 
                     if (wo is Creature creature)
                     {
+                        objDesc.AddBaseModelData(wo);
+
                         var equippedObjects = creature.EquippedObjects.Values.OrderBy(i => (int)(i.ClothingPriority ?? 0)).ToList();
 
                         foreach (var equippedObject in equippedObjects)
@@ -113,7 +122,7 @@ namespace ACViewer
                             if ((equippedObject.CurrentWieldedLocation & EquipMask.Selectable) != 0)
                                 continue;
 
-                            objDesc.Add(wo.SetupTableId, equippedObject.ClothingBase ?? 0, (PaletteTemplate)(equippedObject.PaletteTemplate ?? 0), (float)(equippedObject.Shade ?? 0.0));
+                            objDesc.Add(equippedObject.ClothingBase ?? 0, (PaletteTemplate)(equippedObject.PaletteTemplate ?? 0), (float)(equippedObject.Shade ?? 0.0));
                         }
                     }
 
@@ -136,7 +145,7 @@ namespace ACViewer
 
         public static void LoadInstances_Finalize()
         {
-            Buffer.BuildTextureAtlases();
+            Buffer.BuildTextureAtlases(Buffer.InstanceTextureAtlasChains);
             Buffer.BuildBuffer(Buffer.RB_Instances);
 
             MainWindow.Instance.SuppressStatusText = false;
@@ -150,6 +159,8 @@ namespace ACViewer
             MainWindow.Instance.SuppressStatusText = true;
 
             SetDatabaseConfig();
+
+            Encounters = new List<WorldObject>();
 
             var timer = Stopwatch.StartNew();
 
@@ -197,6 +208,7 @@ namespace ACViewer
                     }
 
                     Console.WriteLine($"Spawned {encounter.WeenieClassId} - {wo.Name} @ {pos}");
+                    Encounters.Add(wo);
 
                     var objDesc = new ObjDesc(wo.SetupTableId, wo.ClothingBase ?? 0, (PaletteTemplate)(wo.PaletteTemplate ?? 0), (float)(wo.Shade ?? 0.0));
 
@@ -207,7 +219,7 @@ namespace ACViewer
                             if ((equippedObject.CurrentWieldedLocation & EquipMask.Selectable) != 0)
                                 continue;
 
-                            objDesc.Add(wo.SetupTableId, equippedObject.ClothingBase ?? 0, (PaletteTemplate)(equippedObject.PaletteTemplate ?? 0), (float)(equippedObject.Shade ?? 0.0));
+                            objDesc.Add(equippedObject.ClothingBase ?? 0, (PaletteTemplate)(equippedObject.PaletteTemplate ?? 0), (float)(equippedObject.Shade ?? 0.0));
                         }
                     }
 
@@ -288,6 +300,39 @@ namespace ACViewer
                 }
             };
             worker.RunWorkerAsync();
+        }
+
+        public static void ClearInstances()
+        {
+            if (!InstancesLoaded) return;
+
+            foreach (var instance in Instances)
+                instance.PhysicsObj.DestroyObject();
+
+            Buffer.ClearBuffer(Buffer.RB_Instances);
+            Buffer.RB_Instances = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
+
+            foreach (var textureAtlasChain in Buffer.InstanceTextureAtlasChains.Values)
+                textureAtlasChain.Dispose();
+
+            Buffer.InstanceTextureAtlasChains.Clear();
+
+            InstancesLoaded = false;
+            Instances = null;
+        }
+
+        public static void ClearEncounters()
+        {
+            if (!EncountersLoaded) return;
+
+            foreach (var encounter in Encounters)
+                encounter.PhysicsObj.DestroyObject();
+
+            Buffer.ClearBuffer(Buffer.RB_Encounters);
+            Buffer.RB_Encounters = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
+
+            EncountersLoaded = false;
+            Encounters = null;
         }
     }
 }
