@@ -176,6 +176,8 @@ namespace ACViewer
             }
 
             PrevKeyboardState = keyboardState;
+
+            base.Update(time);
         }
 
         private static readonly Color BackgroundColor = new Color(0, 0, 0);
@@ -205,6 +207,8 @@ namespace ACViewer
                     WorldObjectViewer.Draw(time);
                     break;
             }
+
+            base.Draw(time);
         }
 
         private void GameView_SizeChanged(object sender, SizeChangedEventArgs e)

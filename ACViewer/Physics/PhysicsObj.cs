@@ -1361,11 +1361,11 @@ namespace ACE.Server.Physics
 
             //if (setPos.Flags.HasFlag(SetPositionFlags.RandomScatter))
             //return SetScatterPositionInternal(setPos, transition);
-            /*if (wo.ScatterPos != null)
+            if (wo.ScatterPos != null)
             {
                 wo.ScatterPos.Flags |= setPos.Flags;
                 return SetScatterPositionInternal(wo.ScatterPos, transition);
-            }*/
+            }
 
             // frame ref?
             var result = SetPositionInternal(setPos.Pos, setPos, transition);
