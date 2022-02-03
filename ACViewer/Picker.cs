@@ -343,6 +343,9 @@ namespace ACViewer
                     //else
                         //Console.WriteLine($"Unknown model ID for object @ {PickResult.PhysicsObj.Position}");
 
+                    if (PickResult.PhysicsObj.WeenieObj?.WorldObject != null)
+                        FileInfo.Instance.SetInfo(new FileTypes.WorldObject(PickResult.PhysicsObj.WeenieObj.WorldObject).BuildTree());
+
                     break;
             }
             HitVertices = hitVertices.ToArray();
