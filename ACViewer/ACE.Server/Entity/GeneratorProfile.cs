@@ -214,7 +214,7 @@ namespace ACE.Server.Entity
 
                             Spawned.Add(obj.Guid.Full, woi);
 
-                            Console.WriteLine($"Generator {Generator.WeenieClassId} - {Generator.Name} spawned {obj.WeenieClassId} - {obj.Name} @ {obj.Location} {obj.Location.RotationW} {obj.Location.RotationX} {obj.Location.RotationY} {obj.Location.RotationZ}");
+                            Console.WriteLine($"Generator {Generator.WeenieClassId} - {Generator.Name} spawned {obj.WeenieClassId} - {obj.Name} @ {obj.Location} {obj.Location?.RotationW} {obj.Location?.RotationX} {obj.Location?.RotationY} {obj.Location?.RotationZ}");
                         }
                     }
 
@@ -274,6 +274,8 @@ namespace ACE.Server.Entity
 
             var spawned = new List<WorldObject>();
 
+            if (objects == null) return spawned;
+            
             foreach (var obj in objects)
             {
                 //log.Debug($"{_generator.Name}.Spawn({obj.Name})");

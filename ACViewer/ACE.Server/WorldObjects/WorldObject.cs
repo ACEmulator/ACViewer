@@ -52,7 +52,10 @@ namespace ACE.Server.WorldObjects
 
         public WorldObject Wielder { get; set; }
 
-        public WorldObject() { }
+        public WorldObject()
+        {
+            Biota = new Biota();
+        }
         
         /// <summary>
         /// A new biota will be created taking all of its values from weenie.
