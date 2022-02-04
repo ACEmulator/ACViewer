@@ -266,6 +266,8 @@ namespace ACViewer.View
             LoadInstances = !LoadInstances;
             Instance.optionLoadInstances.IsChecked = LoadInstances;
 
+            if (GameView.ViewMode != ViewMode.World) return;
+
             Server.ClearInstances();
 
             if (!LoadInstances)
@@ -294,6 +296,8 @@ namespace ACViewer.View
 
             LoadEncounters = !LoadEncounters;
             Instance.optionLoadEncounters.IsChecked = LoadEncounters;
+
+            if (GameView.ViewMode != ViewMode.World) return;
 
             Server.ClearEncounters();
 
