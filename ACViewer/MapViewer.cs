@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop.Input;
 
 using ACViewer.Enum;
+using ACE.DatLoader;
 
 namespace ACViewer
 {
@@ -67,7 +68,11 @@ namespace ACViewer
 
         public void LoadContent()
         {
-            WorldMap = Image.GetTextureFromBitmap(GraphicsDevice, @"Content\Images\highres.png");
+            if(WorldMap == null)
+            {
+                Mapper map = new Mapper();
+                WorldMap = Image.GetTexture2DFromBitmap(GraphicsDevice, map.MapImage);
+            }
 
             Highlight = new Texture2D(GraphicsDevice, 1, 1);
             Highlight.SetData(new Microsoft.Xna.Framework.Color[1] { Microsoft.Xna.Framework.Color.Red });
