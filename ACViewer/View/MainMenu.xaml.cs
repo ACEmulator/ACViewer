@@ -206,9 +206,14 @@ namespace ACViewer.View
             ShowParticles = !ShowParticles;
             Instance.optionShowParticles.IsChecked = ShowParticles;
 
-            if (ShowParticles && !GameView.Render.ParticlesInitted && GameView.ViewMode == ViewMode.World)
-                GameView.Render.InitEmitters();
+            if (GameView.ViewMode == ViewMode.World)
+            {
+                if (ShowParticles && !GameView.Render.ParticlesInitted)
+                    GameView.Render.InitEmitters();
 
+                if (!ShowParticles && GameView.Render.ParticlesInitted)
+                    GameView.Render.DestroyEmitters();
+            }
             return ShowHUD;
         }
 

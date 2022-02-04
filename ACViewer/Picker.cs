@@ -15,6 +15,7 @@ using ACE.Server.WorldObjects;
 
 using ACViewer.Enum;
 using ACViewer.Model;
+using ACViewer.Render;
 using ACViewer.View;
 
 namespace ACViewer
@@ -294,6 +295,9 @@ namespace ACViewer
 
                     foreach (var part in PickResult.PhysicsObj.PartArray.Parts)
                     {
+                        if (part.GfxObj.ID == 0x010001ec)   // skip anchor locations
+                            continue;
+
                         transform = part.Pos.ToXna();
 
                         if (part.GfxObjScale != System.Numerics.Vector3.Zero)
@@ -344,8 +348,10 @@ namespace ACViewer
                         //Console.WriteLine($"Unknown model ID for object @ {PickResult.PhysicsObj.Position}");
 
                     if (PickResult.PhysicsObj.WeenieObj?.WorldObject != null)
+                    {
                         FileInfo.Instance.SetInfo(new FileTypes.WorldObject(PickResult.PhysicsObj.WeenieObj.WorldObject).BuildTree());
-
+                        BuildLinks(PickResult.PhysicsObj.WeenieObj.WorldObject);
+                    }
                     break;
             }
             HitVertices = hitVertices.ToArray();
@@ -360,6 +366,12 @@ namespace ACViewer
         {
             if (HitVertices == null) return;
 
+            if (PickResult.PhysicsObj?.IsDestroyed ?? false)
+            {
+                HitVertices = null;
+                return;
+            }
+
             var rs = new RasterizerState();
             rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.None;
             rs.FillMode = FillMode.WireFrame;
@@ -371,6 +383,36 @@ namespace ACViewer
             {
                 pass.Apply();
                 GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, HitVertices, 0, HitVertices.Length, HitIndices, 0, HitIndices.Length / 2);
+            }
+
+            if (RenderLinks != null)
+            {
+                if (!RenderLinks.Head.WorldObject.PhysicsObj.IsDestroyed)
+                    RenderLinks.Draw();
+                else
+                {
+                    RenderLinks.Dispose();
+                    RenderLinks = null;
+                }
+            }
+        }
+
+        public static RenderLinks RenderLinks { get; set; }
+
+        public static void BuildLinks(WorldObject wo)
+        {
+            if (RenderLinks != null)
+                RenderLinks.Dispose();
+            
+            RenderLinks = null;
+
+            var node = new LinkNode(wo);
+            node.AddParentChains();
+            node.AddChildTrees();
+
+            if (node.Parent != null || node.Children != null)
+            {
+                RenderLinks = new RenderLinks(node);
             }
         }
 

@@ -63,49 +63,16 @@ namespace ACViewer
             {
                 var instances = DatabaseManager.World.GetCachedInstancesByLandblock((ushort)(lbid >> 16));
 
+                // build lookup table
+                var lookupTable = instances.ToDictionary(i => i.Guid, i => i);
+
                 Console.WriteLine($"Found {instances.Count:N0} instances for {lbid:X8}");
 
-                /*Parallel.ForEach(instances, instance =>
-                {
-                });*/
-                
                 foreach (var instance in instances)
                 {
-                    var wo = WorldObjectFactory.CreateNewWorldObject(instance.WeenieClassId);
+                    if (instance.IsLinkChild) continue;
 
-                    if (wo == null) continue;
-
-                    wo.InitPhysicsObj();
-
-                    var objCellId = instance.ObjCellId;
-
-                    if ((objCellId & 0xFFFF) == 0)
-                    {
-                        // get the outdoor landcell for this position
-                        var cellX = (uint)(instance.OriginX / 24);
-                        var cellY = (uint)(instance.OriginY / 24);
-
-                        var cellID = cellX * 8 + cellY + 1;
-
-                        objCellId |= cellID;
-                    }
-
-                    var location = new Position();
-                    location.ObjCellID = objCellId;
-                    location.Frame.Origin = new Vector3(instance.OriginX, instance.OriginY, instance.OriginZ);
-                    location.Frame.Orientation = new Quaternion(instance.AnglesX, instance.AnglesY, instance.AnglesZ, instance.AnglesW);
-
-                    var success = wo.AddPhysicsObj(location);
-
-                    if (!success)
-                    {
-                        Console.WriteLine($"LoadInstances({lbid:X8}).AddPhysicsObj({wo.Name}, {location}) - failed to spawn");
-                        continue;
-                    }
-
-                    Console.WriteLine($"Spawned {instance.WeenieClassId} - {wo.Name} @ {location}");
-
-                    AddInstance(wo);
+                    ProcessInstance(lbid, instance, lookupTable);
                 }
             }
 
@@ -114,6 +81,61 @@ namespace ACViewer
             timer.Stop();
 
             Console.WriteLine($"Completed in {timer.Elapsed.TotalSeconds}s");
+        }
+
+        public static WorldObject ProcessInstance(uint lbid, LandblockInstance instance, Dictionary<uint, LandblockInstance> lookupTable)
+        {
+            var wo = WorldObjectFactory.CreateNewWorldObject(instance.WeenieClassId);
+
+            if (wo == null) return null;
+
+            wo.InitPhysicsObj();
+
+            var objCellId = instance.ObjCellId;
+
+            if ((objCellId & 0xFFFF) == 0)
+            {
+                // get the outdoor landcell for this position
+                var cellX = (uint)(instance.OriginX / 24);
+                var cellY = (uint)(instance.OriginY / 24);
+
+                var cellID = cellX * 8 + cellY + 1;
+
+                objCellId |= cellID;
+            }
+
+            var location = new Position();
+            location.ObjCellID = objCellId;
+            location.Frame.Origin = new Vector3(instance.OriginX, instance.OriginY, instance.OriginZ);
+            location.Frame.Orientation = new Quaternion(instance.AnglesX, instance.AnglesY, instance.AnglesZ, instance.AnglesW);
+
+            var success = wo.AddPhysicsObj(location);
+
+            if (!success)
+            {
+                Console.WriteLine($"LoadInstances({lbid:X8}).AddPhysicsObj({wo.Name}, {location}) - failed to spawn");
+                return null;
+            }
+
+            Console.WriteLine($"Spawned {instance.WeenieClassId} - {wo.Name} @ {location}");
+
+            AddInstance(wo);
+
+            foreach (var link in instance.LandblockInstanceLink)
+            {
+                if (!lookupTable.TryGetValue(link.ChildGuid, out var childInstance))
+                {
+                    Console.WriteLine($"Server.ProcessInstance({lbid:X8}, {instance.Guid:X8}, {link.ChildGuid:X8}) - couldn't find child guid!");
+                    continue;
+                }
+
+                var child = ProcessInstance(lbid, childInstance, lookupTable);
+
+                child.ParentLink = wo;
+                wo.ChildLinks.Add(child);
+            }
+
+            return wo;
         }
 
         public static void AddInstance(WorldObject wo)
@@ -152,6 +174,13 @@ namespace ACViewer
         {
             Buffer.BuildTextureAtlases(Buffer.InstanceTextureAtlasChains);
             Buffer.BuildBuffer(Buffer.RB_Instances);
+
+            if (MainMenu.ShowParticles)
+            {
+                // todo: optimize
+                GameView.Instance.Render.DestroyEmitters();
+                GameView.Instance.Render.InitEmitters();
+            }
 
             MainWindow.Instance.SuppressStatusText = false;
             InstancesLoaded = true;
@@ -255,6 +284,13 @@ namespace ACViewer
         {
             Buffer.BuildTextureAtlases();
             Buffer.BuildBuffer(Buffer.RB_Encounters);
+
+            if (MainMenu.ShowParticles)
+            {
+                // todo: optimize
+                GameView.Instance.Render.DestroyEmitters();
+                GameView.Instance.Render.InitEmitters();
+            }
 
             MainWindow.Instance.SuppressStatusText = false;
             EncountersLoaded = true;
