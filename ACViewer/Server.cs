@@ -74,7 +74,8 @@ namespace ACViewer
 
                     var wo = ProcessInstance(lbid, instance, lookupTable);
 
-                    ActivateLinks(wo);
+                    if (wo != null)
+                        ActivateLinks(wo);
                 }
             }
 
