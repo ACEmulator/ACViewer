@@ -11,6 +11,6 @@
             <Run FontWeight="Bold">ACViewer - build 2022.02.04</Run><LineBreak /><LineBreak />
             Much thanks: the emulator teams, Pea, parad0x, OptimShi, and the AC community!<LineBreak />
         </TextBlock>
-        <Button Content="OK" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Width="75" Click="OK_Click"/>
+        <Button Content="OK" HorizontalAlignment="Center" Margin="0,100,0,0" VerticalAlignment="Top" Width="75" Click="OK_Click" IsCancel="true"/>
     </Grid>
 </Window>

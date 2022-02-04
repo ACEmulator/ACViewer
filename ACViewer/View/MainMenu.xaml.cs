@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -68,6 +69,8 @@ namespace ACViewer.View
 
         public void LoadDATs(string filename)
         {
+            if (!File.Exists(filename) && !Directory.Exists(filename)) return;
+            
             MainWindow.Status.WriteLine("Reading " + filename);
 
             var worker = new BackgroundWorker();
@@ -83,8 +86,9 @@ namespace ACViewer.View
                 var portalFiles = DatManager.PortalDat.AllFiles.Count;
 
                 MainWindow.Status.WriteLine($"CellFiles={cellFiles}, PortalFiles={portalFiles}");*/
-
                 MainWindow.Status.WriteLine("Done");
+
+                if (DatManager.CellDat == null || DatManager.PortalDat == null) return;
 
                 GameView.PostInit();
             };
@@ -160,7 +164,7 @@ namespace ACViewer.View
         public static void ReadDATFile(string filename)
         {
             var fi = new System.IO.FileInfo(filename);
-            var di = fi.Attributes.HasFlag(System.IO.FileAttributes.Directory) ? new System.IO.DirectoryInfo(filename) : fi.Directory;
+            var di = fi.Attributes.HasFlag(FileAttributes.Directory) ? new DirectoryInfo(filename) : fi.Directory;
 
             var loadCell = true;
 
