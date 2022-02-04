@@ -7,9 +7,9 @@ namespace ACViewer.Config
 {
     public static class ConfigManager
     {
-        private static string Filename = "ACViewer.json";
+        private static readonly string Filename = "ACViewer.json";
         
-        private static Config config;
+        private static Config config { get; set; }
 
         public static Config Config
         {
@@ -21,6 +21,8 @@ namespace ACViewer.Config
                 return config;
             }
         }
+
+        private static Config snapshot { get; set; }
 
         public static void SaveConfig()
         {
@@ -34,7 +36,12 @@ namespace ACViewer.Config
 
         public static void LoadConfig()
         {
-            if (!File.Exists(Filename)) return;
+            config = ReadConfig();
+        }
+
+        public static Config ReadConfig()
+        {
+            if (!File.Exists(Filename)) return null;
 
             var json = File.ReadAllText(Filename);
 
@@ -43,9 +50,19 @@ namespace ACViewer.Config
             if (_config == null)
             {
                 Console.WriteLine($"ConfigManager.LoadConfig() - failed to parse {Filename}");
-                return;
+                return null;
             }
-            config = _config;
+            return _config;
+        }
+
+        public static void TakeSnapshot()
+        {
+            snapshot = ReadConfig();
+        }
+
+        public static void RestoreSnapshot()
+        {
+            config = snapshot;
         }
 
         public static bool HasDBInfo

@@ -8,6 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
+using ACE.Entity;
+using ACE.Server.Entity;
+
 using ACViewer.Data;
 
 namespace ACViewer.View
@@ -191,18 +194,23 @@ namespace ACViewer.View
             Close();
         }
 
-        private bool teleloc(string locStr)
+        public static bool teleloc(string locStr)
         {
             var match = Regex.Match(locStr, @"([0-9A-F]{8}) \[?([0-9.-]+) ([0-9.-]+) ([0-9.-]+)\]? ([0-9.-]+) ([0-9.-]+) ([0-9.-]+) ([0-9.-]+)", RegexOptions.IgnoreCase);
 
             if (!match.Success)
-                return false;
+                return teleloc_radar(locStr);
 
             var objCellID = uint.Parse(match.Groups[1].Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
 
             Origin = new Vector3(float.Parse(match.Groups[2].Value), float.Parse(match.Groups[3].Value), float.Parse(match.Groups[4].Value));
             Orientation = new Quaternion(float.Parse(match.Groups[6].Value), float.Parse(match.Groups[7].Value), float.Parse(match.Groups[8].Value), float.Parse(match.Groups[5].Value));
 
+            return teleport(objCellID);
+        }
+
+        public static bool teleport(uint objCellID)
+        {
             uint filetype = 0xFFFF;
 
             var items = FileExplorer.Instance.FileType.Items;
@@ -237,6 +245,31 @@ namespace ACViewer.View
                 }
             }
             return false;
+        }
+
+        public static bool teleloc_radar(string locStr)
+        {
+            var match = Regex.Match(locStr, @"([0-9.]+)\s*([NS])\s*,\s*([0-9.]+)\s*([EW])", RegexOptions.IgnoreCase);
+
+            if (!match.Success)
+                return false;
+
+            float.TryParse(match.Groups[1].Value, out var latitude);
+            float.TryParse(match.Groups[3].Value, out var longitude);
+
+            if (match.Groups[2].Value.Equals("S", StringComparison.InvariantCultureIgnoreCase))
+                latitude = -latitude;
+
+            if (match.Groups[4].Value.Equals("W", StringComparison.InvariantCultureIgnoreCase))
+                longitude = -longitude;
+
+            var position = new Position(latitude, longitude);
+            position.AdjustMapCoords();
+
+            Origin = position.Pos;
+            Orientation = Quaternion.Identity;
+
+            return teleport(position.Cell);
         }
     }
 }

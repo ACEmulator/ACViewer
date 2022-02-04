@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,8 +10,6 @@ using Microsoft.Win32;
 
 using ACE.Common;
 using ACE.Database.Models.World;
-
-using ACViewer.Config;
 
 namespace ACViewer.View
 {
@@ -93,11 +92,23 @@ namespace ACViewer.View
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private static readonly List<string> allProperties = new List<string>()
+        {
+            "ACFolder",
+            "AutomaticallyLoadACFolderOnStartup",
+            "Host",
+            "Port",
+            "Database",
+            "Username",
+            "Password"
+        };
         public Options()
         {
             InitializeComponent();
 
             DataContext = this;
+
+            ACViewer.Config.ConfigManager.TakeSnapshot();
         }
 
         private void SelectACFolderButton_Click(object sender, RoutedEventArgs e)
@@ -124,6 +135,11 @@ namespace ACViewer.View
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            ACViewer.Config.ConfigManager.RestoreSnapshot();
+
+            foreach (var propName in allProperties)
+                NotifyPropertyChanged(propName);
+
             Close();
         }
 

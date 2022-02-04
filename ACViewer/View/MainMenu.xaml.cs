@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,6 +10,7 @@ using Microsoft.Win32;
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
 
+using ACViewer.Config;
 using ACViewer.Enum;
 using ACViewer.Render;
 
@@ -37,6 +39,10 @@ namespace ACViewer.View
             set => TextureCache.UseMipMaps = value;
         }
 
+        public static bool LoadInstances { get; set; }
+
+        public static bool LoadEncounters { get; set; }
+
         public MainMenu()
         {
             InitializeComponent();
@@ -63,6 +69,8 @@ namespace ACViewer.View
 
         public void LoadDATs(string filename)
         {
+            if (!File.Exists(filename) && !Directory.Exists(filename)) return;
+            
             MainWindow.Status.WriteLine("Reading " + filename);
 
             var worker = new BackgroundWorker();
@@ -78,8 +86,9 @@ namespace ACViewer.View
                 var portalFiles = DatManager.PortalDat.AllFiles.Count;
 
                 MainWindow.Status.WriteLine($"CellFiles={cellFiles}, PortalFiles={portalFiles}");*/
-
                 MainWindow.Status.WriteLine("Done");
+
+                if (DatManager.CellDat == null || DatManager.PortalDat == null) return;
 
                 GameView.PostInit();
             };
@@ -155,7 +164,7 @@ namespace ACViewer.View
         public static void ReadDATFile(string filename)
         {
             var fi = new System.IO.FileInfo(filename);
-            var di = fi.Attributes.HasFlag(System.IO.FileAttributes.Directory) ? new System.IO.DirectoryInfo(filename) : fi.Directory;
+            var di = fi.Attributes.HasFlag(FileAttributes.Directory) ? new DirectoryInfo(filename) : fi.Directory;
 
             var loadCell = true;
 
@@ -193,29 +202,52 @@ namespace ACViewer.View
             ToggleMipMaps();
         }
 
-        public static bool ToggleHUD()
+        public static bool ToggleHUD(bool updateConfig = true)
         {
             ShowHUD = !ShowHUD;
             Instance.optionShowHUD.IsChecked = ShowHUD;
 
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.ShowHUD = ShowHUD;
+                ConfigManager.SaveConfig();
+            }
+
             return ShowHUD;
         }
 
-        public static bool ToggleParticles()
+        public static bool ToggleParticles(bool updateConfig = true)
         {
             ShowParticles = !ShowParticles;
             Instance.optionShowParticles.IsChecked = ShowParticles;
 
-            if (ShowParticles && !GameView.Render.ParticlesInitted && GameView.ViewMode == ViewMode.World)
-                GameView.Render.InitEmitters();
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.ShowParticles = ShowParticles;
+                ConfigManager.SaveConfig();
+            }
 
+            if (GameView.ViewMode == ViewMode.World)
+            {
+                if (ShowParticles && !GameView.Render.ParticlesInitted)
+                    GameView.Render.InitEmitters();
+
+                if (!ShowParticles && GameView.Render.ParticlesInitted)
+                    GameView.Render.DestroyEmitters();
+            }
             return ShowHUD;
         }
 
-        public static bool ToggleMipMaps()
+        public static bool ToggleMipMaps(bool updateConfig = true)
         {
             UseMipMaps = !UseMipMaps;
             Instance.optionUseMipMaps.IsChecked = UseMipMaps;
+
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.UseMipMaps = UseMipMaps;
+                ConfigManager.SaveConfig();
+            }
 
             return UseMipMaps;
         }
@@ -252,10 +284,37 @@ namespace ACViewer.View
 
         private void LoadInstances_Click(object sender, RoutedEventArgs e)
         {
+            ToggleInstances();
+        }
+
+        public static void ToggleInstances(bool updateConfig = true)
+        {
             if (Server.Initting) return;
 
+            LoadInstances = !LoadInstances;
+            Instance.optionLoadInstances.IsChecked = LoadInstances;
+
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.LoadInstances = LoadInstances;
+                ConfigManager.SaveConfig();
+            }
+
+            if (GameView.ViewMode != ViewMode.World) return;
+
             Server.ClearInstances();
-            
+
+            if (!LoadInstances)
+            {
+                if (ShowParticles)
+                {
+                    // todo: optimize
+                    GameView.Instance.Render.DestroyEmitters();
+                    GameView.Instance.Render.InitEmitters();
+                }
+                return;
+            }
+
             var worker = new BackgroundWorker();
 
             worker.DoWork += (sender, doWorkEventArgs) => Server.LoadInstances();
@@ -267,9 +326,36 @@ namespace ACViewer.View
 
         private void LoadEncounters_Click(object sender, RoutedEventArgs e)
         {
+            ToggleEncounters();
+        }
+
+        public static void ToggleEncounters(bool updateConfig = true)
+        {
             if (Server.Initting) return;
 
+            LoadEncounters = !LoadEncounters;
+            Instance.optionLoadEncounters.IsChecked = LoadEncounters;
+
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.LoadEncounters = LoadEncounters;
+                ConfigManager.SaveConfig();
+            }
+
+            if (GameView.ViewMode != ViewMode.World) return;
+
             Server.ClearEncounters();
+
+            if (!LoadEncounters)
+            {
+                if (ShowParticles)
+                {
+                    // todo: optimize
+                    GameView.Instance.Render.DestroyEmitters();
+                    GameView.Instance.Render.InitEmitters();
+                }
+                return;
+            }
 
             var worker = new BackgroundWorker();
 

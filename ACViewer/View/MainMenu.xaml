@@ -23,12 +23,12 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Tools">
-                <MenuItem Header="_Find DID" Click="FindDID_Click">
+                <MenuItem Header="_Find DID" Click="FindDID_Click" InputGestureText="Ctrl+F">
                     <MenuItem.Icon>
                         <Image Source="../Icons/Search_16x.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="_Teleport" Click="Teleport_Click">
+                <MenuItem Header="_Teleport" Click="Teleport_Click" InputGestureText="Ctrl+T">
                     <MenuItem.Icon>
                         <Image Source="../Icons/portal.png" />
                     </MenuItem.Icon>
@@ -40,8 +40,8 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Server">
-                <MenuItem Header="Load _Instances" Click="LoadInstances_Click"/>
-                <MenuItem Header="Load _Encounters" Click="LoadEncounters_Click"/>
+                <MenuItem Header="Load _Instances" Click="LoadInstances_Click" x:Name="optionLoadInstances"/>
+                <MenuItem Header="Load _Encounters" Click="LoadEncounters_Click" x:Name="optionLoadEncounters"/>
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_World Map" Click="WorldMap_Click" />

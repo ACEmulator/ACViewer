@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Numerics;
 
+using ACE.Entity;
 using ACE.Entity.Enum.Properties;
 using ACE.Server.Physics.Common;
 using ACE.Server.Physics.Extensions;
 using ACE.Server.Physics.Util;
 using ACE.Server.WorldObjects;
 
+using Position = ACE.Entity.Position;
+
 namespace ACE.Server.Entity
 {
     public static class PositionExtensions
     {
-        public static Vector3 ToGlobal(this ACE.Entity.Position p, bool skipIndoors = true)
+        public static Vector3 ToGlobal(this Position p, bool skipIndoors = true)
         {
             // TODO: Is this necessary? It seemed to be loading rogue physics landblocks. Commented out 2019-04 Mag-nus
             //var landblock = LScape.get_landblock(p.LandblockId.Raw);
@@ -22,8 +25,8 @@ namespace ACE.Server.Entity
             if (p.Indoors && skipIndoors)
                 return p.Pos;
 
-            var x = p.LandblockId.LandblockX * ACE.Entity.Position.BlockLength + p.PositionX;
-            var y = p.LandblockId.LandblockY * ACE.Entity.Position.BlockLength + p.PositionY;
+            var x = p.LandblockId.LandblockX * Position.BlockLength + p.PositionX;
+            var y = p.LandblockId.LandblockY * Position.BlockLength + p.PositionY;
             var z = p.PositionZ;
 
             return new Vector3(x, y, z);
@@ -50,7 +53,7 @@ namespace ACE.Server.Entity
             return true;
         }
 
-        public static bool AttemptToFixRotation(this ACE.Entity.Position pos, WorldObject wo, PositionType positionType)
+        public static bool AttemptToFixRotation(this Position pos, WorldObject wo, PositionType positionType)
         {
             Console.WriteLine($"detected bad quaternion x y z w for {wo.Name} (0x{wo.Guid}) | WCID: {wo.WeenieClassId} | WeenieType: {wo.WeenieType} | PositionType: {positionType}");
             Console.WriteLine($"before fix: {pos.ToLOCString()}");
@@ -70,7 +73,7 @@ namespace ACE.Server.Entity
         /// <summary>
         /// Gets the cell ID for a position within a landblock
         /// </summary>
-        public static uint GetCell(this ACE.Entity.Position p)
+        public static uint GetCell(this Position p)
         {
             var landblock = LScape.get_landblock(p.LandblockId.Raw);
 
@@ -121,12 +124,12 @@ namespace ACE.Server.Entity
         /// <summary>
         /// Gets an outdoor cell ID for a position within a landblock
         /// </summary>
-        public static uint GetOutdoorCell(this ACE.Entity.Position p)
+        public static uint GetOutdoorCell(this Position p)
         {
-            var cellX = (uint)p.PositionX / ACE.Entity.Position.CellLength;
-            var cellY = (uint)p.PositionY / ACE.Entity.Position.CellLength;
+            var cellX = (uint)p.PositionX / Position.CellLength;
+            var cellY = (uint)p.PositionY / Position.CellLength;
 
-            var cellID = cellX * ACE.Entity.Position.CellSide + cellY + 1;
+            var cellID = cellX * Position.CellSide + cellY + 1;
 
             var blockCellID = (uint)((p.LandblockId.Raw & 0xFFFF0000) | cellID);
             return blockCellID;
@@ -135,7 +138,7 @@ namespace ACE.Server.Entity
         /// <summary>
         /// Gets an indoor cell ID for a position within a dungeon
         /// </summary>
-        private static uint GetIndoorCell(this ACE.Entity.Position p)
+        private static uint GetIndoorCell(this Position p)
         {
             var adjustCell = AdjustCell.Get(p.Landblock);
             var envCell = adjustCell.GetCell(p.Pos);
@@ -145,7 +148,7 @@ namespace ACE.Server.Entity
                 return p.Cell;
         }
 
-        public static string GetMapCoordStr(this ACE.Entity.Position pos)
+        public static string GetMapCoordStr(this Position pos)
         {
             var mapCoords = pos.GetMapCoords();
 
@@ -159,7 +162,7 @@ namespace ACE.Server.Entity
                  + string.Format("{0:0.0}", Math.Abs(mapCoords.Value.X) - 0.05f) + eastWest;
         }
 
-        public static Vector2? GetMapCoords(this ACE.Entity.Position pos)
+        public static Vector2? GetMapCoords(this Position pos)
         {
             // no map coords available for dungeons / indoors?
             if ((pos.Cell & 0xFFFF) >= 0x100)
@@ -184,7 +187,7 @@ namespace ACE.Server.Entity
         /// <summary>
         /// Returns TRUE if outdoor position is located on walkable slope
         /// </summary>
-        public static bool IsWalkable(this ACE.Entity.Position p)
+        public static bool IsWalkable(this Position p)
         {
             if (p.Indoors) return true;
 
@@ -195,6 +198,44 @@ namespace ACE.Server.Entity
             if (walkable == null) return false;
 
             return Physics.PhysicsObj.is_valid_walkable(walkable.Plane.Normal);
+        }
+
+        public static void AdjustMapCoords(this Position pos)
+        {
+            // adjust Z to terrain height
+            pos.PositionZ = pos.GetTerrainZ();
+
+            // adjust to building height, if applicable
+            var sortCell = LScape.get_landcell(pos.Cell) as SortCell;
+            if (sortCell != null && sortCell.has_building())
+            {
+                var building = sortCell.Building;
+
+                var minZ = building.GetMinZ();
+
+                if (minZ > 0 && minZ < float.MaxValue)
+                    pos.PositionZ += minZ;
+
+                pos.LandblockId = new LandblockId(pos.GetCell());
+            }
+        }
+
+        public static float GetTerrainZ(this Position p)
+        {
+            var cellID = GetOutdoorCell(p);
+            var landcell = (LandCell)LScape.get_landcell(cellID);
+
+            if (landcell == null)
+                return p.Pos.Z;
+
+            Physics.Polygon walkable = null;
+            if (!landcell.find_terrain_poly(p.Pos, ref walkable))
+                return p.Pos.Z;
+
+            Vector3 terrainPos = p.Pos;
+            walkable.Plane.set_height(ref terrainPos);
+
+            return terrainPos.Z;
         }
     }
 }
