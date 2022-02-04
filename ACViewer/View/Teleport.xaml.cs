@@ -194,7 +194,7 @@ namespace ACViewer.View
             Close();
         }
 
-        private bool teleloc(string locStr)
+        public static bool teleloc(string locStr)
         {
             var match = Regex.Match(locStr, @"([0-9A-F]{8}) \[?([0-9.-]+) ([0-9.-]+) ([0-9.-]+)\]? ([0-9.-]+) ([0-9.-]+) ([0-9.-]+) ([0-9.-]+)", RegexOptions.IgnoreCase);
 
@@ -209,7 +209,7 @@ namespace ACViewer.View
             return teleport(objCellID);
         }
 
-        private bool teleport(uint objCellID)
+        public static bool teleport(uint objCellID)
         {
             uint filetype = 0xFFFF;
 
@@ -247,7 +247,7 @@ namespace ACViewer.View
             return false;
         }
 
-        private bool teleloc_radar(string locStr)
+        public static bool teleloc_radar(string locStr)
         {
             var match = Regex.Match(locStr, @"([0-9.]+)\s*([NS])\s*,\s*([0-9.]+)\s*([EW])", RegexOptions.IgnoreCase);
 

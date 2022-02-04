@@ -355,8 +355,18 @@ namespace ACViewer
 
                     if (PickResult.PhysicsObj.WeenieObj?.WorldObject != null)
                     {
-                        FileInfo.Instance.SetInfo(new FileTypes.WorldObject(PickResult.PhysicsObj.WeenieObj.WorldObject).BuildTree());
-                        BuildLinks(PickResult.PhysicsObj.WeenieObj.WorldObject);
+                        var wo = PickResult.PhysicsObj.WeenieObj.WorldObject;
+
+                        FileInfo.Instance.SetInfo(new FileTypes.WorldObject(wo).BuildTree());
+                        BuildLinks(wo);
+
+                        if (wo is Portal portal && LastPickResult?.PhysicsObj != null && wo.PhysicsObj == LastPickResult.PhysicsObj && PickResult.ClickTime - LastPickResult.ClickTime < PickResult.DoubleClickTime)
+                        {
+                            Teleport.Origin = portal.Destination.Pos;
+                            Teleport.Orientation = portal.Destination.Rotation;
+
+                            Teleport.teleport(portal.Destination.Cell);
+                        }
                     }
                     break;
             }
