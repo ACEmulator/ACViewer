@@ -98,8 +98,8 @@ namespace ACViewer
             var x = landblock.Landblock.ID >> 24;
             var y = landblock.Landblock.ID >> 16 & 0xFF;
 
-            var height = landblock.Vertices != null ? landblock.Vertices[0].Position.Z : 0;
-
+            var height = landblock.Landblock.Polygons[0].Vertices[0].Origin.Z;
+            
             Position = new Vector3(x * 192.0f, y * 192.0f, height + 50.0f);
 
             var lookAt = new Vector3(x * 192.0f + 96.0f, y * 192.0f + 96.0f, height);

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ACViewer.View"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" 
-        FocusManager.FocusedElement="{Binding ElementName=Location}"
+        FocusManager.FocusedElement="{Binding ElementName=Search}"
         Title="Teleport" Height="695" Width="764" Icon="../Icons/portal.png">
     <Grid>
         <Grid.RowDefinitions>
