@@ -429,5 +429,27 @@ namespace ACViewer
 
             return success;
         }
+
+        public static void OnLoadWorld()
+        {
+            if (!MainMenu.LoadInstances && !MainMenu.LoadEncounters)
+                return;
+
+            var worker = new BackgroundWorker();
+
+            if (MainMenu.LoadInstances)
+            {
+                worker.DoWork += (sender, doWorkEventArgs) => LoadInstances();
+                worker.RunWorkerCompleted += (sender, runWorkerCompletedEventArgs) => LoadInstances_Finalize();
+            }
+
+            if (MainMenu.LoadEncounters)
+            {
+                worker.DoWork += (sender, doWorkEventArgs) => LoadEncounters();
+                worker.RunWorkerCompleted += (sender, runWorkerCompletedEventArgs) => LoadEncounters_Finalize();
+            }
+
+            worker.RunWorkerAsync();
+        }
     }
 }

@@ -117,6 +117,8 @@ namespace ACViewer
             SingleBlock = landblock.ID;
 
             FreeResources();
+
+            Server.OnLoadWorld();
         }
 
         public async void LoadLandblocks(Vector2 startBlock, Vector2 endBlock)
@@ -183,6 +185,8 @@ namespace ACViewer
             SingleBlock = uint.MaxValue;
 
             FreeResources();
+
+            Server.OnLoadWorld();
         }
 
         public void FreeResources()

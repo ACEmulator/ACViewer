@@ -40,8 +40,8 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Server">
-                <MenuItem Header="Load _Instances" Click="LoadInstances_Click"/>
-                <MenuItem Header="Load _Encounters" Click="LoadEncounters_Click"/>
+                <MenuItem Header="Load _Instances" Click="LoadInstances_Click" x:Name="optionLoadInstances"/>
+                <MenuItem Header="Load _Encounters" Click="LoadEncounters_Click" x:Name="optionLoadEncounters"/>
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_World Map" Click="WorldMap_Click" />

@@ -37,6 +37,10 @@ namespace ACViewer.View
             set => TextureCache.UseMipMaps = value;
         }
 
+        public static bool LoadInstances { get; set; }
+
+        public static bool LoadEncounters { get; set; }
+
         public MainMenu()
         {
             InitializeComponent();
@@ -259,7 +263,21 @@ namespace ACViewer.View
         {
             if (Server.Initting) return;
 
+            LoadInstances = !LoadInstances;
+            Instance.optionLoadInstances.IsChecked = LoadInstances;
+
             Server.ClearInstances();
+
+            if (!LoadInstances)
+            {
+                if (ShowParticles)
+                {
+                    // todo: optimize
+                    GameView.Instance.Render.DestroyEmitters();
+                    GameView.Instance.Render.InitEmitters();
+                }
+                return;
+            }
             
             var worker = new BackgroundWorker();
 
@@ -274,7 +292,21 @@ namespace ACViewer.View
         {
             if (Server.Initting) return;
 
+            LoadEncounters = !LoadEncounters;
+            Instance.optionLoadEncounters.IsChecked = LoadEncounters;
+
             Server.ClearEncounters();
+
+            if (!LoadEncounters)
+            {
+                if (ShowParticles)
+                {
+                    // todo: optimize
+                    GameView.Instance.Render.DestroyEmitters();
+                    GameView.Instance.Render.InitEmitters();
+                }
+                return;
+            }
 
             var worker = new BackgroundWorker();
 
