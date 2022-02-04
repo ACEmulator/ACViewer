@@ -39,6 +39,21 @@ namespace ACViewer.View
 
             if (ConfigManager.HasDBInfo)
                 Server.TryPrimeDatabase();
+
+            if (ConfigManager.Config.Toggles.UseMipMaps)
+                MainMenu.ToggleMipMaps(false);
+
+            if (ConfigManager.Config.Toggles.ShowHUD)
+                MainMenu.ToggleHUD(false);
+
+            if (ConfigManager.Config.Toggles.ShowParticles)
+                MainMenu.ToggleParticles(false);
+
+            if (ConfigManager.Config.Toggles.LoadInstances)
+                MainMenu.ToggleInstances(false);
+
+            if (ConfigManager.Config.Toggles.LoadEncounters)
+                MainMenu.ToggleEncounters(false);
         }
 
         private DateTime lastUpdateTime { get; set; }

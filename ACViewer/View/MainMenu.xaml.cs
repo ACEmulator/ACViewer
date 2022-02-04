@@ -9,6 +9,7 @@ using Microsoft.Win32;
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
 
+using ACViewer.Config;
 using ACViewer.Enum;
 using ACViewer.Render;
 
@@ -197,18 +198,30 @@ namespace ACViewer.View
             ToggleMipMaps();
         }
 
-        public static bool ToggleHUD()
+        public static bool ToggleHUD(bool updateConfig = true)
         {
             ShowHUD = !ShowHUD;
             Instance.optionShowHUD.IsChecked = ShowHUD;
 
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.ShowHUD = ShowHUD;
+                ConfigManager.SaveConfig();
+            }
+
             return ShowHUD;
         }
 
-        public static bool ToggleParticles()
+        public static bool ToggleParticles(bool updateConfig = true)
         {
             ShowParticles = !ShowParticles;
             Instance.optionShowParticles.IsChecked = ShowParticles;
+
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.ShowParticles = ShowParticles;
+                ConfigManager.SaveConfig();
+            }
 
             if (GameView.ViewMode == ViewMode.World)
             {
@@ -221,10 +234,16 @@ namespace ACViewer.View
             return ShowHUD;
         }
 
-        public static bool ToggleMipMaps()
+        public static bool ToggleMipMaps(bool updateConfig = true)
         {
             UseMipMaps = !UseMipMaps;
             Instance.optionUseMipMaps.IsChecked = UseMipMaps;
+
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.UseMipMaps = UseMipMaps;
+                ConfigManager.SaveConfig();
+            }
 
             return UseMipMaps;
         }
@@ -261,10 +280,21 @@ namespace ACViewer.View
 
         private void LoadInstances_Click(object sender, RoutedEventArgs e)
         {
+            ToggleInstances();
+        }
+
+        public static void ToggleInstances(bool updateConfig = true)
+        {
             if (Server.Initting) return;
 
             LoadInstances = !LoadInstances;
             Instance.optionLoadInstances.IsChecked = LoadInstances;
+
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.LoadInstances = LoadInstances;
+                ConfigManager.SaveConfig();
+            }
 
             if (GameView.ViewMode != ViewMode.World) return;
 
@@ -280,7 +310,7 @@ namespace ACViewer.View
                 }
                 return;
             }
-            
+
             var worker = new BackgroundWorker();
 
             worker.DoWork += (sender, doWorkEventArgs) => Server.LoadInstances();
@@ -292,10 +322,21 @@ namespace ACViewer.View
 
         private void LoadEncounters_Click(object sender, RoutedEventArgs e)
         {
+            ToggleEncounters();
+        }
+
+        public static void ToggleEncounters(bool updateConfig = true)
+        {
             if (Server.Initting) return;
 
             LoadEncounters = !LoadEncounters;
             Instance.optionLoadEncounters.IsChecked = LoadEncounters;
+
+            if (updateConfig)
+            {
+                ConfigManager.Config.Toggles.LoadEncounters = LoadEncounters;
+                ConfigManager.SaveConfig();
+            }
 
             if (GameView.ViewMode != ViewMode.World) return;
 
