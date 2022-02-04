@@ -72,7 +72,9 @@ namespace ACViewer
                 {
                     if (instance.IsLinkChild) continue;
 
-                    ProcessInstance(lbid, instance, lookupTable);
+                    var wo = ProcessInstance(lbid, instance, lookupTable);
+
+                    ActivateLinks(wo);
                 }
             }
 
@@ -81,6 +83,15 @@ namespace ACViewer
             timer.Stop();
 
             Console.WriteLine($"Completed in {timer.Elapsed.TotalSeconds}s");
+        }
+
+        public static void ActivateLinks(WorldObject wo)
+        {
+            foreach (var child in wo.ChildLinks)
+            {
+                wo.SetLinkProperties(child);
+                ActivateLinks(child);
+            }
         }
 
         public static WorldObject ProcessInstance(uint lbid, LandblockInstance instance, Dictionary<uint, LandblockInstance> lookupTable)
@@ -130,6 +141,8 @@ namespace ACViewer
                 }
 
                 var child = ProcessInstance(lbid, childInstance, lookupTable);
+
+                if (child == null) continue;
 
                 child.ParentLink = wo;
                 wo.ChildLinks.Add(child);

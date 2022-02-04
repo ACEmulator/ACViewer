@@ -362,10 +362,15 @@ namespace ACViewer
 
                         if (wo is Portal portal && LastPickResult?.PhysicsObj != null && wo.PhysicsObj == LastPickResult.PhysicsObj && PickResult.ClickTime - LastPickResult.ClickTime < PickResult.DoubleClickTime)
                         {
-                            Teleport.Origin = portal.Destination.Pos;
-                            Teleport.Orientation = portal.Destination.Rotation;
+                            if (portal.Destination != null)
+                            {
+                                Teleport.Origin = portal.Destination.Pos;
+                                Teleport.Orientation = portal.Destination.Rotation;
 
-                            Teleport.teleport(portal.Destination.Cell);
+                                Teleport.teleport(portal.Destination.Cell);
+                            }
+                            else
+                                Console.WriteLine($"Portal destination null for {portal.WeenieClassId} - {portal.Name} @ {portal.PhysicsObj.Position}");
                         }
                     }
                     break;
