@@ -54,10 +54,13 @@ namespace ACViewer.Render
 
         public bool AddChildTree(LinkNode node)
         {
-            if (node.Children == null) return false;
+            if (node.Children == null || node.WorldObject.PhysicsObj == null) return false;
             
             foreach (var child in node.Children)
             {
+                // debug me: click on the pathwarden chest in yaraq
+                if (child.WorldObject.PhysicsObj == null) continue;
+                
                 var parentLoc = node.WorldObject.PhysicsObj.Position.GetWorldPos();
                 var childLoc = child.WorldObject.PhysicsObj.Position.GetWorldPos();
 
