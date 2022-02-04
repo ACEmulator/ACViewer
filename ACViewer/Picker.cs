@@ -68,6 +68,12 @@ namespace ACViewer
 
             LastPickResult = PickResult;
             PickResult = new PickResult();
+
+            if (RenderLinks != null)
+            {
+                RenderLinks.Dispose();
+                RenderLinks = null;
+            }
             
             // first try using physics engine for this
 
@@ -420,6 +426,12 @@ namespace ACViewer
         {
             HitVertices = null;
             HitIndices = null;
+
+            if (RenderLinks != null)
+            {
+                RenderLinks.Dispose();
+                RenderLinks = null;
+            }
         }
     }
 }
