@@ -159,6 +159,9 @@ namespace ACE.Server.WorldObjects
 
             AdjustDungeonCells(location);
 
+            // exclude linkspots from spawning
+            if (WeenieClassId == 10762) return true;
+            
             var success = PhysicsObj.enter_world(location);
 
             if (!success || PhysicsObj.CurCell == null)
