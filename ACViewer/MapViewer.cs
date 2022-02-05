@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
+using System.ComponentModel;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +8,6 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Framework.WpfInterop.Input;
 
 using ACViewer.Enum;
-using ACE.DatLoader;
 
 namespace ACViewer
 {
@@ -57,7 +55,7 @@ namespace ACViewer
         public Vector2 StartPos { get; set; }
         public Vector2 EndPos { get; set; }
 
-        public Microsoft.Xna.Framework.Rectangle HighlightRect { get; set; }
+        public Rectangle HighlightRect { get; set; }
 
         public MapViewer()
         {
@@ -68,14 +66,18 @@ namespace ACViewer
 
         public void LoadContent()
         {
-            if(WorldMap == null)
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) =>
             {
-                Mapper map = new Mapper();
-                WorldMap = Image.GetTexture2DFromBitmap(GraphicsDevice, map.MapImage);
-            }
+                var mapper = new Mapper();
+                WorldMap = Image.GetTexture2DFromBitmap(GraphicsDevice, mapper.MapImage.Bitmap);
+            };
+
+            worker.RunWorkerAsync();
 
             Highlight = new Texture2D(GraphicsDevice, 1, 1);
-            Highlight.SetData(new Microsoft.Xna.Framework.Color[1] { Microsoft.Xna.Framework.Color.Red });
+            Highlight.SetData(new Color[1] { Color.Red });
         }
 
         public void Init()
@@ -89,6 +91,8 @@ namespace ACViewer
 
         public void Update(GameTime gameTime)
         {
+            if (WorldMap == null) return;
+            
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
 
@@ -122,7 +126,7 @@ namespace ACViewer
                     IsDragging = true;
 
                     var startBlock = GetLandblock(StartPos);
-                    HighlightRect = new Microsoft.Xna.Framework.Rectangle((int)startBlock.X, (int)startBlock.Y, 8, 8);
+                    HighlightRect = new Rectangle((int)startBlock.X, (int)startBlock.Y, 8, 8);
 
                     BuildSelection();
                 }
@@ -133,7 +137,7 @@ namespace ACViewer
                     GetMinMax(out var min, out var max);
                     var diff = max - min;
 
-                    HighlightRect = new Microsoft.Xna.Framework.Rectangle((int)min.X, (int)min.Y, (int)diff.X + 8, (int)diff.Y + 8);
+                    HighlightRect = new Rectangle((int)min.X, (int)min.Y, (int)diff.X + 8, (int)diff.Y + 8);
 
                     var upperLeftBlock = GetLandblock(min);
                     BlockTranslate = Matrix.CreateTranslation(upperLeftBlock.X, upperLeftBlock.Y, 0);
@@ -268,11 +272,13 @@ namespace ACViewer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
+            GraphicsDevice.Clear(Color.Black);
+
+            if (WorldMap == null) return;
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Scale * Translate);
-            spriteBatch.Draw(WorldMap, Vector2.Zero, Microsoft.Xna.Framework.Color.White);
+            spriteBatch.Draw(WorldMap, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             DrawHighlight();
@@ -280,27 +286,27 @@ namespace ACViewer
             DrawHUD();
         }
 
-        public static Microsoft.Xna.Framework.Rectangle[] Highlight_Sides { get; } = new Microsoft.Xna.Framework.Rectangle[4]
+        public static Rectangle[] Highlight_Sides { get; } = new Rectangle[4]
         {
-            new Microsoft.Xna.Framework.Rectangle(0, 0, 8, 1),
-            new Microsoft.Xna.Framework.Rectangle(0, 7, 8, 1),
-            new Microsoft.Xna.Framework.Rectangle(0, 0, 1, 8),
-            new Microsoft.Xna.Framework.Rectangle(7, 0, 1, 8),
+            new Rectangle(0, 0, 8, 1),
+            new Rectangle(0, 7, 8, 1),
+            new Rectangle(0, 0, 1, 8),
+            new Rectangle(7, 0, 1, 8),
         };
 
-        public Microsoft.Xna.Framework.Rectangle[] Selection { get; set; }
+        public Rectangle[] Selection { get; set; }
 
         public void BuildSelection()
         {
             var width = HighlightRect.Width;
             var height = HighlightRect.Height;
 
-            Selection = new Microsoft.Xna.Framework.Rectangle[4]
+            Selection = new Rectangle[4]
             {
-                new Microsoft.Xna.Framework.Rectangle(0, 0, width, 1),
-                new Microsoft.Xna.Framework.Rectangle(0, height - 1, width, 1),
-                new Microsoft.Xna.Framework.Rectangle(0, 0, 1, height),
-                new Microsoft.Xna.Framework.Rectangle(width - 1, 0, 1, height),
+                new Rectangle(0, 0, width, 1),
+                new Rectangle(0, height - 1, width, 1),
+                new Rectangle(0, 0, 1, height),
+                new Rectangle(width - 1, 0, 1, height),
             };
         }
 
@@ -311,12 +317,12 @@ namespace ACViewer
             if (!IsDragging && !DragCompleted)
             {
                 foreach (var side in Highlight_Sides)
-                    spriteBatch.Draw(Highlight, side, Microsoft.Xna.Framework.Color.White);
+                    spriteBatch.Draw(Highlight, side, Color.White);
             }
             else
             {
                 foreach (var side in Selection)
-                    spriteBatch.Draw(Highlight, side, Microsoft.Xna.Framework.Color.White);
+                    spriteBatch.Draw(Highlight, side, Color.White);
             }
 
             spriteBatch.End();
@@ -336,7 +342,7 @@ namespace ACViewer
                 var textPos = new Vector2(GraphicsDevice.Viewport.Width - 42, 10);
 
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearClamp);
-                spriteBatch.DrawString(Font, $"{(int)landblock.X:X2}{(int)landblock.Y:X2}", textPos, Microsoft.Xna.Framework.Color.White);
+                spriteBatch.DrawString(Font, $"{(int)landblock.X:X2}{(int)landblock.Y:X2}", textPos, Color.White);
                 spriteBatch.End();
             }
         }
