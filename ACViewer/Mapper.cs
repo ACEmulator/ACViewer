@@ -33,22 +33,20 @@ namespace ACViewer
         // The following constants change how the lighting works.  It is easy to wash out
         // the bright whites of the snow, so be careful.
 
-        // Incresing COLORCORRECTION makes the base color more prominant.
-        const double COLORCORRECTION = 70.0;
+        // Increasing COLORCORRECTION makes the base color more prominant.
+        const float COLORCORRECTION = 0.7f;
 
         // Increasing LIGHTCORRECTION increases the contrast between steep and flat slopes.
-        const double LIGHTCORRECTION = 2.25;
+        const float LIGHTCORRECTION = 2.25f;
 
         // Increasing AMBIENTLIGHT makes everyting brighter.
-        const double AMBIENTLIGHT = 64.0;
+        const float AMBIENTLIGHT = 0.25f;
 
         private LandData[,] land { get; set; } = new LandData[LANDSIZE, LANDSIZE];
 
-        const int LUMINANCE = 100;
-
         public int FoundLandblocks { get; set; }
 
-        public Mapper(List<Color> MapColors = null)
+        public Mapper()
         {
             FoundLandblocks = 0;
 
@@ -99,33 +97,28 @@ namespace ACViewer
         {
             var emptyColor = Color.LimeGreen; // #32cd32
 
-            double[] lightVector = new double[3] { -1.0, -1.0, 0.0 };
-            byte[,,] topo = new byte[LANDSIZE, LANDSIZE, 3];
+            var lightVector = new float[3] { -1.0f, -1.0f, 0.0f };
+            var topo = new byte[LANDSIZE, LANDSIZE, 3];
 
             List<Color> landColor = GetMapColors();
 
             Parallel.For(0, LANDSIZE * LANDSIZE, i =>
             {
-                double[] v = new double[3];
-                ushort type;
-                double light;
+                var x = i / LANDSIZE;
+                var y = i % LANDSIZE;
 
-                var x = i % LANDSIZE;
-                var y = i / LANDSIZE;
+                var v = new float[3];
 
                 if (land[y, x].Used)
                 {
                     // Calculate normal by using surrounding z values, if they exist
-                    v[0] = 0.0;
-                    v[1] = 0.0;
-                    v[2] = 0.0;
                     if ((x < LANDSIZE - 1) && (y < LANDSIZE - 1))
                     {
                         if (land[y, x + 1].Used && land[y + 1, x].Used)
                         {
                             v[0] -= land[y, x + 1].Z - land[y, x].Z;
                             v[1] -= land[y + 1, x].Z - land[y, x].Z;
-                            v[2] += 12.0;
+                            v[2] += 12.0f;
                         }
                     }
                     if ((x > 0) && (y < LANDSIZE - 1))
@@ -134,7 +127,7 @@ namespace ACViewer
                         {
                             v[0] += land[y, x - 1].Z - land[y, x].Z;
                             v[1] -= land[y + 1, x].Z - land[y, x].Z;
-                            v[2] += 12.0;
+                            v[2] += 12.0f;
                         }
                     }
                     if ((x > 0) && (y > 0))
@@ -143,7 +136,7 @@ namespace ACViewer
                         {
                             v[0] += land[y, x - 1].Z - land[y, x].Z;
                             v[1] += land[y - 1, x].Z - land[y, x].Z;
-                            v[2] += 12.0;
+                            v[2] += 12.0f;
                         }
                     }
                     if ((x < LANDSIZE - 1) && (y > 0))
@@ -152,25 +145,27 @@ namespace ACViewer
                         {
                             v[0] -= land[y, x + 1].Z - land[y, x].Z;
                             v[1] += land[y - 1, x].Z - land[y, x].Z;
-                            v[2] += 12.0;
+                            v[2] += 12.0f;
                         }
                     }
 
                     // Check for road bit(s)
+                    var type = 0;
                     if ((land[y, x].Type & 0x0003) != 0)
                         type = 32;
                     else
                         type = (ushort)((land[y, x].Type & 0xFF) >> 2);
 
                     // Calculate lighting scalar
-                    light = (((lightVector[0] * v[0] + lightVector[1] * v[1] + lightVector[2] * v[2]) /
-                        Math.Sqrt((lightVector[0] * lightVector[0] + lightVector[1] * lightVector[1] + lightVector[2] * lightVector[2]) *
-                        (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]))) * 128.0 + 128.0) * LIGHTCORRECTION + AMBIENTLIGHT;
+                    float light = (((lightVector[0] * v[0] + lightVector[1] * v[1] + lightVector[2] * v[2]) /
+                        (float)Math.Sqrt((lightVector[0] * lightVector[0] + lightVector[1] * lightVector[1] + lightVector[2] * lightVector[2]) *
+                        (v[0] * v[0] + v[1] * v[1] + v[2] * v[2])) * 0.3f + 0.5f) * LIGHTCORRECTION + AMBIENTLIGHT) * COLORCORRECTION;
 
                     // Apply lighting scalar to base colors
-                    double r = (landColor[type].R * COLORCORRECTION / 100) * light / 256.0;
-                    double g = (landColor[type].G * COLORCORRECTION / 100) * light / 256.0;
-                    double b = (landColor[type].B * COLORCORRECTION / 100) * light / 256.0;
+                    float r = landColor[type].R * light;
+                    float g = landColor[type].G * light;
+                    float b = landColor[type].B * light;
+
                     r = ColorCheck(r);
                     g = ColorCheck(g);
                     b = ColorCheck(b);
@@ -203,15 +198,9 @@ namespace ACViewer
         /// <summary>
         /// Sanity check to make sure our colors are in-bounds.
         /// </summary>
-        /// <param name="color"></param>
-        /// <returns></returns>
-        private double ColorCheck(double color)
+        private float ColorCheck(float color)
         {
-            if (color > 255.0)
-                return 255;
-            else if (color < 0.0)
-                return 0;
-            return color;
+            return Math.Clamp(color, 0.0f, 255.0f);
         }
 
         private List<Color> GetMapColors()
@@ -237,7 +226,7 @@ namespace ACViewer
             if (image == null)
                 return Color.FromArgb(0, 255, 0); // TRANSPARENT
 
-            //Used for tally
+            // Used for tally
             int r = 0;
             int g = 0;
             int b = 0;
@@ -258,7 +247,7 @@ namespace ACViewer
                 }
             }
 
-            //Calculate average
+            // Calculate average
             r /= total;
             g /= total;
             b /= total;
@@ -279,8 +268,6 @@ namespace ACViewer
         /// <summary>
         /// Functions like the Region.LandDefs.Land_Height_Table from (client_)portal.dat 0x13000000
         /// </summary>
-        /// <param name="height"></param>
-        /// <returns></returns>
         private int GetLandheight(byte height)
         {
             if (height <= 200)
