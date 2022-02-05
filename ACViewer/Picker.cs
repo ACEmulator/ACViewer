@@ -40,7 +40,7 @@ namespace ACViewer
 
             var transform = projectionInverse * viewInverse;
 
-            // convert viewport coords [-1, 1]
+            // convert viewport coords to [-1, 1]
             var nx = mouseX * 2.0f / Viewport.Width - 1.0f;
             var ny = 1.0f - mouseY * 2.0f / Viewport.Height;    // invert y
 

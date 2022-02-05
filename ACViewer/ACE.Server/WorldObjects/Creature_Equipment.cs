@@ -399,5 +399,27 @@ namespace ACE.Server.WorldObjects
             return true;
         }
 
+        public void GenerateWieldedTreasure()
+        {
+            if (WieldedTreasure == null) return;
+
+            //var table = new TreasureWieldedTable(WieldedTreasure);
+
+            var wieldedTreasure = GenerateWieldedTreasureSets(WieldedTreasure);
+
+            if (wieldedTreasure == null)
+                return;
+
+            foreach (var item in wieldedTreasure)
+            {
+                //if (item.ValidLocations == null || (ItemCapacity ?? 0) > 0)
+                {
+                    if (!TryAddToInventory(item))
+                        item.Destroy();
+                }
+                //else
+                //TryWieldObject(item, (EquipMask)item.ValidLocations);
+            }
+        }
     }
 }

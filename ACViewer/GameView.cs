@@ -141,7 +141,7 @@ namespace ACViewer
             /*if (keyboardState.IsKeyDown(Keys.L) && !PrevKeyboardState.IsKeyDown(Keys.L))
             {
                 ViewMode = ViewMode.WorldObject;
-                WorldObjectViewer.Instance.LoadModel(44896);
+                WorldObjectViewer.Instance.LoadModel(42809);
             }*/
 
             if (!_graphicsDeviceManager.PreferMultiSampling && UseMSAA && DateTime.Now - LastResizeEvent >= TimeSpan.FromSeconds(1))

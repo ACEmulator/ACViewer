@@ -78,9 +78,9 @@ namespace ACE.Server.WorldObjects
 
                 EquipInventoryItems();
 
-                //GenerateWieldedTreasure();
+                GenerateWieldedTreasure();
 
-                //EquipInventoryItems();
+                EquipInventoryItems();
 
                 // TODO: fix tod data
                 Health.Current = Health.MaxValue;
