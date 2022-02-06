@@ -4,6 +4,7 @@ using System.Linq;
 
 using ACE.Common;
 using ACE.Entity.Enum;
+using ACE.Entity.Enum.Properties;
 using ACE.Entity.Models;
 using ACE.Server.Entity;
 using ACE.Server.Managers;
@@ -915,6 +916,12 @@ namespace ACE.Server.WorldObjects
                     return profile.Id;
             }
             return null;
+        }
+
+        public double? GeneratorRadius
+        {
+            get => GetProperty(PropertyFloat.GeneratorRadius);
+            set { if (!value.HasValue) RemoveProperty(PropertyFloat.GeneratorRadius); else SetProperty(PropertyFloat.GeneratorRadius, value.Value); }
         }
     }
 }
