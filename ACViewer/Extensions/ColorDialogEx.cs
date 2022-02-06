@@ -4,11 +4,18 @@ using System.Windows.Forms;
 
 namespace ACViewer.Extensions
 {
-    public class ColorDialogExtension : ColorDialog
+    public class ColorDialogEx : ColorDialog
     {
         #region private const
         //Windows Message Constants
-        private const Int32 WM_INITDIALOG = 0x0110;
+        private const int WM_INITDIALOG   = 0x0110;
+        private const int WM_CTLCOLOREDIT = 0x0133;
+        private const int WM_CTLCOLORSTATIC = 0x0138;
+
+        //Window Controls
+        private const int COLOR_RED = 706;
+        private const int COLOR_GREEN = 707;
+        private const int COLOR_BLUE = 708;
 
         //uFlag Constants
         private const uint SWP_NOSIZE = 0x0001;
@@ -58,16 +65,22 @@ namespace ACViewer.Extensions
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetDlgItem(IntPtr hDlg, int nIDDlgItem);
+
+        [DllImport("user32.dll")]
+        private static extern int GetDlgItemInt(IntPtr hDlg, int nIDDlgItem, IntPtr lpTranslated, bool bSigned);
         #endregion
 
         #region public constructor
         /// <summary>
-        /// Initializes a new instance of the <see cref="ColorDialogExtension"/> class.
+        /// Initializes a new instance of the <see cref="ColorDialogEx"/> class.
         /// </summary>
         /// <param name="x">The X position</param>
         /// <param name="y">The Y position</param>
         /// <param name="title">The title of the windows. If set to null(by default), the title will not be changed</param>
-        public ColorDialogExtension(int x, int y, String title = null)
+        public ColorDialogEx(int x, int y, String title = null)
         {
             _x = x;
             _y = y;
@@ -94,16 +107,27 @@ namespace ACViewer.Extensions
             if (msg == WM_INITDIALOG)
             {
                 //We change the title
-                if (!String.IsNullOrEmpty(_title))
+                if (!string.IsNullOrEmpty(_title))
                 {
                     SetWindowText(hWnd, _title);
                 }
                 //We move the position
                 SetWindowPos(hWnd, HWND_TOP, _x, _y, 0, 0, UFLAGS);
-
+            }
+            else if (msg == WM_CTLCOLOREDIT)
+            {
+                if (ColorEditCallback != null)
+                {
+                    var r = GetDlgItemInt(hWnd, COLOR_RED, IntPtr.Zero, false);
+                    var g = GetDlgItemInt(hWnd, COLOR_GREEN, IntPtr.Zero, false);
+                    var b = GetDlgItemInt(hWnd, COLOR_BLUE, IntPtr.Zero, false);
+                    ColorEditCallback(r, g, b);
+                }
             }
             return hookProc;
         }
         #endregion
+
+        public Action<int, int, int> ColorEditCallback { get; set; }
     }
 }

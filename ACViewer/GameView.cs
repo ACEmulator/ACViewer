@@ -180,12 +180,8 @@ namespace ACViewer
             base.Update(time);
         }
 
-        private static readonly Color BackgroundColor = new Color(0, 0, 0);
-        
         protected override void Draw(GameTime time)
         {
-            GraphicsDevice.Clear(BackgroundColor);
-
             switch (ViewMode)
             {
                 case ViewMode.Texture:

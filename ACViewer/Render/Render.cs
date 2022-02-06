@@ -58,7 +58,7 @@ namespace ACViewer.Render
             var rs = new RasterizerState();
 
             //rs.CullMode = CullMode.CullClockwiseFace;
-            rs.CullMode = Microsoft.Xna.Framework.Graphics.CullMode.None;
+            rs.CullMode = CullMode.None;
 
             if (wireframe)
                 rs.FillMode = FillMode.WireFrame;

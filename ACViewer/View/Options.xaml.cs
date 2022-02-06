@@ -254,32 +254,50 @@ namespace ACViewer.View
         {
             if (obj == null) return;
 
-            var param = obj.ToString();
+            CurrentParam = obj.ToString();
 
-            var brush = GetBrush(param);
+            var brush = GetBrush(CurrentParam);
 
             if (brush == null) return;
             
             var window = Instance;
 
-            var startX = (int)(window.Left + window.Width / 2 - 224 / 2);
+            //var startX = (int)(window.Left + window.Width / 2 - 224 / 2);
+            var startX = (int)(window.Left + window.Width / 2 - 449 / 2);
             var startY = (int)(window.Top + window.Height / 2 - 331 / 2);
 
-            var colorPicker = new ColorDialogExtension(startX, startY);
-            colorPicker.Color = brush.ToColor();
+            ColorPicker = new ColorDialogEx(startX, startY);
+            ColorPicker.Color = brush.ToColor();
+            ColorPicker.FullOpen = true;
+            ColorPicker.ColorEditCallback = ColorEditCallback;
 
             //colorPicker.CustomColors = new int[1] { colorPicker.Color.A << 24 | colorPicker.Color.R << 16 | colorPicker.Color.G << 8 | colorPicker.Color.B };
-            colorPicker.CustomColors = CustomColors;
+            ColorPicker.CustomColors = CustomColors;
 
-            var result = colorPicker.ShowDialog();
-            
+            var result = ColorPicker.ShowDialog();
+
             //Console.WriteLine(colorPicker.Color);
 
-            if (result != System.Windows.Forms.DialogResult.OK) return;
+            if (result != System.Windows.Forms.DialogResult.OK)
+            {
+                SetBrush(CurrentParam, brush);
+                return;
+            }
 
-            CustomColors = colorPicker.CustomColors;
+            CustomColors = ColorPicker.CustomColors;
 
-            SetBrush(param, colorPicker.Color.ToSolidColorBrush());
+            SetBrush(CurrentParam, ColorPicker.Color.ToSolidColorBrush());
+        }
+
+        public ColorDialogEx ColorPicker { get; set; }
+        
+        public string CurrentParam { get; set; }
+
+        public void ColorEditCallback(int r, int g, int b)
+        {
+            var brush = new SolidColorBrush(Color.FromArgb(255, (byte)r, (byte)g, (byte)b));
+            //Console.WriteLine($"ColorEditCallback: {brush.Color}");
+            SetBrush(CurrentParam, brush);
         }
 
         public SolidColorBrush GetBrush(string param)

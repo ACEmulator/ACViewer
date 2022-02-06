@@ -87,7 +87,9 @@ namespace ACViewer
             if (mouseState.Position != PrevMouseState.Position)
                 OnMouseMove(mouseState);
 
-            if (mouseState.LeftButton == ButtonState.Pressed || mouseState.RightButton == ButtonState.Pressed)
+            // PrevMouseState check prevents image from jumping around drastically if window is unfocused, and then refocused with a click
+            if (mouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton == ButtonState.Pressed ||
+                mouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton == ButtonState.Pressed)
             {
                 var delta = PrevMouseState.Position - mouseState.Position;
                 Pos -= new Vector2(delta.X, delta.Y);
