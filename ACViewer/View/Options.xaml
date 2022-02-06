@@ -31,5 +31,50 @@
 
         <Image Name="DBStatus" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,318,0,0" Width="16" Height="16"/>
         <local:ucSpinnerApple x:Name="Spinner" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="302,313,0,0" Width="16" Height="16" Visibility="Hidden"/>
+        <Label Content="Background Colors" HorizontalAlignment="Left" Margin="330,97,0,0" VerticalAlignment="Top" />
+        <Label Content="Model Viewer" HorizontalAlignment="Left" Margin="357,127,0,0" VerticalAlignment="Top">
+            <Label.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="ModelViewer"/>
+            </Label.InputBindings>
+        </Label>
+        <Label Content="Texture Viewer" HorizontalAlignment="Left" Margin="353,157,0,0" VerticalAlignment="Top">
+            <Label.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="TextureViewer"/>
+            </Label.InputBindings>
+        </Label>
+        <Label Content="Particle Viewer" HorizontalAlignment="Left" Margin="353,186,0,0" VerticalAlignment="Top">
+            <Label.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="ParticleViewer"/>
+            </Label.InputBindings>
+        </Label>
+        <Label Content="World Viewer" HorizontalAlignment="Left" Margin="359,217,0,0" VerticalAlignment="Top">
+            <Label.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="WorldViewer"/>
+            </Label.InputBindings>
+        </Label>
+        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18"  Margin="446,133,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
+            <Border.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="ModelViewer"/>
+            </Border.InputBindings>
+            <Rectangle Width="16" Height="16" Fill="{Binding ModelViewer_BackgroundColor}" />
+        </Border>
+        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="446,163,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
+            <Border.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="TextureViewer"/>
+            </Border.InputBindings>
+            <Rectangle Fill="{Binding TextureViewer_BackgroundColor}" />
+        </Border>
+        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="446,192,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
+            <Border.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="ParticleViewer"/>
+            </Border.InputBindings>
+            <Rectangle Fill="{Binding ParticleViewer_BackgroundColor}" />
+        </Border>
+        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="446,223,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
+            <Border.InputBindings>
+                <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="WorldViewer"/>
+            </Border.InputBindings>
+            <Rectangle Fill="{Binding WorldViewer_BackgroundColor}" />
+        </Border>
     </Grid>
 </Window>

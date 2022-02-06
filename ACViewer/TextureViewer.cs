@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Framework.WpfInterop.Input;
 
+using ACViewer.Config;
 using ACViewer.Render;
 
 namespace ACViewer
@@ -161,7 +162,7 @@ namespace ACViewer
         {
             if (Texture == null) return;
 
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.TextureViewer);
 
             var samplerState = FileID >> 24 == 0x04 || FileID >> 24 == 0x0F ? SamplerState.PointClamp : SamplerState.LinearClamp;
 

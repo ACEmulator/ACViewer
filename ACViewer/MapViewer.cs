@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Framework.WpfInterop.Input;
 
+using ACViewer.Config;
 using ACViewer.Enum;
 
 namespace ACViewer
@@ -263,7 +262,7 @@ namespace ACViewer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
+            GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.TextureViewer);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Scale * Translate);

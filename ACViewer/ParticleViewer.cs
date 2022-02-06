@@ -13,6 +13,7 @@ using ACE.Entity.Enum;
 using ACE.Server.Physics;
 using ACE.Server.Physics.Animation;
 
+using ACViewer.Config;
 using ACViewer.Enum;
 using ACViewer.Model;
 using ACViewer.Render;
@@ -133,7 +134,7 @@ namespace ACViewer
 
         public void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(new Color(0, 0, 0));
+            GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.ParticleViewer);
 
             Effect.CurrentTechnique = Effect.Techniques["ColoredNoShading"];
             Effect.Parameters["xWorld"].SetValue(Matrix.Identity);

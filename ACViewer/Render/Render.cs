@@ -11,6 +11,7 @@ using ACE.Server.Physics.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+using ACViewer.Config;
 using ACViewer.Enum;
 using ACViewer.View;
 
@@ -67,11 +68,9 @@ namespace ACViewer.Render
             GraphicsDevice.RasterizerState = rs;
         }
 
-        private static readonly Color BackgroundColor = new Color(32, 32, 32);
-
         public void Draw()
         {
-            GraphicsDevice.Clear(BackgroundColor);
+            GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.WorldViewer);
 
             SetRasterizerState(false);
             

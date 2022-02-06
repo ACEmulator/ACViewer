@@ -12,6 +12,7 @@ using ACE.Entity.Enum;
 
 using ACE.Server.Physics.Animation;
 
+using ACViewer.Config;
 using ACViewer.Enum;
 using ACViewer.Model;
 using ACViewer.Render;
@@ -219,6 +220,8 @@ namespace ACViewer
         public void DrawModel()
         {
             if (Setup == null) return;
+
+            GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.ModelViewer);
 
             Setup.Draw(PolyIdx, PartIdx);
 
