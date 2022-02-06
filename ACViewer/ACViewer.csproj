@@ -22,6 +22,7 @@
     <None Remove="Icons\Question_16x.png" />
     <None Remove="Icons\Search_16x.png" />
     <None Remove="Icons\Settings_16x.png" />
+    <None Remove="Icons\Settings_16x_inverted.png" />
     <None Remove="Icons\StatusCriticalError_16x.png" />
   </ItemGroup>
 
@@ -59,6 +60,7 @@
     <Resource Include="Icons\Question_16x.png" />
     <Resource Include="Icons\Search_16x.png" />
     <Resource Include="Icons\Settings_16x.png" />
+    <Resource Include="Icons\Settings_16x_inverted.png" />
     <Resource Include="Icons\StatusCriticalError_16x.png" />
   </ItemGroup>
 
