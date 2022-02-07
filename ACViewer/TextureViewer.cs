@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Framework.WpfInterop.Input;
 
+using ACViewer.Config;
 using ACViewer.Render;
 
 namespace ACViewer
@@ -86,7 +87,9 @@ namespace ACViewer
             if (mouseState.Position != PrevMouseState.Position)
                 OnMouseMove(mouseState);
 
-            if (mouseState.LeftButton == ButtonState.Pressed || mouseState.RightButton == ButtonState.Pressed)
+            // PrevMouseState check prevents image from jumping around drastically if window is unfocused, and then refocused with a click
+            if (mouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton == ButtonState.Pressed ||
+                mouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton == ButtonState.Pressed)
             {
                 var delta = PrevMouseState.Position - mouseState.Position;
                 Pos -= new Vector2(delta.X, delta.Y);
@@ -161,7 +164,7 @@ namespace ACViewer
         {
             if (Texture == null) return;
 
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.TextureViewer);
 
             var samplerState = FileID >> 24 == 0x04 || FileID >> 24 == 0x0F ? SamplerState.PointClamp : SamplerState.LinearClamp;
 

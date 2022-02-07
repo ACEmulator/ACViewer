@@ -48,6 +48,7 @@ namespace ACViewer
         public Matrix Translate { get; set; } = Matrix.Identity;
 
         public Vector2 ImagePos { get; set; }
+
         public Matrix BlockTranslate { get; set; }
 
         public Texture2D Highlight { get; set; }
@@ -226,7 +227,7 @@ namespace ACViewer
                 WorldViewer.Instance.LoadLandblocks(startBlock, endBlock);
             }
 
-            if (mouseState.RightButton == ButtonState.Pressed)
+            if (mouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton == ButtonState.Pressed)
             {
                 var delta = PrevMouseState.Position - mouseState.Position;
                 Pos -= new Vector2(delta.X, delta.Y);
@@ -337,7 +338,7 @@ namespace ACViewer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.TextureViewer);
 
             if (WorldMap == null) return;
 

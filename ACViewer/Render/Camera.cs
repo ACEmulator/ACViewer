@@ -340,7 +340,7 @@ namespace ACViewer
             }
             else if (PrevMouseState.RightButton == ButtonState.Pressed)
             {
-                System.Windows.Input.Mouse.OverrideCursor = Cursors.Arrow;
+                System.Windows.Input.Mouse.OverrideCursor = null;
             }
 
             PrevMouseState = mouseState;
