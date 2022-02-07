@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Drawing;
-using System.IO;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,7 +9,9 @@ using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Framework.WpfInterop.Input;
 
+using ACViewer.Config;
 using ACViewer.Enum;
+using ACViewer.View;
 
 namespace ACViewer
 {
@@ -56,7 +59,9 @@ namespace ACViewer
         public Vector2 StartPos { get; set; }
         public Vector2 EndPos { get; set; }
 
-        public Microsoft.Xna.Framework.Rectangle HighlightRect { get; set; }
+        public Rectangle HighlightRect { get; set; }
+
+        public Texture2D GearIcon { get; set; }
 
         public MapViewer()
         {
@@ -67,10 +72,40 @@ namespace ACViewer
 
         public void LoadContent()
         {
-            WorldMap = Image.GetTextureFromBitmap(GraphicsDevice, @"Content\Images\highres.png");
+            LoadMap();
 
             Highlight = new Texture2D(GraphicsDevice, 1, 1);
-            Highlight.SetData(new Microsoft.Xna.Framework.Color[1] { Microsoft.Xna.Framework.Color.Red });
+            Highlight.SetData(new Color[1] { Color.Red });
+
+            var stream = Application.GetResourceStream(new Uri("Icons/Settings_16x_inverted.png", UriKind.Relative));
+            GearIcon = Texture2D.FromStream(GraphicsDevice, stream.Stream);
+        }
+
+        public void LoadMap()
+        {
+            if (WorldMap != null)
+            {
+                WorldMap.Dispose();
+                WorldMap = null;
+            }
+
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) =>
+            {
+                switch (ConfigManager.Config.MapViewer.Mode)
+                {
+                    case MapViewerMode.PreGenerated:
+                        WorldMap = Image.GetTextureFromBitmap(GraphicsDevice, @"Content\Images\highres.png");
+                        break;
+
+                    case MapViewerMode.GenerateFromDAT:
+                        var mapper = new Mapper();
+                        WorldMap = Image.GetTexture2DFromBitmap(GraphicsDevice, mapper.MapImage.Bitmap);
+                        break;
+                }
+            };
+            worker.RunWorkerAsync();
         }
 
         public void Init()
@@ -82,8 +117,14 @@ namespace ACViewer
 
         public static float Speed { get; set; } = 8.0f;
 
+        public bool OptionsActive { get; set; }
+
+        public DateTime OptionsLastClosedTime { get; set; }
+
         public void Update(GameTime gameTime)
         {
+            if (WorldMap == null) return;
+            
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
 
@@ -110,6 +151,29 @@ namespace ACViewer
 
             if (mouseState.LeftButton == ButtonState.Pressed && !DragCompleted)
             {
+                if (!ShouldDrawHighlight())
+                {
+                    if (!OptionsActive && DateTime.Now - OptionsLastClosedTime > TimeSpan.FromSeconds(0.25))
+                    {
+                        System.Windows.Input.Mouse.OverrideCursor = null;
+                        OptionsActive = true;
+                        var options = new Options_MapViewer();
+                        options.WindowStartupLocation = WindowStartupLocation.Manual;
+
+                        // get absolute screen coordnate of upper left pixel of control
+                        var startPos = MainWindow.Instance.Scene.PointToScreen(new System.Windows.Point(0, 0));
+
+                        options.Top = startPos.Y + MainWindow.Instance.Scene.ActualHeight / 2 - options.Height / 2;
+                        options.Left = startPos.X + MainWindow.Instance.Scene.ActualWidth / 2 - options.Width / 2;
+
+                        options.ShowDialog();
+
+                        OptionsLastClosedTime = DateTime.Now;
+                        OptionsActive = false;
+                    }
+                    return;
+                }
+
                 if (!IsDragging)
                 {
                     StartPos = ImagePos;
@@ -117,7 +181,7 @@ namespace ACViewer
                     IsDragging = true;
 
                     var startBlock = GetLandblock(StartPos);
-                    HighlightRect = new Microsoft.Xna.Framework.Rectangle((int)startBlock.X, (int)startBlock.Y, 8, 8);
+                    HighlightRect = new Rectangle((int)startBlock.X, (int)startBlock.Y, 8, 8);
 
                     BuildSelection();
                 }
@@ -128,7 +192,7 @@ namespace ACViewer
                     GetMinMax(out var min, out var max);
                     var diff = max - min;
 
-                    HighlightRect = new Microsoft.Xna.Framework.Rectangle((int)min.X, (int)min.Y, (int)diff.X + 8, (int)diff.Y + 8);
+                    HighlightRect = new Rectangle((int)min.X, (int)min.Y, (int)diff.X + 8, (int)diff.Y + 8);
 
                     var upperLeftBlock = GetLandblock(min);
                     BlockTranslate = Matrix.CreateTranslation(upperLeftBlock.X, upperLeftBlock.Y, 0);
@@ -175,8 +239,18 @@ namespace ACViewer
                 OnZoom(diff);
             }
 
+            ManageCursor();
+
             PrevKeyboardState = keyboardState;
             PrevMouseState = mouseState;
+        }
+
+        public void ManageCursor()
+        {
+            if (ShouldDrawHighlight())
+                System.Windows.Input.Mouse.OverrideCursor = null;
+            else
+                System.Windows.Input.Mouse.OverrideCursor = Cursors.Hand;
         }
 
         public void GetMinMax(out Vector2 min, out Vector2 max)
@@ -263,11 +337,13 @@ namespace ACViewer
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Microsoft.Xna.Framework.Color.Black);
+            GraphicsDevice.Clear(Color.Black);
+
+            if (WorldMap == null) return;
 
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Scale * Translate);
-            spriteBatch.Draw(WorldMap, Vector2.Zero, Microsoft.Xna.Framework.Color.White);
+            spriteBatch.Draw(WorldMap, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             DrawHighlight();
@@ -275,43 +351,46 @@ namespace ACViewer
             DrawHUD();
         }
 
-        public static Microsoft.Xna.Framework.Rectangle[] Highlight_Sides { get; } = new Microsoft.Xna.Framework.Rectangle[4]
+        public static Rectangle[] Highlight_Sides { get; } = new Rectangle[4]
         {
-            new Microsoft.Xna.Framework.Rectangle(0, 0, 8, 1),
-            new Microsoft.Xna.Framework.Rectangle(0, 7, 8, 1),
-            new Microsoft.Xna.Framework.Rectangle(0, 0, 1, 8),
-            new Microsoft.Xna.Framework.Rectangle(7, 0, 1, 8),
+            new Rectangle(0, 0, 8, 1),
+            new Rectangle(0, 7, 8, 1),
+            new Rectangle(0, 0, 1, 8),
+            new Rectangle(7, 0, 1, 8),
         };
 
-        public Microsoft.Xna.Framework.Rectangle[] Selection { get; set; }
+        public Rectangle[] Selection { get; set; }
 
         public void BuildSelection()
         {
             var width = HighlightRect.Width;
             var height = HighlightRect.Height;
 
-            Selection = new Microsoft.Xna.Framework.Rectangle[4]
+            Selection = new Rectangle[4]
             {
-                new Microsoft.Xna.Framework.Rectangle(0, 0, width, 1),
-                new Microsoft.Xna.Framework.Rectangle(0, height - 1, width, 1),
-                new Microsoft.Xna.Framework.Rectangle(0, 0, 1, height),
-                new Microsoft.Xna.Framework.Rectangle(width - 1, 0, 1, height),
+                new Rectangle(0, 0, width, 1),
+                new Rectangle(0, height - 1, width, 1),
+                new Rectangle(0, 0, 1, height),
+                new Rectangle(width - 1, 0, 1, height),
             };
         }
 
         public void DrawHighlight()
         {
+            if (!ShouldDrawHighlight())
+                return;
+            
             spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null, BlockTranslate * Scale * Translate);
 
             if (!IsDragging && !DragCompleted)
             {
                 foreach (var side in Highlight_Sides)
-                    spriteBatch.Draw(Highlight, side, Microsoft.Xna.Framework.Color.White);
+                    spriteBatch.Draw(Highlight, side, Color.White);
             }
             else
             {
                 foreach (var side in Selection)
-                    spriteBatch.Draw(Highlight, side, Microsoft.Xna.Framework.Color.White);
+                    spriteBatch.Draw(Highlight, side, Color.White);
             }
 
             spriteBatch.End();
@@ -319,6 +398,10 @@ namespace ACViewer
 
         // text rendering
         public SpriteFont Font => GameView.Instance.Font;
+
+        private static readonly int gearIconPadding = 10;
+
+        private static readonly int gearIconSize = 16;
 
         public void DrawHUD()
         {
@@ -331,9 +414,25 @@ namespace ACViewer
                 var textPos = new Vector2(GraphicsDevice.Viewport.Width - 42, 10);
 
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearClamp);
-                spriteBatch.DrawString(Font, $"{(int)landblock.X:X2}{(int)landblock.Y:X2}", textPos, Microsoft.Xna.Framework.Color.White);
+                spriteBatch.DrawString(Font, $"{(int)landblock.X:X2}{(int)landblock.Y:X2}", textPos, Color.White);
                 spriteBatch.End();
             }
+
+            // draw gear icon in bottom-right corner
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp);
+            var rect = new Rectangle(GraphicsDevice.Viewport.Width - GearIcon.Width - gearIconPadding, GraphicsDevice.Viewport.Height - GearIcon.Height - gearIconPadding, gearIconSize, gearIconSize);
+            spriteBatch.Draw(GearIcon, rect, Color.White);
+            spriteBatch.End();
+        }
+
+        public bool ShouldDrawHighlight()
+        {
+            var mouseState = Mouse.GetState();
+
+            if (mouseState.X > GraphicsDevice.Viewport.Width - gearIconSize - gearIconPadding * 2 && mouseState.Y > GraphicsDevice.Viewport.Height - gearIconSize - gearIconPadding * 2)
+                return false;
+
+            return true;
         }
     }
 }
