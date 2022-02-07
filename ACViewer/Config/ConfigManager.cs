@@ -22,7 +22,7 @@ namespace ACViewer.Config
             }
         }
 
-        private static Config snapshot { get; set; }
+        public static Config Snapshot { get; set; }
 
         public static void SaveConfig()
         {
@@ -57,12 +57,12 @@ namespace ACViewer.Config
 
         public static void TakeSnapshot()
         {
-            snapshot = ReadConfig();
+            Snapshot = ReadConfig();
         }
 
         public static void RestoreSnapshot()
         {
-            config = snapshot;
+            config = Snapshot;
         }
 
         public static bool HasDBInfo

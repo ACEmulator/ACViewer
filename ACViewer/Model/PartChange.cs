@@ -17,7 +17,8 @@ namespace ACViewer.Model
             if (TextureChanges == null)
                 TextureChanges = new Dictionary<uint, uint>();
 
-            TextureChanges.Add(oldTexture, newTexture);
+            //TextureChanges.Add(oldTexture, newTexture);
+            TextureChanges[oldTexture] = newTexture;
         }
     }
 }

@@ -27,7 +27,7 @@
 
         <GridSplitter Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" Width="4.5"/>
 
-        <scenes:GameView Grid.Row="1" Grid.Column="2" Margin="0,22,10,7.5" />
+        <scenes:GameView x:Name="Scene" Grid.Row="1" Grid.Column="2" Margin="0,22,10,7.5" />
 
         <GridSplitter Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="3.75" ResizeDirection="Rows" />
 

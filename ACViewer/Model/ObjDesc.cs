@@ -31,6 +31,8 @@ namespace ACViewer.Model
         {
             var clothingTable = DatManager.PortalDat.ReadFromDat<ClothingTable>(clothingTableID);
 
+            if (!clothingTable.ClothingBaseEffects.TryGetValue(SetupId, out var baseEffect)) return;
+
             // palette changes
             if (clothingTable.ClothingSubPalEffects.TryGetValue((uint)paletteTemplate, out var palEffect))
             {
@@ -39,8 +41,6 @@ namespace ACViewer.Model
                 else
                     PaletteChanges.Add(palEffect.CloSubPalettes, shade);
             }
-
-            if (!clothingTable.ClothingBaseEffects.TryGetValue(SetupId, out var baseEffect)) return;
 
             foreach (var objEffect in baseEffect.CloObjectEffects)
             {
@@ -132,6 +132,29 @@ namespace ACViewer.Model
             // Mouth
             if (wo.DefaultMouthTextureDID != null && wo.MouthTextureDID != null)
                 headChange.AddTexture(wo.DefaultMouthTextureDID.Value, wo.MouthTextureDID.Value);
+
+            // oh god why
+            if (wo.Weenie.PropertiesPalette != null)
+            {
+                foreach (var palette in wo.Weenie.PropertiesPalette)
+                    AddPaletteChange(palette.SubPaletteId, palette.Offset, palette.Length);
+            }
+
+            if (wo.Weenie.PropertiesAnimPart != null)
+            {
+                foreach (var animPart in wo.Weenie.PropertiesAnimPart)
+                    GetPartChange(animPart.Index, animPart.AnimationId);
+            }
+
+            if (wo.Weenie.PropertiesTextureMap != null)
+            {
+                foreach (var textureMap in wo.Weenie.PropertiesTextureMap)
+                {
+                    var partChange = GetPartChange(textureMap.PartIndex);
+
+                    partChange.AddTexture(textureMap.OldTexture, textureMap.NewTexture);
+                }
+            }
         }
 
         private PartChange GetPartChange(uint partIdx, uint? newGfxObjId = null)

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Windows;
+using System.Windows.Input;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -8,6 +11,7 @@ using MonoGame.Framework.WpfInterop.Input;
 
 using ACViewer.Config;
 using ACViewer.Enum;
+using ACViewer.View;
 
 namespace ACViewer
 {
@@ -44,6 +48,7 @@ namespace ACViewer
         public Matrix Translate { get; set; } = Matrix.Identity;
 
         public Vector2 ImagePos { get; set; }
+
         public Matrix BlockTranslate { get; set; }
 
         public Texture2D Highlight { get; set; }
@@ -57,6 +62,8 @@ namespace ACViewer
 
         public Rectangle HighlightRect { get; set; }
 
+        public Texture2D GearIcon { get; set; }
+
         public MapViewer()
         {
             Instance = this;
@@ -66,10 +73,40 @@ namespace ACViewer
 
         public void LoadContent()
         {
-            WorldMap = Image.GetTextureFromBitmap(GraphicsDevice, @"Content\Images\highres.png");
+            LoadMap();
 
             Highlight = new Texture2D(GraphicsDevice, 1, 1);
             Highlight.SetData(new Color[1] { Color.Red });
+
+            var stream = Application.GetResourceStream(new Uri("Icons/Settings_16x_inverted.png", UriKind.Relative));
+            GearIcon = Texture2D.FromStream(GraphicsDevice, stream.Stream);
+        }
+
+        public void LoadMap()
+        {
+            if (WorldMap != null)
+            {
+                WorldMap.Dispose();
+                WorldMap = null;
+            }
+
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) =>
+            {
+                switch (ConfigManager.Config.MapViewer.Mode)
+                {
+                    case MapViewerMode.PreGenerated:
+                        WorldMap = Image.GetTextureFromBitmap(GraphicsDevice, @"Content\Images\highres.png");
+                        break;
+
+                    case MapViewerMode.GenerateFromDAT:
+                        var mapper = new Mapper();
+                        WorldMap = Image.GetTexture2DFromBitmap(GraphicsDevice, mapper.MapImage.Bitmap);
+                        break;
+                }
+            };
+            worker.RunWorkerAsync();
         }
 
         public void Init()
@@ -81,8 +118,14 @@ namespace ACViewer
 
         public static float Speed { get; set; } = 8.0f;
 
+        public bool OptionsActive { get; set; }
+
+        public DateTime OptionsLastClosedTime { get; set; }
+
         public void Update(GameTime gameTime)
         {
+            if (WorldMap == null) return;
+            
             var keyboardState = Keyboard.GetState();
             var mouseState = Mouse.GetState();
 
@@ -109,6 +152,29 @@ namespace ACViewer
 
             if (mouseState.LeftButton == ButtonState.Pressed && !DragCompleted)
             {
+                if (!ShouldDrawHighlight())
+                {
+                    if (!OptionsActive && DateTime.Now - OptionsLastClosedTime > TimeSpan.FromSeconds(0.25))
+                    {
+                        System.Windows.Input.Mouse.OverrideCursor = null;
+                        OptionsActive = true;
+                        var options = new Options_MapViewer();
+                        options.WindowStartupLocation = WindowStartupLocation.Manual;
+
+                        // get absolute screen coordnate of upper left pixel of control
+                        var startPos = MainWindow.Instance.Scene.PointToScreen(new System.Windows.Point(0, 0));
+
+                        options.Top = startPos.Y + MainWindow.Instance.Scene.ActualHeight / 2 - options.Height / 2;
+                        options.Left = startPos.X + MainWindow.Instance.Scene.ActualWidth / 2 - options.Width / 2;
+
+                        options.ShowDialog();
+
+                        OptionsLastClosedTime = DateTime.Now;
+                        OptionsActive = false;
+                    }
+                    return;
+                }
+
                 if (!IsDragging)
                 {
                     StartPos = ImagePos;
@@ -174,8 +240,18 @@ namespace ACViewer
                 OnZoom(diff);
             }
 
+            ManageCursor();
+
             PrevKeyboardState = keyboardState;
             PrevMouseState = mouseState;
+        }
+
+        public void ManageCursor()
+        {
+            if (ShouldDrawHighlight())
+                System.Windows.Input.Mouse.OverrideCursor = null;
+            else
+                System.Windows.Input.Mouse.OverrideCursor = Cursors.Hand;
         }
 
         public void GetMinMax(out Vector2 min, out Vector2 max)
@@ -264,6 +340,8 @@ namespace ACViewer
         {
             GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.TextureViewer);
 
+            if (WorldMap == null) return;
+
             // TODO: Add your drawing code here
             spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, Scale * Translate);
             spriteBatch.Draw(WorldMap, Vector2.Zero, Color.White);
@@ -300,6 +378,9 @@ namespace ACViewer
 
         public void DrawHighlight()
         {
+            if (!ShouldDrawHighlight())
+                return;
+            
             spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointWrap, null, null, null, BlockTranslate * Scale * Translate);
 
             if (!IsDragging && !DragCompleted)
@@ -319,6 +400,10 @@ namespace ACViewer
         // text rendering
         public SpriteFont Font => GameView.Instance.Font;
 
+        private static readonly int gearIconPadding = 10;
+
+        private static readonly int gearIconSize = 16;
+
         public void DrawHUD()
         {
             var landblock = ImagePos / 8;
@@ -333,6 +418,22 @@ namespace ACViewer
                 spriteBatch.DrawString(Font, $"{(int)landblock.X:X2}{(int)landblock.Y:X2}", textPos, Color.White);
                 spriteBatch.End();
             }
+
+            // draw gear icon in bottom-right corner
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp);
+            var rect = new Rectangle(GraphicsDevice.Viewport.Width - GearIcon.Width - gearIconPadding, GraphicsDevice.Viewport.Height - GearIcon.Height - gearIconPadding, gearIconSize, gearIconSize);
+            spriteBatch.Draw(GearIcon, rect, Color.White);
+            spriteBatch.End();
+        }
+
+        public bool ShouldDrawHighlight()
+        {
+            var mouseState = Mouse.GetState();
+
+            if (mouseState.X > GraphicsDevice.Viewport.Width - gearIconSize - gearIconPadding * 2 && mouseState.Y > GraphicsDevice.Viewport.Height - gearIconSize - gearIconPadding * 2)
+                return false;
+
+            return true;
         }
     }
 }
