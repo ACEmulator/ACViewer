@@ -62,32 +62,34 @@ namespace ACViewer
                 var block_y = i % 255;
                 
                 var key = (uint)(block_x << 24 | block_y << 16 | 0xFFFF);
-
-                CellLandblock landblock = DatManager.CellDat.ReadFromDat<CellLandblock>(key);
-
-                int startX = block_x * 8;
-                int startY = LANDSIZE - block_y * 8 - 1;
-
-                for (var x = 0; x < 9; x++)
+                if (DatManager.CellDat.AllFiles.ContainsKey(key)) // Ensures we either have a full cell, or prevents crashes
                 {
-                    for (var y = 0; y < 9; y++)
+                    CellLandblock landblock = DatManager.CellDat.ReadFromDat<CellLandblock>(key);
+
+                    int startX = block_x * 8;
+                    int startY = LANDSIZE - block_y * 8 - 1;
+
+                    for (var x = 0; x < 9; x++)
                     {
-                        var type = landblock.Terrain[x * 9 + y];
-                        var newZ = landblock.Height[x * 9 + y];
+                        for (var y = 0; y < 9; y++)
+                        {
+                            var type = landblock.Terrain[x * 9 + y];
+                            var newZ = landblock.Height[x * 9 + y];
 
-                        // Write new data point
-                        land[startY - y, startX + x].Type = type;
-                        land[startY - y, startX + x].Z = GetLandheight(newZ);
-                        land[startY - y, startX + x].Used = true;
-                        uint itex = (uint)((type >> 2) & 0x3F);
-                        if (itex < 16 || itex > 20)
-                            land[startY - y, startX + x].Blocked = false;
-                        else
-                            land[startY - y, startX + x].Blocked = true;
+                            // Write new data point
+                            land[startY - y, startX + x].Type = type;
+                            land[startY - y, startX + x].Z = GetLandheight(newZ);
+                            land[startY - y, startX + x].Used = true;
+                            uint itex = (uint)((type >> 2) & 0x3F);
+                            if (itex < 16 || itex > 20)
+                                land[startY - y, startX + x].Blocked = false;
+                            else
+                                land[startY - y, startX + x].Blocked = true;
+                        }
                     }
-                }
 
-                FoundLandblocks++;
+                    FoundLandblocks++;
+                }
             });
 
             CreateMap();
