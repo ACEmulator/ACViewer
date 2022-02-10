@@ -71,7 +71,7 @@ namespace ACE.Server.WorldObjects
 
         public bool IsPlussed
         {
-            get => (Character != null && Character.IsPlussed) || ConfigManager.Config.Server.Accounts.OverrideCharacterPermissions;
+            get => Character != null && Character.IsPlussed /* || ConfigManager.Config.Server.Accounts.OverrideCharacterPermissions*/;
         }
 
         public bool IsOlthoiPlayer { get; set; }

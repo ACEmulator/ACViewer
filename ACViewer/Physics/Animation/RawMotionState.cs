@@ -24,6 +24,19 @@ namespace ACE.Server.Physics.Animation
             InitDefaults();
         }
 
+        public RawMotionState(RawMotionState _base, RawMotionState rawState)
+        {
+            InitDefaults();
+            
+            Actions = _base.Actions;
+            CurrentStyle = _base.CurrentStyle;
+
+            CurrentHoldKey = rawState.CurrentHoldKey;
+            ForwardCommand = rawState.ForwardCommand;
+            SideStepCommand = rawState.SideStepCommand;
+            TurnCommand = rawState.TurnCommand;
+        }
+
         public void AddAction(uint action, float speed, int stamp, bool autonomous)
         {
             Actions.Add(new ActionNode(action, speed, stamp, autonomous));

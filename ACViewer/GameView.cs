@@ -130,6 +130,7 @@ namespace ACViewer
         {
             // every update we can now query the keyboard & mouse for our WpfGame
             var keyboardState = _keyboard.GetState();
+            var mouseState = _mouse.GetState();
 
             if (keyboardState.IsKeyDown(Keys.C) && !PrevKeyboardState.IsKeyDown(Keys.C))
             {
@@ -149,9 +150,6 @@ namespace ACViewer
                 _graphicsDeviceManager.PreferMultiSampling = true;
                 _graphicsDeviceManager.ApplyChanges();
             }
-
-            if (Player != null)
-                Player.Update(time);
 
             switch (ViewMode)
             {
@@ -176,6 +174,7 @@ namespace ACViewer
             }
 
             PrevKeyboardState = keyboardState;
+            PrevMouseState = mouseState;
 
             base.Update(time);
         }

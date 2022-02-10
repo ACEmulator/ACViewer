@@ -14,6 +14,12 @@ namespace ACE.Server.WorldObjects
 {
     public partial class Creature : Container
     {
+        public Creature() : base()
+        {
+            InitializePropertyDictionaries();
+            SetEphemeralValues();
+        }
+        
         /// <summary>
         /// A new biota be created taking all of its values from weenie.
         /// </summary>

@@ -13,6 +13,11 @@ namespace ACE.Server.WorldObjects
 {
     public partial class Container : WorldObject
     {
+        public Container() : base()
+        {
+
+        }
+        
         /// <summary>
         /// A new biota be created taking all of its values from weenie.
         /// </summary>

@@ -28,7 +28,6 @@ namespace ACViewer.View
         public static ClothingTableList ClothingTableList => ClothingTableList.Instance;
 
         public static GameView GameView => GameView.Instance;
-        public static WorldViewer WorldViewer => WorldViewer.Instance;
         public static ModelViewer ModelViewer => ModelViewer.Instance;
         public static TextureViewer TextureViewer => TextureViewer.Instance;
 
@@ -202,8 +201,8 @@ namespace ACViewer.View
                     FileInfo.SetInfo(new FileTypes.CellLandblock(landblock).BuildTree());
 
                     GameView.ViewMode = ViewMode.World;
-                    WorldViewer.Instance = new WorldViewer();
-                    WorldViewer.LoadLandblock(fileID);
+                    GameView.WorldViewer = new WorldViewer();
+                    GameView.WorldViewer.LoadLandblock(fileID);
 
                     break;
                 case 0xFFFE:
@@ -211,8 +210,8 @@ namespace ACViewer.View
                     FileInfo.SetInfo(new FileTypes.LandblockInfo(landblockInfo).BuildTree());
 
                     GameView.ViewMode = ViewMode.World;
-                    WorldViewer.Instance = new WorldViewer();
-                    WorldViewer.LoadLandblock(fileID | 0xFFFF);
+                    GameView.WorldViewer = new WorldViewer();
+                    GameView.WorldViewer.LoadLandblock(fileID | 0xFFFF);
 
                     break;
                 /* >= 0x100 && < 0xFFEE */

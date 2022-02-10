@@ -23,6 +23,11 @@ namespace ACE.Server.WorldObjects
 
         //public Session Session { get; }
 
+        public Player() : base()
+        {
+
+        }
+        
         /// <summary>
         /// A new biota be created taking all of its values from weenie.
         /// </summary>
