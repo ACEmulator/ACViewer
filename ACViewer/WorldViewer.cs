@@ -294,6 +294,11 @@ namespace ACViewer
                 ACViewer.Render.Buffer.drawAlpha = !ACViewer.Render.Buffer.drawAlpha;
             }
 
+            if (keyboardState.IsKeyDown(Keys.LeftControl) && keyboardState.IsKeyDown(Keys.V) && !PrevKeyboardState.IsKeyDown(Keys.V))
+            {
+                Picker.AddVisibleCells();
+            }
+
             if (GameView.ViewMode == ViewMode.World && PlayerMode && Player != null)
                 Player.Update(time);
             else if (Camera != null)

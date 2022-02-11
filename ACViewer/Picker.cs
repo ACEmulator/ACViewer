@@ -379,6 +379,40 @@ namespace ACViewer
             HitIndices = hitIndices.ToArray();
         }
 
+        public static void AddVisibleCells()
+        {
+            var envCell = PickResult?.ObjCell as ACE.Server.Physics.Common.EnvCell;
+
+            if (envCell == null) return;
+            
+            var hitVertices = new List<VertexPositionColor>(HitVertices);
+            var hitIndices = new List<int>(HitIndices);
+            
+            var i = hitVertices.Count;
+            
+            foreach (var visibleCell in envCell.VisibleCells.Values)
+            {
+                var transform = visibleCell.Pos.ToXna();
+
+                foreach (var polygon in visibleCell.CellStructure.Polygons.Values)
+                {
+                    var startIdx = i;
+
+                    foreach (var v in polygon.Vertices)
+                    {
+                        hitVertices.Add(new VertexPositionColor(Vector3.Transform(v.Origin.ToXna(), transform), Color.Orange));
+                        hitIndices.AddRange(new List<int>() { i, i + 1 });
+                        i++;
+                    }
+                    hitIndices.RemoveAt(hitIndices.Count - 1);
+                    hitIndices.Add(startIdx);
+                }
+            }
+
+            HitVertices = hitVertices.ToArray();
+            HitIndices = hitIndices.ToArray();
+        }
+
         private static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
         
         private static Effect Effect => Render.Render.Effect;
