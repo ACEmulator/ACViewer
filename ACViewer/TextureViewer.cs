@@ -27,16 +27,9 @@ namespace ACViewer
         public WpfKeyboard Keyboard => GameView.Instance._keyboard;
         public WpfMouse Mouse => GameView.Instance._mouse;
 
-        public KeyboardState PrevKeyboardState
-        {
-            get => GameView.Instance.PrevKeyboardState;
-            set => GameView.Instance.PrevKeyboardState = value;
-        }
-        public MouseState PrevMouseState
-        {
-            get => GameView.Instance.PrevMouseState;
-            set => GameView.Instance.PrevMouseState = value;
-        }
+        public KeyboardState PrevKeyboardState => GameView.Instance.PrevKeyboardState;
+
+        public MouseState PrevMouseState => GameView.Instance.PrevMouseState;
 
         public Vector2 Pos { get; set; }
         public Matrix Translate { get; set; } = Matrix.Identity;
@@ -103,9 +96,6 @@ namespace ACViewer
                 var diff = mouseState.ScrollWheelValue - PrevMouseState.ScrollWheelValue;
                 OnZoom(diff);
             }
-
-            PrevKeyboardState = keyboardState;
-            PrevMouseState = mouseState;
         }
 
         public void SetScale(float scale)

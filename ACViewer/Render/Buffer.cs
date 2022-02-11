@@ -32,6 +32,10 @@ namespace ACViewer.Render
 
         public Dictionary<TextureFormat, TextureAtlasChain> InstanceTextureAtlasChains { get; set; }
 
+        public Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> RB_Animated { get; set; }
+
+        public Dictionary<TextureFormat, TextureAtlasChain> AnimatedTextureAtlasChains { get; set; }    // is this really needed?
+
         public static Effect Effect { get => Render.Effect; }
 
         public static Effect Effect_Clamp { get => Render.Effect_Clamp; }
@@ -76,7 +80,11 @@ namespace ACViewer.Render
             RB_Instances = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
             RB_Encounters = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
 
+            RB_Animated = new Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared>();
+
             InstanceTextureAtlasChains = new Dictionary<TextureFormat, TextureAtlasChain>();
+
+            AnimatedTextureAtlasChains = new Dictionary<TextureFormat, TextureAtlasChain>();
         }
 
         public void ClearBuffer()
@@ -94,10 +102,15 @@ namespace ACViewer.Render
             ClearBuffer(RB_Instances);
             ClearBuffer(RB_Encounters);
 
+            ClearBuffer(RB_Animated);
+
             foreach (var textureAtlasChain in TextureAtlasChains.Values)
                 textureAtlasChain.Dispose();
 
             foreach (var textureAtlasChain in InstanceTextureAtlasChains.Values)
+                textureAtlasChain.Dispose();
+
+            foreach (var textureAtlasChain in AnimatedTextureAtlasChains.Values)
                 textureAtlasChain.Dispose();
 
             Init();
@@ -268,6 +281,11 @@ namespace ACViewer.Render
             AddInstanceObj(encounter, RB_Encounters, objDesc);
         }
 
+        public void AddPlayer(R_PhysicsObj player, Model.ObjDesc objDesc = null)
+        {
+            AddInstanceObj(player, RB_Animated, objDesc, AnimatedTextureAtlasChains);
+        }
+
         public void BuildTerrain()
         {
             TerrainBatch.OnCompleted();
@@ -418,6 +436,8 @@ namespace ACViewer.Render
 
             if (drawEncounters && Server.EncountersLoaded)
                 DrawBuffer(RB_Encounters);
+
+            DrawBuffer(RB_Animated);
 
             if (Picker.HitVertices != null)
                 Picker.DrawHitPoly();

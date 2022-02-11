@@ -28,14 +28,8 @@ namespace ACViewer
 
         public WpfKeyboard Keyboard => GameView._keyboard;
         public WpfMouse Mouse => GameView._mouse;
-        
-        public MouseState PrevMouseState
-        {
-            get => GameView.PrevMouseState;
-            set => GameView.PrevMouseState = value;
-        }
 
-        public int PrevScrollWheelValue { get; set; }
+        public MouseState PrevMouseState => GameView.PrevMouseState;
 
         public float Speed { get; set; } = Model_Speed;
 
@@ -165,7 +159,6 @@ namespace ACViewer
             CreateLookAt();
         }
 
-
         public void InitModel(Model.BoundingBox box)
         {
             //var box = setup.BoundingBox;
@@ -275,18 +268,18 @@ namespace ACViewer
                  DrawDistance);
         }
 
+        public bool Locked { get; set; }
+
         public void Update(GameTime gameTime)
         {
-            if (Mouse == null) return;
+            if (Mouse == null || Locked) return;
 
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
 
             if (!GameView.IsActive)
-            {
-                PrevMouseState = mouseState;
                 return;
-            }
+
             if (keyboardState.IsKeyDown(Keys.W))
                 Position += Dir * Speed;
             if (keyboardState.IsKeyDown(Keys.S))
@@ -299,15 +292,14 @@ namespace ACViewer
                 Position += Up * Speed;
 
             // camera speed control
-            if (mouseState.ScrollWheelValue != PrevScrollWheelValue)
+            if (mouseState.ScrollWheelValue != PrevMouseState.ScrollWheelValue)
             {
-                var diff = mouseState.ScrollWheelValue - PrevScrollWheelValue;
+                var diff = mouseState.ScrollWheelValue - PrevMouseState.ScrollWheelValue;
+
                 if (diff >= 0)
                     Speed *= SpeedMod;
                 else
                     Speed /= SpeedMod;
-
-                PrevScrollWheelValue = mouseState.ScrollWheelValue;
             }
 
             if (mouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton != ButtonState.Pressed)
@@ -320,16 +312,22 @@ namespace ACViewer
             {
                 if (PrevMouseState.RightButton == ButtonState.Pressed)
                 {
+                    var xDiff = mouseState.X - centerX;
+                    var yDiff = mouseState.Y - centerY;
+
                     // yaw / x-rotation
                     Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Up,
-                        -MathHelper.PiOver4 / 160 * (mouseState.X - centerX)));
+                        -MathHelper.PiOver4 / 160 * xDiff));
 
                     // pitch / y-rotation
                     Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Vector3.Cross(Up, Dir),
-                        MathHelper.PiOver4 / 160 * (mouseState.Y - centerY)));
+                        MathHelper.PiOver4 / 160 * yDiff));
 
                     if (MainWindow.DebugMode)
                         Console.WriteLine($"MouseState.X = {mouseState.X}, MouseState.Y = {mouseState.Y}, Center.X = {centerX}, CenterY = {centerY}");
+
+                    /*if (xDiff != 0 || yDiff != 0)
+                        Console.WriteLine($"xDiff: {xDiff}, yDiff: {yDiff}");*/
                 }
                 else
                 {
@@ -343,8 +341,6 @@ namespace ACViewer
                 System.Windows.Input.Mouse.OverrideCursor = null;
             }
 
-            PrevMouseState = mouseState;
-
             Dir.Normalize();
 
             CreateLookAt();
@@ -353,8 +349,8 @@ namespace ACViewer
             //Console.WriteLine("Camera dir: " + GameView.Instance.Render.Camera.Dir);
         }
 
-        private int centerX => GameView.GraphicsDevice.Viewport.Width / 2;
-        private int centerY => GameView.GraphicsDevice.Viewport.Height / 2;
+        public int centerX => GameView.GraphicsDevice.Viewport.Width / 2;
+        public int centerY => GameView.GraphicsDevice.Viewport.Height / 2;
 
         public Position GetPosition()
         {

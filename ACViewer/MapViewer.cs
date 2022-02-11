@@ -29,17 +29,9 @@ namespace ACViewer
         public WpfKeyboard Keyboard => GameView.Instance._keyboard;
         public WpfMouse Mouse => GameView.Instance._mouse;
 
-        public KeyboardState PrevKeyboardState
-        {
-            get => GameView.Instance.PrevKeyboardState;
-            set => GameView.Instance.PrevKeyboardState = value;
-        }
-        
-        public MouseState PrevMouseState
-        {
-            get => GameView.Instance.PrevMouseState;
-            set => GameView.Instance.PrevMouseState = value;
-        }
+        public KeyboardState PrevKeyboardState => GameView.Instance.PrevKeyboardState;
+
+        public MouseState PrevMouseState => GameView.Instance.PrevMouseState;
 
         public float CurScale { get; set; } = 1.0f;
 
@@ -223,7 +215,7 @@ namespace ACViewer
                 //Console.WriteLine($"StartBlock: {startBlockID:X8}");
                 //Console.WriteLine($"EndBlock: {endBlockID:X8}");
 
-                WorldViewer.Instance = new WorldViewer();
+                //WorldViewer.Instance = new WorldViewer();
                 WorldViewer.Instance.LoadLandblocks(startBlock, endBlock);
             }
 
@@ -241,9 +233,6 @@ namespace ACViewer
             }
 
             ManageCursor();
-
-            PrevKeyboardState = keyboardState;
-            PrevMouseState = mouseState;
         }
 
         public void ManageCursor()

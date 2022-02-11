@@ -400,6 +400,8 @@ namespace ACViewer
         
         public static void TickGenerators(GeneratorTickMode generatorTickMode)
         {
+            if (UpdateObjs == null) return;
+            
             GeneratorTickMode = generatorTickMode;
             
             for (var i = 0; i < UpdateObjs.Count; i++)

@@ -260,7 +260,8 @@ namespace ACE.Server.Physics.Common
         public bool CanBypassMoveRestrictions()
         {
             // acclient checks both of these here
-            return WorldObject.IgnoreHouseBarriers && WorldObject is Admin;
+            //return WorldObject.IgnoreHouseBarriers && WorldObject is Admin;
+            return WorldObject is Player;
             //return true;
         }
 
