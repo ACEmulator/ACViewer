@@ -76,5 +76,6 @@
             </Border.InputBindings>
             <Rectangle Fill="{Binding WorldViewer_BackgroundColor}" />
         </Border>
+        <CheckBox Content="Mouselook compatibility mode" IsChecked="{Binding AltMouselook}" HorizontalAlignment="Left" Margin="333,281,0,0" VerticalAlignment="Top" ToolTip="Only enable this if you have bugs with primary mouselook method"/>
     </Grid>
 </Window>

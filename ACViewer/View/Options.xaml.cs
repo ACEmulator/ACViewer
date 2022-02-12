@@ -93,6 +93,16 @@ namespace ACViewer.View
             }
         }
 
+        public bool AltMouselook
+        {
+            get => Config.Toggles.AltMouselook;
+            set
+            {
+                Config.Toggles.AltMouselook = value;
+                NotifyPropertyChanged("AltMouselook");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private static readonly List<string> allProperties = new List<string>()
@@ -108,6 +118,7 @@ namespace ACViewer.View
             "TextureViewer_BackgroundColor",
             "ParticleViewer_BackgroundColor",
             "WorldViewer_BackgroundColor",
+            "AltMouselook",
         };
 
         public static Options Instance { get; set; }

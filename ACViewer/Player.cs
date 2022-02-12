@@ -13,6 +13,7 @@ using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
 using ACE.Server.WorldObjects;
 
+using ACViewer.Config;
 using ACViewer.Extensions;
 using ACViewer.Model;
 using ACViewer.View;
@@ -283,6 +284,12 @@ namespace ACViewer
                     var diffX = mouseState.X - Camera.centerX;
                     var diffY = mouseState.Y - Camera.centerY;
 
+                    if (ConfigManager.Config.Toggles.AltMouselook)
+                    {
+                        diffX = mouseState.X - PrevMouseState.X;
+                        diffY = mouseState.Y - PrevMouseState.Y;
+                    }
+
                     if (diffX != 0)
                     {
                         var heading = PhysicsObj.get_heading();
@@ -314,10 +321,14 @@ namespace ACViewer
                     System.Windows.Input.Mouse.OverrideCursor = System.Windows.Input.Cursors.None;
                 }
 
-                Mouse.SetCursor(Camera.centerX, Camera.centerY);
+                if (!ConfigManager.Config.Toggles.AltMouselook)
+                    Mouse.SetCursor(Camera.centerX, Camera.centerY);
             }
             else if (wasRightClick)
             {
+                if (ConfigManager.Config.Toggles.AltMouselook)
+                    Mouse.SetCursor(Camera.centerX, Camera.centerY);
+
                 System.Windows.Input.Mouse.OverrideCursor = null;
             }
 
