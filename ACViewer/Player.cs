@@ -145,6 +145,8 @@ namespace ACViewer
             return false;
         }
 
+        private static readonly float MouseSpeedBase = 0.5f / 6.0f;
+
         public void Update(GameTime time)
         {
             if (!FullSim)
@@ -284,7 +286,7 @@ namespace ACViewer
                     var diffX = mouseState.X - Camera.centerX;
                     var diffY = mouseState.Y - Camera.centerY;
 
-                    if (ConfigManager.Config.Toggles.AltMouselook)
+                    if (ConfigManager.Config.Mouse.AltMethod)
                     {
                         diffX = mouseState.X - PrevMouseState.X;
                         diffY = mouseState.Y - PrevMouseState.Y;
@@ -293,13 +295,13 @@ namespace ACViewer
                     if (diffX != 0)
                     {
                         var heading = PhysicsObj.get_heading();
-                        heading += diffX * 0.5f;
+                        heading += diffX * MouseSpeedBase * ConfigManager.Config.Mouse.Speed;
                         PhysicsObj.set_heading(heading, false);
                     }
 
                     if (diffY > 0)
                     {
-                        CurrentAngle -= diffY * 0.5f;
+                        CurrentAngle -= diffY * MouseSpeedBase * ConfigManager.Config.Mouse.Speed;
 
                         if (CurrentAngle < MaxAngleDown)
                             CurrentAngle = MaxAngleDown;
@@ -308,7 +310,7 @@ namespace ACViewer
                     }
                     else if (diffY < 0)
                     {
-                        CurrentAngle -= diffY * 0.5f;
+                        CurrentAngle -= diffY * MouseSpeedBase * ConfigManager.Config.Mouse.Speed;
 
                         if (CurrentAngle > MaxAngleUp)
                             CurrentAngle = MaxAngleUp;
@@ -321,12 +323,12 @@ namespace ACViewer
                     System.Windows.Input.Mouse.OverrideCursor = System.Windows.Input.Cursors.None;
                 }
 
-                if (!ConfigManager.Config.Toggles.AltMouselook)
+                if (!ConfigManager.Config.Mouse.AltMethod)
                     Mouse.SetCursor(Camera.centerX, Camera.centerY);
             }
             else if (wasRightClick)
             {
-                if (ConfigManager.Config.Toggles.AltMouselook)
+                if (ConfigManager.Config.Mouse.AltMethod)
                     Mouse.SetCursor(Camera.centerX, Camera.centerY);
 
                 System.Windows.Input.Mouse.OverrideCursor = null;

@@ -269,6 +269,8 @@ namespace ACViewer
                  DrawDistance);
         }
 
+        private static readonly float SpeedBase = MathHelper.PiOver4 / 160 / 6;
+
         public bool Locked { get; set; }
 
         public void Update(GameTime gameTime)
@@ -315,7 +317,7 @@ namespace ACViewer
                     var xDiff = mouseState.X - centerX;
                     var yDiff = mouseState.Y - centerY;
 
-                    if (ConfigManager.Config.Toggles.AltMouselook)
+                    if (ConfigManager.Config.Mouse.AltMethod)
                     {
                         xDiff = mouseState.X - PrevMouseState.X;
                         yDiff = mouseState.Y - PrevMouseState.Y;
@@ -323,15 +325,15 @@ namespace ACViewer
 
                     // yaw / x-rotation
                     Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Up,
-                        -MathHelper.PiOver4 / 160 * xDiff));
+                        -SpeedBase * ConfigManager.Config.Mouse.Speed * xDiff));
 
                     // pitch / y-rotation
                     Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Vector3.Cross(Up, Dir),
-                        MathHelper.PiOver4 / 160 * yDiff));
+                        SpeedBase * ConfigManager.Config.Mouse.Speed * yDiff));
 
                     if (MainWindow.DebugMode && (xDiff != 0 || yDiff != 0))
                     {
-                        if (!ConfigManager.Config.Toggles.AltMouselook)
+                        if (!ConfigManager.Config.Mouse.AltMethod)
                             Console.WriteLine($"mouseX: {mouseState.X}, mouseY: {mouseState.Y}, centerX: {centerX}, centerY: {centerY}");
                         else
                             Console.WriteLine($"xDiff: {xDiff}, yDiff: {yDiff}");
@@ -342,12 +344,12 @@ namespace ACViewer
                     System.Windows.Input.Mouse.OverrideCursor = Cursors.None;
                 }
                 // there is a delay here, so Mouse.GetState() won't be immediately affected
-                if (!ConfigManager.Config.Toggles.AltMouselook)
+                if (!ConfigManager.Config.Mouse.AltMethod)
                     Mouse.SetCursor(centerX, centerY);
             }
             else if (PrevMouseState.RightButton == ButtonState.Pressed)
             {
-                if (ConfigManager.Config.Toggles.AltMouselook)
+                if (ConfigManager.Config.Mouse.AltMethod)
                     Mouse.SetCursor(centerX, centerY);
 
                 System.Windows.Input.Mouse.OverrideCursor = null;

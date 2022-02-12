@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -93,12 +94,22 @@ namespace ACViewer.View
             }
         }
 
-        public bool AltMouselook
+        public float MouseSpeed
         {
-            get => Config.Toggles.AltMouselook;
+            get => Config.Mouse.Speed;
             set
             {
-                Config.Toggles.AltMouselook = value;
+                Config.Mouse.Speed = value;
+                NotifyPropertyChanged("MouseSpeed");
+            }
+        }
+
+        public bool AltMouselook
+        {
+            get => Config.Mouse.AltMethod;
+            set
+            {
+                Config.Mouse.AltMethod = value;
                 NotifyPropertyChanged("AltMouselook");
             }
         }
@@ -118,13 +129,18 @@ namespace ACViewer.View
             "TextureViewer_BackgroundColor",
             "ParticleViewer_BackgroundColor",
             "WorldViewer_BackgroundColor",
+            "MouseSpeed",
             "AltMouselook",
         };
 
         public static Options Instance { get; set; }
 
+        public bool Initting { get; set; }
+
         public Options()
         {
+            Initting = true;
+
             InitializeComponent();
 
             DataContext = this;
@@ -132,6 +148,10 @@ namespace ACViewer.View
             ACViewer.Config.ConfigManager.TakeSnapshot();
 
             Instance = this;
+
+            SliderMouseSpeed.Value = MouseSpeed;
+
+            Initting = false;
         }
 
         private void SelectACFolderButton_Click(object sender, RoutedEventArgs e)
@@ -140,7 +160,7 @@ namespace ACViewer.View
             //folderBrowserDialog.ShowDialog();
 
             var openFileDialog = new OpenFileDialog();
-            
+
             var success = openFileDialog.ShowDialog();
 
             if (success != true) return;
@@ -270,7 +290,7 @@ namespace ACViewer.View
             var brush = GetBrush(CurrentParam);
 
             if (brush == null) return;
-            
+
             var window = Instance;
 
             //var startX = (int)(window.Left + window.Width / 2 - 224 / 2);
@@ -301,7 +321,7 @@ namespace ACViewer.View
         }
 
         public ColorDialogEx ColorPicker { get; set; }
-        
+
         public string CurrentParam { get; set; }
 
         public void ColorEditCallback(int r, int g, int b)
@@ -350,6 +370,30 @@ namespace ACViewer.View
                     WorldViewer_BackgroundColor = brush;
                     break;
             }
+        }
+
+        private void SliderMouseSpeed_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (Initting) return;
+
+            Initting = true;
+            
+            MouseSpeed = (float)Math.Round(e.NewValue, 1, MidpointRounding.ToEven);
+
+            Initting = false;
+        }
+
+        private void TextBoxMouseSpeed_ValueChanged(object sender, TextChangedEventArgs args)
+        {
+            if (Initting) return;
+
+            if (!float.TryParse(TextBoxMouseSpeed.Text, out var speed)) return;
+
+            Initting = true;
+
+            SliderMouseSpeed.Value = speed;
+
+            Initting = false;
         }
     }
 }

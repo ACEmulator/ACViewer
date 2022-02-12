@@ -7,6 +7,5 @@
         public bool ShowParticles { get; set; }
         public bool LoadInstances { get; set; }
         public bool LoadEncounters { get; set; }
-        public bool AltMouselook { get; set; }
     }
 }

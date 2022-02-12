@@ -26,56 +26,60 @@
                      local:PasswordHelper.Password="{Binding Password}"/>-->
         <Button Content="Test Connection" HorizontalAlignment="Left" Margin="181,316,0,0" VerticalAlignment="Top" Width="105" Click="TestConnectionButton_Click"/>
 
-        <Button Content="OK" HorizontalAlignment="Left" Margin="395,347,0,0" Width="75" Click="OKButton_Click" Height="20" VerticalAlignment="Top"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="480,347,0,0" Width="75" Click="CancelButton_Click" Height="20" VerticalAlignment="Top" IsCancel="true"/>
-
-        <Image Name="DBStatus" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,318,0,0" Width="16" Height="16"/>
+        <Image Name="DBStatus" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,289,0,0" Width="16" Height="16"/>
         <local:ucSpinnerApple x:Name="Spinner" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="302,313,0,0" Width="16" Height="16" Visibility="Hidden"/>
-        <Label Content="Background Colors" HorizontalAlignment="Left" Margin="330,97,0,0" VerticalAlignment="Top" />
-        <Label Content="Model Viewer" HorizontalAlignment="Left" Margin="357,127,0,0" VerticalAlignment="Top">
+        <Label Content="Background Colors" HorizontalAlignment="Left" Margin="322,162,0,0" VerticalAlignment="Top" />
+        <Label Content="Model Viewer" HorizontalAlignment="Left" Margin="349,192,0,0" VerticalAlignment="Top">
             <Label.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="ModelViewer"/>
             </Label.InputBindings>
         </Label>
-        <Label Content="Texture Viewer" HorizontalAlignment="Left" Margin="353,157,0,0" VerticalAlignment="Top">
+        <Label Content="Texture Viewer" HorizontalAlignment="Left" Margin="345,222,0,0" VerticalAlignment="Top">
             <Label.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="TextureViewer"/>
             </Label.InputBindings>
         </Label>
-        <Label Content="Particle Viewer" HorizontalAlignment="Left" Margin="353,186,0,0" VerticalAlignment="Top">
+        <Label Content="Particle Viewer" HorizontalAlignment="Left" Margin="345,251,0,0" VerticalAlignment="Top">
             <Label.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="ParticleViewer"/>
             </Label.InputBindings>
         </Label>
-        <Label Content="World Viewer" HorizontalAlignment="Left" Margin="359,217,0,0" VerticalAlignment="Top">
+        <Label Content="World Viewer" HorizontalAlignment="Left" Margin="351,282,0,0" VerticalAlignment="Top">
             <Label.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="WorldViewer"/>
             </Label.InputBindings>
         </Label>
-        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18"  Margin="446,133,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
+        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18"  Margin="438,198,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
             <Border.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="ModelViewer"/>
             </Border.InputBindings>
             <Rectangle Width="16" Height="16" Fill="{Binding ModelViewer_BackgroundColor}" />
         </Border>
-        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="446,163,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
+        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="438,228,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
             <Border.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="TextureViewer"/>
             </Border.InputBindings>
             <Rectangle Fill="{Binding TextureViewer_BackgroundColor}" />
         </Border>
-        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="446,192,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
+        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="438,257,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
             <Border.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="ParticleViewer"/>
             </Border.InputBindings>
             <Rectangle Fill="{Binding ParticleViewer_BackgroundColor}" />
         </Border>
-        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="446,223,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
+        <Border BorderBrush="{Binding BorderColor}" BorderThickness="1" Width="18" Height="18" Margin="438,288,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="1,1,1,1">
             <Border.InputBindings>
                 <MouseBinding Gesture="LeftClick" Command="{Binding Swatch_Click}" CommandParameter="WorldViewer"/>
             </Border.InputBindings>
             <Rectangle Fill="{Binding WorldViewer_BackgroundColor}" />
         </Border>
-        <CheckBox Content="Mouselook compatibility mode" IsChecked="{Binding AltMouselook}" HorizontalAlignment="Left" Margin="333,281,0,0" VerticalAlignment="Top" ToolTip="Only enable this if you have bugs with primary mouselook method"/>
+        <Label Content="Mouselook:" HorizontalAlignment="Left" Margin="317,72,0,0" VerticalAlignment="Top"/>
+        <Label Content="Speed:" HorizontalAlignment="Left" Margin="317,101,0,0" VerticalAlignment="Top"/>
+        <Slider Name="SliderMouseSpeed" HorizontalAlignment="Left" Margin="373,105,0,0" VerticalAlignment="Top" Width="120" Minimum="1" Maximum="20" ValueChanged="SliderMouseSpeed_ValueChanged"/>
+        <TextBox Name="TextBoxMouseSpeed" HorizontalAlignment="Left" Margin="498,105,0,0" Text="{Binding MouseSpeed}" TextWrapping="Wrap" VerticalAlignment="Top" Width="50" TextChanged="TextBoxMouseSpeed_ValueChanged"/>
+        <CheckBox Content="Alt method" IsChecked="{Binding AltMouselook}" HorizontalAlignment="Left" Margin="468,140,0,0" VerticalAlignment="Top" ToolTip="Only enable this if you have bugs with primary mouselook method"/>
+
+        <Button Content="OK" HorizontalAlignment="Left" Margin="395,347,0,0" Width="75" Click="OKButton_Click" Height="20" VerticalAlignment="Top"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="480,347,0,0" Width="75" Click="CancelButton_Click" Height="20" VerticalAlignment="Top" IsCancel="true"/>
     </Grid>
 </Window>
