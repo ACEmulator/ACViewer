@@ -26,7 +26,7 @@
                      local:PasswordHelper.Password="{Binding Password}"/>-->
         <Button Content="Test Connection" HorizontalAlignment="Left" Margin="181,316,0,0" VerticalAlignment="Top" Width="105" Click="TestConnectionButton_Click"/>
 
-        <Image Name="DBStatus" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,289,0,0" Width="16" Height="16"/>
+        <Image Name="DBStatus" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="301,318,0,0" Width="16" Height="16"/>
         <local:ucSpinnerApple x:Name="Spinner" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="302,313,0,0" Width="16" Height="16" Visibility="Hidden"/>
         <Label Content="Background Colors" HorizontalAlignment="Left" Margin="322,162,0,0" VerticalAlignment="Top" />
         <Label Content="Model Viewer" HorizontalAlignment="Left" Margin="349,192,0,0" VerticalAlignment="Top">
