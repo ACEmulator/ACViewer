@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows;
 
 using Microsoft.Xna.Framework.Graphics;
 
@@ -519,15 +520,21 @@ namespace ACViewer.Render
 
         public static RenderTarget2D GenerateMipMap(Texture2D source, int size)
         {
-            var renderTarget = new RenderTarget2D(GraphicsDevice, size, size);
+            RenderTarget2D renderTarget = null;
 
-            GraphicsDevice.SetRenderTarget(renderTarget);
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                renderTarget = new RenderTarget2D(GraphicsDevice, size, size);
 
-            SpriteBatch.Begin();
-            SpriteBatch.Draw(source, new Microsoft.Xna.Framework.Rectangle(0, 0, size, size), Microsoft.Xna.Framework.Color.White);
-            SpriteBatch.End();
+                GraphicsDevice.SetRenderTarget(renderTarget);
 
-            GraphicsDevice.SetRenderTarget(null);
+                SpriteBatch.Begin();
+                SpriteBatch.Draw(source, new Microsoft.Xna.Framework.Rectangle(0, 0, size, size), Microsoft.Xna.Framework.Color.White);
+                SpriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(null);
+            }));
+
             return renderTarget;
         }
 
