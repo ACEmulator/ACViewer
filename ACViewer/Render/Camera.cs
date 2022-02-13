@@ -6,12 +6,13 @@ using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Framework.WpfInterop.Input;
 
+using ACE.Server.Physics.Animation;
+using ACE.Server.Physics.Common;
+
+using ACViewer.Config;
 using ACViewer.Enum;
 using ACViewer.Render;
 using ACViewer.View;
-
-using ACE.Server.Physics.Animation;
-using ACE.Server.Physics.Common;
 
 namespace ACViewer
 {
@@ -268,6 +269,8 @@ namespace ACViewer
                  DrawDistance);
         }
 
+        private static readonly float SpeedBase = MathHelper.PiOver4 / 160 / 6;
+
         public bool Locked { get; set; }
 
         public void Update(GameTime gameTime)
@@ -277,8 +280,7 @@ namespace ACViewer
             var mouseState = Mouse.GetState();
             var keyboardState = Keyboard.GetState();
 
-            if (!GameView.IsActive)
-                return;
+            if (!GameView.IsActive) return;
 
             if (keyboardState.IsKeyDown(Keys.W))
                 Position += Dir * Speed;
@@ -315,29 +317,41 @@ namespace ACViewer
                     var xDiff = mouseState.X - centerX;
                     var yDiff = mouseState.Y - centerY;
 
+                    if (ConfigManager.Config.Mouse.AltMethod)
+                    {
+                        xDiff = mouseState.X - PrevMouseState.X;
+                        yDiff = mouseState.Y - PrevMouseState.Y;
+                    }
+
                     // yaw / x-rotation
                     Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Up,
-                        -MathHelper.PiOver4 / 160 * xDiff));
+                        -SpeedBase * ConfigManager.Config.Mouse.Speed * xDiff));
 
                     // pitch / y-rotation
                     Dir = Vector3.Transform(Dir, Matrix.CreateFromAxisAngle(Vector3.Cross(Up, Dir),
-                        MathHelper.PiOver4 / 160 * yDiff));
+                        SpeedBase * ConfigManager.Config.Mouse.Speed * yDiff));
 
-                    if (MainWindow.DebugMode)
-                        Console.WriteLine($"MouseState.X = {mouseState.X}, MouseState.Y = {mouseState.Y}, Center.X = {centerX}, CenterY = {centerY}");
-
-                    /*if (xDiff != 0 || yDiff != 0)
-                        Console.WriteLine($"xDiff: {xDiff}, yDiff: {yDiff}");*/
+                    if (MainWindow.DebugMode && (xDiff != 0 || yDiff != 0))
+                    {
+                        if (!ConfigManager.Config.Mouse.AltMethod)
+                            Console.WriteLine($"mouseX: {mouseState.X}, mouseY: {mouseState.Y}, centerX: {centerX}, centerY: {centerY}");
+                        else
+                            Console.WriteLine($"xDiff: {xDiff}, yDiff: {yDiff}");
+                    }
                 }
                 else
                 {
                     System.Windows.Input.Mouse.OverrideCursor = Cursors.None;
                 }
                 // there is a delay here, so Mouse.GetState() won't be immediately affected
-                Mouse.SetCursor(centerX, centerY);
+                if (!ConfigManager.Config.Mouse.AltMethod)
+                    Mouse.SetCursor(centerX, centerY);
             }
             else if (PrevMouseState.RightButton == ButtonState.Pressed)
             {
+                if (ConfigManager.Config.Mouse.AltMethod)
+                    Mouse.SetCursor(centerX, centerY);
+
                 System.Windows.Input.Mouse.OverrideCursor = null;
             }
 
