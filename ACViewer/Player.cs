@@ -147,6 +147,8 @@ namespace ACViewer
 
         private static readonly float MouseSpeedBase = 0.5f / 6.0f;
 
+        public System.Windows.Point LastSetPoint { get; set; }
+
         public void Update(GameTime time)
         {
             if (!FullSim)
@@ -283,8 +285,10 @@ namespace ACViewer
             {
                 if (wasRightClick)
                 {
-                    var diffX = mouseState.X - Camera.centerX;
-                    var diffY = mouseState.Y - Camera.centerY;
+                    MouseEx.GetCursorPos(out var cursorPos);
+
+                    var diffX = cursorPos.X - (int)LastSetPoint.X;
+                    var diffY = cursorPos.Y - (int)LastSetPoint.Y;
 
                     if (ConfigManager.Config.Mouse.AltMethod)
                     {
@@ -324,7 +328,7 @@ namespace ACViewer
                 }
 
                 if (!ConfigManager.Config.Mouse.AltMethod)
-                    Mouse.SetCursor(Camera.centerX, Camera.centerY);
+                    LastSetPoint = MouseEx.SetCursor(GameView.Instance, Camera.centerX, Camera.centerY);
             }
             else if (wasRightClick)
             {
