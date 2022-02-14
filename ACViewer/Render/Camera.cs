@@ -11,6 +11,7 @@ using ACE.Server.Physics.Common;
 
 using ACViewer.Config;
 using ACViewer.Enum;
+using ACViewer.Extensions;
 using ACViewer.Render;
 using ACViewer.View;
 
@@ -273,6 +274,8 @@ namespace ACViewer
 
         public bool Locked { get; set; }
 
+        public System.Windows.Point LastSetPoint { get; set; }
+
         public void Update(GameTime gameTime)
         {
             if (Mouse == null || Locked) return;
@@ -314,8 +317,10 @@ namespace ACViewer
             {
                 if (PrevMouseState.RightButton == ButtonState.Pressed)
                 {
-                    var xDiff = mouseState.X - centerX;
-                    var yDiff = mouseState.Y - centerY;
+                    MouseEx.GetCursorPos(out var cursorPos);
+                    
+                    var xDiff = cursorPos.X - (int)LastSetPoint.X;
+                    var yDiff = cursorPos.Y - (int)LastSetPoint.Y;
 
                     if (ConfigManager.Config.Mouse.AltMethod)
                     {
@@ -345,7 +350,7 @@ namespace ACViewer
                 }
                 // there is a delay here, so Mouse.GetState() won't be immediately affected
                 if (!ConfigManager.Config.Mouse.AltMethod)
-                    Mouse.SetCursor(centerX, centerY);
+                    LastSetPoint = MouseEx.SetCursor(GameView.Instance, centerX, centerY);
             }
             else if (PrevMouseState.RightButton == ButtonState.Pressed)
             {
