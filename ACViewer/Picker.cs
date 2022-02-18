@@ -15,6 +15,7 @@ using ACE.Server.WorldObjects;
 
 using ACViewer.Enum;
 using ACViewer.Model;
+using ACViewer.Primitives;
 using ACViewer.Render;
 using ACViewer.View;
 
@@ -63,18 +64,14 @@ namespace ACViewer
 
         public static void TryFindObject(Vector3 dir)
         {
-            HitVertices = null;
             Dir = dir;
 
             LastPickResult = PickResult;
+
+            ClearSelection();
+
             PickResult = new PickResult();
 
-            if (RenderLinks != null)
-            {
-                RenderLinks.Dispose();
-                RenderLinks = null;
-            }
-            
             // first try using physics engine for this
 
             // try spawning a tiny 'projectile' object at the camera position
@@ -413,6 +410,98 @@ namespace ACViewer
             HitIndices = hitIndices.ToArray();
         }
 
+        private static readonly SpherePrimitive SpherePrimitive = new SpherePrimitive(GraphicsDevice, 1.0f, 10);
+
+        private static readonly CylinderPrimitive CylinderPrimitive = new CylinderPrimitive(GraphicsDevice, 1.0f, 1.0f, 20);
+
+        public static List<Matrix> SphereTransforms { get; set; }
+
+        public static List<Matrix> CylinderTransforms { get; set; }
+
+        public static VertexPositionColor[] PhysicsVertices { get; set; }
+        public static int[] PhysicsIndices { get; set; }
+
+        public static void ShowCollision()
+        {
+            if (PickResult?.PhysicsObj == null) return;
+
+            SphereTransforms = null;
+            CylinderTransforms = null;
+            PhysicsVertices = null;
+            PhysicsIndices = null;
+
+            if (PickResult.PhysicsObj.PartArray.GetNumSphere() > 0)
+            {
+                SphereTransforms = new List<Matrix>();
+
+                var worldPos = PickResult.PhysicsObj.Position.GetWorldPos();
+
+                foreach (var sphere in PickResult.PhysicsObj.PartArray.GetSphere())
+                {
+                    var sphereDiameter = sphere.Radius * 2 * PickResult.PhysicsObj.Scale;
+
+                    // translate local center by rotation, but not world pos
+                    var transform = Matrix.CreateScale(sphereDiameter) * Matrix.CreateTranslation(sphere.Center.ToXna()) * Matrix.CreateFromQuaternion(PickResult.PhysicsObj.Position.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(worldPos);
+
+                    SphereTransforms.Add(transform);
+                }
+            }
+
+            if (PickResult.PhysicsObj.PartArray.GetNumCylsphere() > 0)
+            {
+                CylinderTransforms = new List<Matrix>();
+
+                var worldPos = PickResult.PhysicsObj.Position.GetWorldPos();
+                
+                foreach (var cylSphere in PickResult.PhysicsObj.PartArray.GetCylSphere())
+                {
+                    var cylSphereDiameter = cylSphere.Radius * 2 * PickResult.PhysicsObj.Scale;
+                    var cylSphereHeight = cylSphere.Height * PickResult.PhysicsObj.Scale;
+
+                    // translate local low point by rotation, but not world pos
+                    var transform = Matrix.CreateScale(new Vector3(cylSphereDiameter, cylSphereDiameter, cylSphereHeight)) * Matrix.CreateTranslation(cylSphere.LowPoint.ToXna()) * Matrix.CreateFromQuaternion(PickResult.PhysicsObj.Position.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(worldPos);
+
+                    CylinderTransforms.Add(transform);
+                }
+            }
+
+            if (PickResult.PhysicsObj.State.HasFlag(PhysicsState.HasPhysicsBSP))
+            {
+                var physicsVertices = new List<VertexPositionColor>();
+                var physicsIndices = new List<int>();
+
+                var i = 0;
+                
+                foreach (var part in PickResult.PhysicsObj.PartArray.Parts)
+                {
+                    if (part.GfxObj.ID == 0x010001ec)   // skip anchor locations
+                        continue;
+
+                    var transform = part.Pos.ToXna();
+
+                    if (part.GfxObjScale != System.Numerics.Vector3.Zero)
+                        transform = Matrix.CreateScale(part.GfxObjScale.ToXna()) * transform;
+
+                    foreach (var polygon in part.GfxObj.PhysicsPolygons.Values)
+                    {
+                        var startIdx = i;
+
+                        foreach (var v in polygon.Vertices)
+                        {
+                            physicsVertices.Add(new VertexPositionColor(Vector3.Transform(v.Origin.ToXna(), transform), Color.Orange));
+                            physicsIndices.AddRange(new List<int>() { i, i + 1 });
+                            i++;
+                        }
+                        physicsIndices.RemoveAt(physicsIndices.Count - 1);
+                        physicsIndices.Add(startIdx);
+                    }
+                }
+
+                PhysicsVertices = physicsVertices.ToArray();
+                PhysicsIndices = physicsIndices.ToArray();
+            }
+        }
+
         private static GraphicsDevice GraphicsDevice => GameView.Instance.GraphicsDevice;
         
         private static Effect Effect => Render.Render.Effect;
@@ -423,7 +512,7 @@ namespace ACViewer
 
             if (PickResult.PhysicsObj?.IsDestroyed ?? false)
             {
-                HitVertices = null;
+                ClearSelection();
                 return;
             }
 
@@ -432,12 +521,40 @@ namespace ACViewer
             rs.FillMode = FillMode.WireFrame;
             GraphicsDevice.RasterizerState = rs;
 
-            Effect.CurrentTechnique = Effect.Techniques["Picker"];
-            
-            foreach (var pass in Effect.CurrentTechnique.Passes)
+            if (SphereTransforms == null && CylinderTransforms == null && PhysicsVertices == null)
             {
-                pass.Apply();
-                GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, HitVertices, 0, HitVertices.Length, HitIndices, 0, HitIndices.Length / 2);
+                Effect.CurrentTechnique = Effect.Techniques["Picker"];
+
+                foreach (var pass in Effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, HitVertices, 0, HitVertices.Length, HitIndices, 0, HitIndices.Length / 2);
+                }
+            }
+            else
+            {
+                if (SphereTransforms != null)
+                {
+                    foreach (var sphereTransform in SphereTransforms)
+                        SpherePrimitive.Draw(sphereTransform, Camera.ViewMatrix, Camera.ProjectionMatrix, Color.Orange);
+                }
+
+                if (CylinderTransforms != null)
+                {
+                    foreach (var cylinderTransform in CylinderTransforms)
+                        CylinderPrimitive.Draw(cylinderTransform, Camera.ViewMatrix, Camera.ProjectionMatrix, Color.Orange);
+                }
+
+                if (PhysicsVertices != null)
+                {
+                    Effect.CurrentTechnique = Effect.Techniques["Picker"];
+
+                    foreach (var pass in Effect.CurrentTechnique.Passes)
+                    {
+                        pass.Apply();
+                        GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.LineList, PhysicsVertices, 0, PhysicsVertices.Length, PhysicsIndices, 0, PhysicsIndices.Length / 2);
+                    }
+                }
             }
 
             if (RenderLinks != null)
@@ -475,6 +592,10 @@ namespace ACViewer
         {
             HitVertices = null;
             HitIndices = null;
+            SphereTransforms = null;
+            CylinderTransforms = null;
+            PhysicsVertices = null;
+            PhysicsIndices = null;
 
             if (RenderLinks != null)
             {

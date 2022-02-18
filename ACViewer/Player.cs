@@ -118,11 +118,13 @@ namespace ACViewer
         public static readonly List<Keys> StrafeLeftKeys = new List<Keys>()
         {
             Keys.Z,
+            Keys.NumPad1,
         };
 
         public static readonly List<Keys> StrafeRightKeys = new List<Keys>()
         {
             Keys.C,
+            Keys.NumPad3,
         };
 
         public static readonly List<Keys> WalkKeys = new List<Keys>()
@@ -521,7 +523,7 @@ namespace ACViewer
                 }
                 else
                 {
-                    if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.X))
+                    if (GetKeyState(keyboardState, BackwardKeys))
                     {
                         PhysicsObj.DoMotion((uint)MotionCommand.WalkBackwards, mvp);
 
@@ -551,7 +553,7 @@ namespace ACViewer
                 }
                 else
                 {
-                    if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+                    if (GetKeyState(keyboardState, ForwardKeys))
                     {
                         PhysicsObj.DoMotion((uint)MotionCommand.WalkForward, mvp);
 
@@ -577,7 +579,7 @@ namespace ACViewer
                 }
                 else
                 {
-                    if (keyboardState.IsKeyDown(Keys.C))
+                    if (GetKeyState(keyboardState, StrafeRightKeys))
                     {
                         PhysicsObj.DoMotion((uint)MotionCommand.SideStepRight, mvp);
 
@@ -602,7 +604,7 @@ namespace ACViewer
                 }
                 else
                 {
-                    if (keyboardState.IsKeyDown(Keys.Z))
+                    if (GetKeyState(keyboardState, StrafeLeftKeys))
                     {
                         PhysicsObj.DoMotion((uint)MotionCommand.SideStepLeft, mvp);
 
@@ -628,7 +630,7 @@ namespace ACViewer
                 }
                 else
                 {
-                    if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+                    if (GetKeyState(keyboardState, TurnRightKeys))
                     {
                         PhysicsObj.DoMotion((uint)MotionCommand.TurnRight, mvp);
 
@@ -653,7 +655,7 @@ namespace ACViewer
                 }
                 else
                 {
-                    if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.Left))
+                    if (GetKeyState(keyboardState, TurnLeftKeys))
                     {
                         PhysicsObj.DoMotion((uint)MotionCommand.TurnLeft, mvp);
 
