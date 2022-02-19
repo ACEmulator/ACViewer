@@ -234,7 +234,7 @@ namespace ACViewer
                 ShowLocation();
             }
 
-            if (keyboardState.IsKeyDown(Keys.C) && !PrevKeyboardState.IsKeyDown(Keys.C))
+            if (!keyboardState.IsKeyDown(Keys.LeftControl) && keyboardState.IsKeyDown(Keys.C) && !PrevKeyboardState.IsKeyDown(Keys.C))
             {
                 Picker.ClearSelection();
             }
@@ -297,6 +297,11 @@ namespace ACViewer
             if (keyboardState.IsKeyDown(Keys.LeftControl) && keyboardState.IsKeyDown(Keys.V) && !PrevKeyboardState.IsKeyDown(Keys.V))
             {
                 Picker.AddVisibleCells();
+            }
+
+            if (keyboardState.IsKeyDown(Keys.LeftControl) && keyboardState.IsKeyDown(Keys.C) && !PrevKeyboardState.IsKeyDown(Keys.C))
+            {
+                Picker.ShowCollision();
             }
 
             if (GameView.ViewMode == ViewMode.World && PlayerMode && Player != null)
