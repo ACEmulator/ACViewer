@@ -423,78 +423,107 @@ namespace ACViewer
 
         public static void ShowCollision()
         {
-            if (PickResult?.PhysicsObj == null) return;
-
+            if (PickResult == null) return;
+            
             SphereTransforms = null;
             CylinderTransforms = null;
             PhysicsVertices = null;
             PhysicsIndices = null;
 
-            if (PickResult.PhysicsObj.PartArray.GetNumSphere() > 0)
+            if (PickResult.PhysicsObj != null)
             {
-                SphereTransforms = new List<Matrix>();
-
-                var worldPos = PickResult.PhysicsObj.Position.GetWorldPos();
-
-                foreach (var sphere in PickResult.PhysicsObj.PartArray.GetSphere())
+                if (PickResult.PhysicsObj.PartArray.GetNumSphere() > 0)
                 {
-                    var sphereDiameter = sphere.Radius * 2 * PickResult.PhysicsObj.Scale;
+                    SphereTransforms = new List<Matrix>();
 
-                    // translate local center by rotation, but not world pos
-                    var transform = Matrix.CreateScale(sphereDiameter) * Matrix.CreateTranslation(sphere.Center.ToXna()) * Matrix.CreateFromQuaternion(PickResult.PhysicsObj.Position.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(worldPos);
+                    var worldPos = PickResult.PhysicsObj.Position.GetWorldPos();
 
-                    SphereTransforms.Add(transform);
+                    foreach (var sphere in PickResult.PhysicsObj.PartArray.GetSphere())
+                    {
+                        var sphereDiameter = sphere.Radius * 2 * PickResult.PhysicsObj.Scale;
+
+                        // translate local center by rotation, but not world pos
+                        var transform = Matrix.CreateScale(sphereDiameter) * Matrix.CreateTranslation(sphere.Center.ToXna()) * Matrix.CreateFromQuaternion(PickResult.PhysicsObj.Position.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(worldPos);
+
+                        SphereTransforms.Add(transform);
+                    }
+                }
+
+                if (PickResult.PhysicsObj.PartArray.GetNumCylsphere() > 0)
+                {
+                    CylinderTransforms = new List<Matrix>();
+
+                    var worldPos = PickResult.PhysicsObj.Position.GetWorldPos();
+
+                    foreach (var cylSphere in PickResult.PhysicsObj.PartArray.GetCylSphere())
+                    {
+                        var cylSphereDiameter = cylSphere.Radius * 2 * PickResult.PhysicsObj.Scale;
+                        var cylSphereHeight = cylSphere.Height * PickResult.PhysicsObj.Scale;
+
+                        // translate local low point by rotation, but not world pos
+                        var transform = Matrix.CreateScale(new Vector3(cylSphereDiameter, cylSphereDiameter, cylSphereHeight)) * Matrix.CreateTranslation(cylSphere.LowPoint.ToXna()) * Matrix.CreateFromQuaternion(PickResult.PhysicsObj.Position.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(worldPos);
+
+                        CylinderTransforms.Add(transform);
+                    }
+                }
+
+                if (PickResult.PhysicsObj.State.HasFlag(PhysicsState.HasPhysicsBSP))
+                {
+                    var physicsVertices = new List<VertexPositionColor>();
+                    var physicsIndices = new List<int>();
+
+                    var i = 0;
+
+                    foreach (var part in PickResult.PhysicsObj.PartArray.Parts)
+                    {
+                        if (part.GfxObj.ID == 0x010001ec)   // skip anchor locations
+                            continue;
+
+                        var transform = part.Pos.ToXna();
+
+                        if (part.GfxObjScale != System.Numerics.Vector3.Zero)
+                            transform = Matrix.CreateScale(part.GfxObjScale.ToXna()) * transform;
+
+                        foreach (var polygon in part.GfxObj.PhysicsPolygons.Values)
+                        {
+                            var startIdx = i;
+
+                            foreach (var v in polygon.Vertices)
+                            {
+                                physicsVertices.Add(new VertexPositionColor(Vector3.Transform(v.Origin.ToXna(), transform), Color.Orange));
+                                physicsIndices.AddRange(new List<int>() { i, i + 1 });
+                                i++;
+                            }
+                            physicsIndices.RemoveAt(physicsIndices.Count - 1);
+                            physicsIndices.Add(startIdx);
+                        }
+                    }
+
+                    PhysicsVertices = physicsVertices.ToArray();
+                    PhysicsIndices = physicsIndices.ToArray();
                 }
             }
-
-            if (PickResult.PhysicsObj.PartArray.GetNumCylsphere() > 0)
+            else if (PickResult.ObjCell is ACE.Server.Physics.Common.EnvCell envCell)
             {
-                CylinderTransforms = new List<Matrix>();
+                var transform = envCell.Pos.ToXna();
 
-                var worldPos = PickResult.PhysicsObj.Position.GetWorldPos();
-                
-                foreach (var cylSphere in PickResult.PhysicsObj.PartArray.GetCylSphere())
-                {
-                    var cylSphereDiameter = cylSphere.Radius * 2 * PickResult.PhysicsObj.Scale;
-                    var cylSphereHeight = cylSphere.Height * PickResult.PhysicsObj.Scale;
-
-                    // translate local low point by rotation, but not world pos
-                    var transform = Matrix.CreateScale(new Vector3(cylSphereDiameter, cylSphereDiameter, cylSphereHeight)) * Matrix.CreateTranslation(cylSphere.LowPoint.ToXna()) * Matrix.CreateFromQuaternion(PickResult.PhysicsObj.Position.Frame.Orientation.ToXna()) * Matrix.CreateTranslation(worldPos);
-
-                    CylinderTransforms.Add(transform);
-                }
-            }
-
-            if (PickResult.PhysicsObj.State.HasFlag(PhysicsState.HasPhysicsBSP))
-            {
                 var physicsVertices = new List<VertexPositionColor>();
                 var physicsIndices = new List<int>();
 
                 var i = 0;
-                
-                foreach (var part in PickResult.PhysicsObj.PartArray.Parts)
+
+                foreach (var polygon in envCell.CellStructure.PhysicsPolygons.Values)
                 {
-                    if (part.GfxObj.ID == 0x010001ec)   // skip anchor locations
-                        continue;
+                    var startIdx = i;
 
-                    var transform = part.Pos.ToXna();
-
-                    if (part.GfxObjScale != System.Numerics.Vector3.Zero)
-                        transform = Matrix.CreateScale(part.GfxObjScale.ToXna()) * transform;
-
-                    foreach (var polygon in part.GfxObj.PhysicsPolygons.Values)
+                    foreach (var v in polygon.Vertices)
                     {
-                        var startIdx = i;
-
-                        foreach (var v in polygon.Vertices)
-                        {
-                            physicsVertices.Add(new VertexPositionColor(Vector3.Transform(v.Origin.ToXna(), transform), Color.Orange));
-                            physicsIndices.AddRange(new List<int>() { i, i + 1 });
-                            i++;
-                        }
-                        physicsIndices.RemoveAt(physicsIndices.Count - 1);
-                        physicsIndices.Add(startIdx);
+                        physicsVertices.Add(new VertexPositionColor(Vector3.Transform(v.Origin.ToXna(), transform), Color.Orange));
+                        physicsIndices.AddRange(new List<int>() { i, i + 1 });
+                        i++;
                     }
+                    physicsIndices.RemoveAt(physicsIndices.Count - 1);
+                    physicsIndices.Add(startIdx);
                 }
 
                 PhysicsVertices = physicsVertices.ToArray();
