@@ -69,7 +69,7 @@ namespace ACViewer.Model
             {
                 GfxObj gfxObj;
 
-                if (objDesc.PartChanges.TryGetValue((uint)i, out var partChange))
+                if (objDesc.PartChanges != null && objDesc.PartChanges.TryGetValue((uint)i, out var partChange))
                 {
                     gfxObj = new GfxObj(partChange.NewGfxObjId, false);
 
