@@ -53,10 +53,6 @@ namespace ACViewer.View
                 return;
 
             // Add 0 / Undefined PaletteTemplate. This will display the item with no PaletteTemplate/Shade. See 0x100002CE
-            ListBoxItem undefPalTem = new ListBoxItem();
-            undefPalTem.Content = "None";
-            undefPalTem.DataContext = (uint)0;
-            //PaletteTemplates.Items.Add(undefPalTem);
             PaletteTemplates.Items.Add(new ListBoxItem{ Content = "None", DataContext = (uint)0 });
 
             foreach (var subPal in CurrentClothingItem.ClothingSubPalEffects.Keys.OrderBy(i => i))
