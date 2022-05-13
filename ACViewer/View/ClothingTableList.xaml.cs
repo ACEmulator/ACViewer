@@ -52,6 +52,9 @@ namespace ACViewer.View
             if (CurrentClothingItem.ClothingSubPalEffects.Count == 0)
                 return;
 
+            // Add 0 / Undefined PaletteTemplate. This will display the item with no PaletteTemplate/Shade. See 0x100002CE
+            PaletteTemplates.Items.Add(new ListBoxItem{ Content = "None", DataContext = (uint)0 });
+
             foreach (var subPal in CurrentClothingItem.ClothingSubPalEffects.Keys.OrderBy(i => i))
             {
                 // Set the DataContext so we can more easily reference it...
@@ -83,26 +86,29 @@ namespace ACViewer.View
                 return;
 
             uint palTemp = (uint)selectedItem.DataContext;
-            //uint palTemp = 0;
-            if (CurrentClothingItem.ClothingSubPalEffects.ContainsKey(palTemp) == false)
-                return;
-
-            int maxPals = 0;
-            for(var i = 0; i < CurrentClothingItem.ClothingSubPalEffects[palTemp].CloSubPalettes.Count; i++)
+            if (palTemp > 0)
             {
-                var palSetID = CurrentClothingItem.ClothingSubPalEffects[palTemp].CloSubPalettes[i].PaletteSet;
-                var clothing = DatManager.PortalDat.ReadFromDat<PaletteSet>(palSetID);
-                if (clothing.PaletteList.Count > maxPals)
-                    maxPals = clothing.PaletteList.Count;
-            }
+                //uint palTemp = 0;
+                if (CurrentClothingItem.ClothingSubPalEffects.ContainsKey(palTemp) == false)
+                    return;
 
-            if (maxPals > 0)
-            {
-                Shades.Maximum = maxPals - 1;
-                Shades.IsEnabled = true;
-                MainWindow.Status.WriteLine($"Reading PaletteSets and found {maxPals} Shade options");
-            }
+                int maxPals = 0;
+                for (var i = 0; i < CurrentClothingItem.ClothingSubPalEffects[palTemp].CloSubPalettes.Count; i++)
+                {
+                    var palSetID = CurrentClothingItem.ClothingSubPalEffects[palTemp].CloSubPalettes[i].PaletteSet;
+                    var clothing = DatManager.PortalDat.ReadFromDat<PaletteSet>(palSetID);
+                    if (clothing.PaletteList.Count > maxPals)
+                        maxPals = clothing.PaletteList.Count;
+                }
 
+                if (maxPals > 1)
+                {
+                    Shades.Maximum = maxPals - 1;
+                    Shades.Visibility = Visibility.Visible;
+                    Shades.IsEnabled = true;
+                    MainWindow.Status.WriteLine($"Reading PaletteSets and found {maxPals} Shade options");
+                }
+            }
             LoadModelWithClothingBase();
         }
 
@@ -111,6 +117,7 @@ namespace ACViewer.View
         /// </summary>
         private void ResetShadesSlider()
         {
+            Shades.Visibility = Visibility.Hidden;
             Shades.IsEnabled = false;
             Shades.Value = 0; 
             Shades.Maximum = 1;
@@ -126,7 +133,7 @@ namespace ACViewer.View
 
             float shade = 0;
             
-            if (Shades.IsEnabled)
+            if (Shades.Visibility == Visibility.Visible)
             {
                 shade = (float)(Shades.Value / Shades.Maximum);
                 if (float.IsNaN(shade)) 
@@ -144,7 +151,7 @@ namespace ACViewer.View
 
         private void Shades_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (Shades.IsEnabled == false)
+            if (Shades.Visibility == Visibility.Hidden)
                 return;
 
             LoadModelWithClothingBase();
