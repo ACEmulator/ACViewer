@@ -19,7 +19,7 @@ build:
   project: ACViewer.sln
   verbosity: minimal
 artifacts:
-- path: ACViewer\bin\$(configuration)\net5.0-windows
+- path: ACViewer\bin\$(configuration)\net6.0-windows
   name: ACViewer-v$(appveyor_build_version)-$(configuration)
 deploy:
 - provider: GitHub
