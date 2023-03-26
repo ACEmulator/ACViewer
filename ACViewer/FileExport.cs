@@ -14,7 +14,6 @@ using ACE.Entity.Enum;
 
 using ACViewer.Enum;
 using ACViewer.Model;
-using ACViewer.Render;
 using ACViewer.View;
 
 namespace ACViewer
@@ -206,7 +205,7 @@ namespace ACViewer
                 for (var i = 0; i < poly.VertexIds.Count; i++)
                 {
                     var v = poly.VertexIds[i];
-                    var uvIdx = vertexUVs[new VertexUV(v, poly.PosUVIndices[i])];
+                    var uvIdx = vertexUVs[new VertexUV(v, i < poly.PosUVIndices.Count ? poly.PosUVIndices[i] : 0)];     // investigate: some polys dont have uv arrays?
                     polyStr += $" {v + startIdx + 1}/{uvIdx + startUVIdx + 1}/{v + startIdx + 1}";
                 }
                 sb.AppendLine(polyStr);
@@ -247,14 +246,7 @@ namespace ACViewer
                 var surfaceFilename = fi.DirectoryName + Path.DirectorySeparatorChar + $"{surfaceID:X8}.png";
 
                 if (!File.Exists(surfaceFilename))
-                {
-                    var texture = TextureCache.Get(surfaceID);
-
-                    using (var fs = new FileStream(surfaceFilename, FileMode.Create))
-                    {
-                        texture.SaveAsPng(fs, texture.Width, texture.Height);
-                    }
-                }
+                    ExportImage(surfaceID, surfaceFilename);
 
                 //var options = hasWrappingUVs ? "" : "-clamp on ";     // doesn't work??
                 var options = "";
@@ -326,10 +318,10 @@ namespace ACViewer
 
         private static Bitmap GetBitmap(uint textureID)
         {
-            var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
+            var texture = DatManager.PortalDat.ReadFromDat<Texture>(textureID);
 
             if (texture.Id == 0 && DatManager.HighResDat != null)
-                texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
+                texture = DatManager.HighResDat.ReadFromDat<Texture>(textureID);
 
             if (texture.Id == 0) return null;
 

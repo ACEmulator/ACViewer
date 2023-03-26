@@ -23,13 +23,13 @@ namespace ACE.Server.Physics.Animation
         public float MyRunRate;
         public LinkedList<MotionNode> PendingMotions;
 
-        public static readonly float BackwardsFactor = 6.4999998e-1f;
+        public static readonly float BackwardsFactor = 0.65f;
         public static readonly float MaxSidestepAnimRate = 3.0f;
         public static readonly float RunAnimSpeed = 4.0f;
         public static readonly float RunTurnFactor = 1.5f;
         public static readonly float SidestepAnimSpeed = 1.25f;
         public static readonly float SidestepFactor = 0.5f;
-        public static readonly float WalkAnimSpeed = 3.1199999f;
+        public static readonly float WalkAnimSpeed = 3.12f;
 
         public MotionInterp() { }
 
