@@ -72,8 +72,21 @@ namespace ACViewer.Render
             MainWindow.Instance.Status.WriteLine($"Loading texture {textureID:X8}");
 
             var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
-            if (texture.SourceData == null)
+            if (texture.SourceData == null && DatManager.HighResDat != null)
                 texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
+
+            if (texture.SourceData == null)
+            {
+                Console.WriteLine($"TextureCache.LoadTexture({textureID:X8}) - couldn't find texture in portal or highres");
+                var fallback = new Texture2D(GameView.Instance.GraphicsDevice, 2, 2, false, SurfaceFormat.Color);
+                var color = new Microsoft.Xna.Framework.Color[4];
+                color[0] = Microsoft.Xna.Framework.Color.Magenta;
+                color[1] = Microsoft.Xna.Framework.Color.Black;
+                color[2] = Microsoft.Xna.Framework.Color.Black;
+                color[3] = Microsoft.Xna.Framework.Color.Magenta;
+                fallback.SetDataAsync(color);
+                return fallback;
+            }
 
             var surfaceFormat = SurfaceFormat.Color;
             switch (texture.Format)
