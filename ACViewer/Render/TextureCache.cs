@@ -467,7 +467,8 @@ namespace ACViewer.Render
                     var g = (surface.ColorValue >> 8) & 0xFF;
                     var b = surface.ColorValue & 0xFF;
 
-                    if (surface.Translucency == 1) a = 0;
+                    // 0x080000DF no translucency, but causes black swatches to appear in dungeons?
+                    if (surface.Translucency == 1 || fileID == 0x080000DF) a = 0;
 
                     swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(Convert.ToByte(r), Convert.ToByte(g), Convert.ToByte(b), Convert.ToByte(a)) });
                     return swatch;
