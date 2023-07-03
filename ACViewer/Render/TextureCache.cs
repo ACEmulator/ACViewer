@@ -72,8 +72,21 @@ namespace ACViewer.Render
             MainWindow.Instance.Status.WriteLine($"Loading texture {textureID:X8}");
 
             var texture = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
-            if (texture.SourceData == null)
+            if (texture.SourceData == null && DatManager.HighResDat != null)
                 texture = DatManager.HighResDat.ReadFromDat<ACE.DatLoader.FileTypes.Texture>(textureID);
+
+            if (texture.SourceData == null)
+            {
+                Console.WriteLine($"TextureCache.LoadTexture({textureID:X8}) - couldn't find texture in portal or highres");
+                var fallback = new Texture2D(GameView.Instance.GraphicsDevice, 2, 2, false, SurfaceFormat.Color);
+                var color = new Microsoft.Xna.Framework.Color[4];
+                color[0] = Microsoft.Xna.Framework.Color.Magenta;
+                color[1] = Microsoft.Xna.Framework.Color.Black;
+                color[2] = Microsoft.Xna.Framework.Color.Black;
+                color[3] = Microsoft.Xna.Framework.Color.Magenta;
+                fallback.SetDataAsync(color);
+                return fallback;
+            }
 
             var surfaceFormat = SurfaceFormat.Color;
             switch (texture.Format)
@@ -454,7 +467,8 @@ namespace ACViewer.Render
                     var g = (surface.ColorValue >> 8) & 0xFF;
                     var b = surface.ColorValue & 0xFF;
 
-                    if (surface.Translucency == 1) a = 0;
+                    // 0x080000DF no translucency, but causes black swatches to appear in dungeons?
+                    if (surface.Translucency == 1 || fileID == 0x080000DF) a = 0;
 
                     swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(Convert.ToByte(r), Convert.ToByte(g), Convert.ToByte(b), Convert.ToByte(a)) });
                     return swatch;
