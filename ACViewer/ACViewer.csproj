@@ -39,9 +39,11 @@
   </ItemGroup>
 
   <ItemGroup>
+	  <PackageReference Include="AssimpNet" Version="5.0.0-beta1" />
 	  <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
 	  <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
 	  <PackageReference Include="MonoGame.Framework.WpfInterop" Version="1.9.2" />
+	  <PackageReference Include="UkooLabs.FbxSharpie" Version="1.0.99" />
   </ItemGroup>
 
   <ItemGroup>
