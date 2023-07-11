@@ -128,11 +128,13 @@ namespace ACViewer.Render
                     case SurfacePixelFormat.PFID_CUSTOM_RAW_JPEG:
                     case SurfacePixelFormat.PFID_R5G6B5:
                     case SurfacePixelFormat.PFID_A4R4G4B4:
-                        //case SurfacePixelFormat.PFID_DXT5:
+                    //case SurfacePixelFormat.PFID_DXT5:
                         var bitmap = texture.GetBitmap();
+                        if (texture.Format == SurfacePixelFormat.PFID_CUSTOM_RAW_JPEG)
+                            SwapRedAndBlueChannels(bitmap);
                         var _tex = GetTexture2DFromBitmap(GameView.Instance.GraphicsDevice, bitmap);
                         //if (isClipMap)
-                        //AdjustClip(_tex);
+                            //AdjustClip(_tex);
                         return _tex;
 
                     case SurfacePixelFormat.PFID_A8R8G8B8:
@@ -573,6 +575,22 @@ namespace ACViewer.Render
                 surfaceTextureId = newSurfaceTextureId;
 
             return surfaceTextureId;
+        }
+
+        /// <summary>
+        /// For SurfacePixelFormat.PFID_CUSTOM_RAW_JPEG, rendering only?
+        /// </summary>
+        private static Bitmap SwapRedAndBlueChannels(Bitmap bitmap)
+        {
+            for (var y = 0; y < bitmap.Height; y++)
+            {
+                for (var x = 0; x < bitmap.Width; x++)
+                {
+                    var color = bitmap.GetPixel(x, y);
+                    bitmap.SetPixel(x, y, Color.FromArgb(color.B, color.G, color.R));
+                }
+            }
+            return bitmap;
         }
     }
 }
