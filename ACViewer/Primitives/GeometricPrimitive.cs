@@ -176,9 +176,7 @@ namespace ACViewer.Primitives
 
                 int primitiveCount = indices.Count / 3;
 
-                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0,
-                                                     vertices.Count, 0, primitiveCount);
-
+                graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, primitiveCount);
             }
         }
 

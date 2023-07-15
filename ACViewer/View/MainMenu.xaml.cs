@@ -8,9 +8,11 @@ using System.Windows.Controls;
 using Microsoft.Win32;
 
 using ACE.DatLoader;
+using ACE.DatLoader.Entity;
 using ACE.DatLoader.FileTypes;
 
 using ACViewer.Config;
+using ACViewer.Data;
 using ACViewer.Enum;
 using ACViewer.Render;
 
@@ -116,7 +118,7 @@ namespace ACViewer.View
 
             if (isModel)
             {
-                saveFileDialog.Filter = "OBJ files (*.obj)|*.obj|RAW files (*.raw)|*.raw";
+                saveFileDialog.Filter = "OBJ files (*.obj)|*.obj|FBX files (*.fbx)|*.fbx|DAE files (*.dae)|*.dae|RAW files (*.raw)|*.raw";
                 saveFileDialog.FileName = $"{selectedFileID:X8}.obj";
             }
             else if (isImage)
@@ -153,6 +155,24 @@ namespace ACViewer.View
 
             if (isModel && saveFileDialog.FilterIndex == 1)
                 FileExport.ExportModel(selectedFileID, saveFilename);
+            else if (isModel && saveFileDialog.FilterIndex == 2)
+            {
+                // try to get animation id, if applicable
+                var rawState = ModelViewer.Instance?.ViewObject?.PhysicsObj?.MovementManager?.MotionInterpreter?.RawState;
+
+                MotionData motionData = null;
+
+                if (rawState != null)
+                {
+                    var didTable = DIDTables.Get(selectedFileID);   // setup ID
+
+                    if (didTable != null)
+                        motionData = ACE.Server.Physics.Animation.MotionTable.GetMotionData(didTable.MotionTableID, rawState.ForwardCommand, rawState.CurrentStyle);
+                }
+
+                //FileExport.ExportModel_Aspose(selectedFileID, motionData, saveFilename);
+                FileExport.ExportModel_Assimp(selectedFileID, motionData, saveFilename);
+            }
             else if (isImage && saveFileDialog.FilterIndex == 1)
                 FileExport.ExportImage(selectedFileID, saveFilename);
             else if (isSound && saveFileDialog.FilterIndex == 1)
