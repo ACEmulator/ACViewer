@@ -117,4 +117,8 @@
 			exit 0
 		</PostBuildEvent>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
+	</PropertyGroup>	
 </Project>
