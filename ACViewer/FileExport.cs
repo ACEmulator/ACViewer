@@ -687,8 +687,8 @@ namespace ACViewer
                 {
                     var gfxObjId = setup.Parts[i];
 
-                    if (gfxObjId == 0x010001ec)   // skip anchor locations
-                        continue;
+                    //if (gfxObjId == 0x010001ec)   // skip anchor locations
+                        //continue;
 
                     if (!gfxObjIdCnts.TryGetValue(gfxObjId, out var gfxObjIdCnt))
                         gfxObjIdCnts[gfxObjId] = 1;
