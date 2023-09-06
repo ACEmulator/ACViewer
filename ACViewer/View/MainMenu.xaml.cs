@@ -155,7 +155,7 @@ namespace ACViewer.View
 
             if (isModel && saveFileDialog.FilterIndex == 1)
                 FileExport.ExportModel(selectedFileID, saveFilename);
-            else if (isModel && saveFileDialog.FilterIndex == 2)
+            else if (isModel && saveFileDialog.FilterIndex > 1)
             {
                 // try to get animation id, if applicable
                 var rawState = ModelViewer.Instance?.ViewObject?.PhysicsObj?.MovementManager?.MotionInterpreter?.RawState;
@@ -167,7 +167,10 @@ namespace ACViewer.View
                     var didTable = DIDTables.Get(selectedFileID);   // setup ID
 
                     if (didTable != null)
-                        motionData = ACE.Server.Physics.Animation.MotionTable.GetMotionData(didTable.MotionTableID, rawState.ForwardCommand, rawState.CurrentStyle);
+                    {
+                        motionData = ACE.Server.Physics.Animation.MotionTable.GetMotionData(didTable.MotionTableID, rawState.ForwardCommand, rawState.CurrentStyle) ??
+                            ACE.Server.Physics.Animation.MotionTable.GetLinkData(didTable.MotionTableID, rawState.ForwardCommand, rawState.CurrentStyle);
+                    }
                 }
 
                 //FileExport.ExportModel_Aspose(selectedFileID, motionData, saveFilename);
