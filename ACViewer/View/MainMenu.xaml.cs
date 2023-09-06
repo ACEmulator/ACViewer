@@ -167,7 +167,10 @@ namespace ACViewer.View
                     var didTable = DIDTables.Get(selectedFileID);   // setup ID
 
                     if (didTable != null)
-                        motionData = ACE.Server.Physics.Animation.MotionTable.GetMotionData(didTable.MotionTableID, rawState.ForwardCommand, rawState.CurrentStyle);
+                    {
+                        motionData = ACE.Server.Physics.Animation.MotionTable.GetMotionData(didTable.MotionTableID, rawState.ForwardCommand, rawState.CurrentStyle) ??
+                            ACE.Server.Physics.Animation.MotionTable.GetLinkData(didTable.MotionTableID, rawState.ForwardCommand, rawState.CurrentStyle);
+                    }
                 }
 
                 //FileExport.ExportModel_Aspose(selectedFileID, motionData, saveFilename);
