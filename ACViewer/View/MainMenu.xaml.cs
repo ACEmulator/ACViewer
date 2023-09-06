@@ -155,7 +155,7 @@ namespace ACViewer.View
 
             if (isModel && saveFileDialog.FilterIndex == 1)
                 FileExport.ExportModel(selectedFileID, saveFilename);
-            else if (isModel && saveFileDialog.FilterIndex == 2)
+            else if (isModel && saveFileDialog.FilterIndex > 1)
             {
                 // try to get animation id, if applicable
                 var rawState = ModelViewer.Instance?.ViewObject?.PhysicsObj?.MovementManager?.MotionInterpreter?.RawState;
