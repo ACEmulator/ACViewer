@@ -88,7 +88,8 @@ namespace ACViewer.View
                 var portalFiles = DatManager.PortalDat.AllFiles.Count;
 
                 MainWindow.Status.WriteLine($"CellFiles={cellFiles}, PortalFiles={portalFiles}");*/
-                MainWindow.Status.WriteLine("Done");
+                MainWindow.Status.WriteLine(runWorkerCompletedEventArgs.Error?.Message ?? "Done");
+                    
 
                 if (DatManager.CellDat == null || DatManager.PortalDat == null) return;
 
