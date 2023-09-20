@@ -116,25 +116,25 @@ namespace ACViewer.View
 
         private List<string> _themes { get; set; }
 
-		public List<string> Themes
-		{
-			get => _themes;
-			set
-			{
-				_themes = value;
-				NotifyPropertyChanged("Themes");
-			}
-		}
+        public List<string> Themes
+        {
+            get => _themes;
+            set
+            {
+                _themes = value;
+                NotifyPropertyChanged("Themes");
+            }
+        }
 
         public string Theme
         {
             get => Config.Theme ?? "Default";
             set
             {
-				ThemeManager.SetTheme(value);
-				Config.Theme = value;
-				NotifyPropertyChanged("Theme");
-			}
+                ThemeManager.SetTheme(value);
+                Config.Theme = value;
+                NotifyPropertyChanged("Theme");
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -214,7 +214,7 @@ namespace ACViewer.View
             if (!prevTheme.Equals(Config.Theme))
                 ThemeManager.SetTheme(Config.Theme);
 
-			Close();
+            Close();
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
