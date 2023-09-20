@@ -10,6 +10,5 @@
         public BackgroundColors BackgroundColors { get; set; } = new BackgroundColors();
         public string Theme { get; set; }
         public Mouse Mouse { get; set; } = new Mouse();
-
     }
 }
