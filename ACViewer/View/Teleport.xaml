@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" 
         FocusManager.FocusedElement="{Binding ElementName=Search}"
-        Title="Teleport" Height="695" Width="764" Icon="../Icons/portal.png">
+        Title="Teleport" Height="695" Width="764" Icon="../Icons/portal.png" Style="{DynamicResource CustomWindowStyle}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

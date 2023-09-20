@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ACViewer.View"
         mc:Ignorable="d"
-        Title="Map Viewer" Height="130" Width="295" Icon="../Icons/Settings_16x.png" ResizeMode="NoResize">
+        Title="Map Viewer" Height="130" Width="295" Icon="../Icons/Settings_16x.png" ResizeMode="NoResize" Style="{DynamicResource CustomWindowStyle}">
     <Grid Margin="0,0,0,0">
         <Label Content="Mode:" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top"/>
         <ComboBox SelectedValue="{Binding Path=Mode}" SelectedValuePath="Tag" HorizontalAlignment="Left" Margin="68,14,0,0" Width="171" Height="22" VerticalAlignment="Top">

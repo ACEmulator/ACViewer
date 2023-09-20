@@ -8,7 +8,7 @@
         public Mouse()
         {
             // defaults
-            Speed = 6.0f;
+            Speed = 3.0f;
         }
     }
 }
