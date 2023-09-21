@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using ACE.Entity.Enum;
+
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer.Render
@@ -43,6 +45,9 @@ namespace ACViewer.Render
 
                 foreach (var polygon in cellStruct.Polygons)
                 {
+                    // TODO: improve rendering for 2-sided faces
+                    if (polygon._polygon.Stippling == StipplingType.NoPos) continue;
+                    
                     var surfaceIdx = polygon._polygon.PosSurface;
                     var surfaceID = envCell.EnvCell._envCell.Surfaces[surfaceIdx];
 

@@ -122,6 +122,9 @@ namespace ACViewer.Model
 
                 foreach (var polygon in part.Polygons)
                 {
+                    // TODO: improve rendering for 2-sided faces
+                    if (polygon._polygon.Stippling == ACE.Entity.Enum.StipplingType.NoPos) continue;
+                    
                     if (polyIdx != -1 && polyIdx != curPolyIdx)
                     {
                         curPolyIdx++;
