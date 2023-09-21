@@ -150,6 +150,8 @@ namespace ACViewer.Render
         
         public void UpdateInstance(int idx, Vector3 position, Quaternion orientation, Vector3 scale)
         {
+            if (Instances_ == null) return;
+            
             Instances_[idx].Position = position;
             Instances_[idx].Orientation = new Vector4(orientation.X, orientation.Y, orientation.Z, orientation.W);
             Instances_[idx].Scale = scale;
