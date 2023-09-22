@@ -31,11 +31,8 @@ namespace ACViewer.FileTypes
 
             treeView.Items.AddRange(new List<TreeNode>() { surfaces, envID });
 
-            if (_envCell.CellStructure != 0)
-            {
-                var cellStructure = new TreeNode($"CellStructure: {_envCell.CellStructure}");
-                treeView.Items.Add(cellStructure);
-            }
+            var cellStructure = new TreeNode($"CellStructure: {_envCell.CellStructure}");
+            treeView.Items.Add(cellStructure);
 
             var pos = new TreeNode($"Position: {new Frame(_envCell.Position).ToString()}");
             treeView.Items.Add(pos);
