@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ACViewer.View"
         mc:Ignorable="d"
-        Title="About" Height="170" Width="280" ResizeMode="NoResize" Icon="../Icons/Question_16x.png">
+        Title="About" Height="170" Width="280" ResizeMode="NoResize" Icon="../Icons/Question_16x.png" Style="{DynamicResource CustomWindowStyle}">
     <Grid>
         <TextBlock HorizontalAlignment="Left" Margin="7.5,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top">
             <Run FontWeight="Bold" Text="{Binding RunText, Mode=OneWay}"></Run><LineBreak /><LineBreak />

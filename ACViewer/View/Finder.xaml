@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" 
         FocusManager.FocusedElement="{Binding ElementName=DID}"
-        Title="Find Data ID" Height="125 " Width="271" ResizeMode="NoResize" Icon="../Icons/Search_16x.png">
+        Title="Find Data ID" Height="125 " Width="271" ResizeMode="NoResize" Icon="../Icons/Search_16x.png" Style="{DynamicResource CustomWindowStyle}">
     <Grid Margin="0,0,0,3">
         <Label Content="DID:" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.5,1.173" Margin="25,10,0,0"/>
         <TextBox Name="DID" HorizontalAlignment="Left" Height="24" Margin="63,12,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="156"/>

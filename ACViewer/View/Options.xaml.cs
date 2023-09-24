@@ -114,6 +114,29 @@ namespace ACViewer.View
             }
         }
 
+        private List<string> _themes { get; set; }
+
+        public List<string> Themes
+        {
+            get => _themes;
+            set
+            {
+                _themes = value;
+                NotifyPropertyChanged("Themes");
+            }
+        }
+
+        public string Theme
+        {
+            get => Config.Theme ?? "Default";
+            set
+            {
+                ThemeManager.SetTheme(value);
+                Config.Theme = value;
+                NotifyPropertyChanged("Theme");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private static readonly List<string> allProperties = new List<string>()
@@ -131,6 +154,7 @@ namespace ACViewer.View
             "WorldViewer_BackgroundColor",
             "MouseSpeed",
             "AltMouselook",
+            "Theme"
         };
 
         public static Options Instance { get; set; }
@@ -150,6 +174,8 @@ namespace ACViewer.View
             Instance = this;
 
             SliderMouseSpeed.Value = MouseSpeed;
+
+            PopulateThemes();
 
             Initting = false;
         }
@@ -178,10 +204,15 @@ namespace ACViewer.View
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            var prevTheme = Config.Theme;
+            
             ACViewer.Config.ConfigManager.RestoreSnapshot();
 
             foreach (var propName in allProperties)
                 NotifyPropertyChanged(propName);
+
+            if (!prevTheme.Equals(Config.Theme))
+                ThemeManager.SetTheme(Config.Theme);
 
             Close();
         }
@@ -394,6 +425,19 @@ namespace ACViewer.View
             SliderMouseSpeed.Value = speed;
 
             Initting = false;
+        }
+
+        private void PopulateThemes()
+        {
+            Themes = new List<string>()
+            {
+                "Dark Grey",
+                "Default",
+                "Deep Dark",
+                "Grey",
+                "Light",
+                "Soft Dark"
+            };
         }
     }
 }
