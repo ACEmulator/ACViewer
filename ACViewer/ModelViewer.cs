@@ -81,7 +81,7 @@ namespace ACViewer
             GfxObjMode = false;
 
             // create the ObjDesc, describing any changes to palettes / textures / gfxobj parts
-            var objDesc = new Model.ObjDesc(setupID, clothingBase.Id, paletteTemplate, shade);
+            var objDesc = new ObjDesc(setupID, clothingBase.Id, paletteTemplate, shade);
 
             Setup = new SetupInstance(setupID, objDesc);
 
@@ -240,6 +240,8 @@ namespace ACViewer
 
         public void DrawEnvCell()
         {
+            GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.ModelViewer);
+
             if (EnvCell != null)
                 EnvCell.Draw(Matrix.Identity);
         }

@@ -59,6 +59,9 @@ namespace ACViewer.Render
 
             foreach (var poly in gfxObj.Polygons)
             {
+                // TODO: improve rendering for 2-sided faces
+                if (poly._polygon.Stippling == StipplingType.NoPos) continue;
+
                 // get actual transformed texture -- cannot rely on poly.Texture original format
                 var surfaceIdx = poly._polygon.PosSurface;
                 var surfaceID = gfxObj._gfxObj.Surfaces[surfaceIdx];
@@ -112,6 +115,8 @@ namespace ACViewer.Render
 
         private void BuildBuffers()
         {
+            if (Vertices.Count == 0) return;
+            
             // build base buffers
 
             // build shared vertex buffer
@@ -134,6 +139,8 @@ namespace ACViewer.Render
 
         private void BuildBindings()
         {
+            if (Shared_VB == null) return;
+            
             Bindings = new VertexBufferBinding[2];
             Bindings[0] = new VertexBufferBinding(Shared_VB);
             Bindings[1] = new VertexBufferBinding(Instances_VB, 0, 1);
@@ -143,6 +150,8 @@ namespace ACViewer.Render
         
         public void UpdateInstance(int idx, Vector3 position, Quaternion orientation, Vector3 scale)
         {
+            if (Instances_ == null) return;
+            
             Instances_[idx].Position = position;
             Instances_[idx].Orientation = new Vector4(orientation.X, orientation.Y, orientation.Z, orientation.W);
             Instances_[idx].Scale = scale;
@@ -151,6 +160,8 @@ namespace ACViewer.Render
 
         public void Draw()
         {
+            if (Bindings == null) return;
+            
             if (isDirty)
             {
                 Instances_VB.SetData(Instances_);

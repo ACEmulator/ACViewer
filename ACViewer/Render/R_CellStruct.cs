@@ -119,6 +119,9 @@ namespace ACViewer.Render
 
             foreach (var polygon in Polygons)
             {
+                // TODO: improve rendering for 2-sided faces
+                if (polygon._polygon.Stippling == ACE.Entity.Enum.StipplingType.NoPos) continue;
+                
                 if (polygon.IndexBuffer == null)
                     polygon.BuildIndexBuffer();
 
