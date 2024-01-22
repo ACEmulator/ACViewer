@@ -38,6 +38,16 @@
                         <Image Source="../Icons/export-file.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="View _Armor " Click="MenuItem_Click">
+                    <MenuItem.Icon>
+                        <Image Source="../Icons/armor.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="miVirindiColorTool" Header="_Virindi Color Tool" Visibility="Collapsed" Click="miVirindiColorTool_Click">
+                    <MenuItem.Icon>
+                        <Image Source="../Icons/plume.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Header="_Server">
                 <MenuItem Header="Load _Instances" Click="LoadInstances_Click" x:Name="optionLoadInstances"/>

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ACViewer.View"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" 
+        ShowInTaskbar="False"
         FocusManager.FocusedElement="{Binding ElementName=DID}"
         Title="Find Data ID" Height="125 " Width="271" ResizeMode="NoResize" Icon="../Icons/Search_16x.png" Style="{DynamicResource CustomWindowStyle}">
     <Grid Margin="0,0,0,3">

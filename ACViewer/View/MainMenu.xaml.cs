@@ -389,5 +389,17 @@ namespace ACViewer.View
 
             worker.RunWorkerAsync();
         }
+
+        private void miVirindiColorTool_Click(object sender, RoutedEventArgs e)
+        {
+            var vct = new VirindiColorTool();
+            vct.ShowDialog();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var armorWindow = new ArmorList();
+            armorWindow.ShowDialog();
+        }
     }
 }

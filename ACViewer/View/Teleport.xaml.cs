@@ -41,6 +41,8 @@ namespace ACViewer.View
         {
             InitializeComponent();
 
+            this.Owner = App.Current.MainWindow;
+
             DataContext = this;
 
             Filtered = TeleportRows;

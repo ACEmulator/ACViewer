@@ -127,5 +127,10 @@ namespace ACViewer.View
 
             Console.WriteLine($"Debug mode {(DebugMode ? "enabled" : "disabled")}");
         });
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+
+        }
     }
 }

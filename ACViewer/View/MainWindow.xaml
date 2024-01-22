@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ACViewer.View"
         xmlns:scenes="clr-namespace:ACViewer" d:DataContext="{d:DesignInstance Type=local:MainWindow}"
         mc:Ignorable="d"
-        Title="ACViewer" Width="1342" Height="798" Style="{DynamicResource CustomWindowStyle}">
+        Title="ACViewer" Width="1342" Height="798" Style="{DynamicResource CustomWindowStyle}" Activated="Window_Activated">
     
     <Grid x:Name="LayoutRoot">
 
@@ -21,7 +21,7 @@
             <ColumnDefinition Width=".1*" />
         </Grid.ColumnDefinitions>
 
-        <local:MainMenu Grid.Row="0" Grid.ColumnSpan="3"/>
+        <local:MainMenu x:Name="menuMain" Grid.Row="0" Grid.ColumnSpan="3"/>
 
         <local:FileExplorer Grid.Row="1" Margin="0,0,0,7.5"/>
 
