@@ -139,7 +139,7 @@ namespace ACViewer.Render
 
                     case SurfacePixelFormat.PFID_A8R8G8B8:
                         ConvertToBGRA(data);
-                        if (surface.Translucency > 0)
+                        if (surface != null && surface.Translucency > 0)
                             PremultiplyAlpha(data, 1.0f - surface.Translucency);
                         break;
                 }
@@ -500,7 +500,7 @@ namespace ACViewer.Render
         {
             //Console.WriteLine($"-> GetTexture({textureID:X8})");
 
-            var texturePalette = new TextureChanges(textureID, surface.Translucency, paletteChanges);
+            var texturePalette = new TextureChanges(textureID, surface?.Translucency ?? 0.0f, paletteChanges);
 
             if (useCache && Textures.TryGetValue(texturePalette, out var cached))
                 return cached;
