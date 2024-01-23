@@ -60,7 +60,7 @@ namespace ACViewer.Render
             foreach (var poly in gfxObj.Polygons)
             {
                 // TODO: improve rendering for 2-sided faces
-                if (poly._polygon.Stippling == StipplingType.NoPos) continue;
+                //if (poly._polygon.Stippling == StipplingType.NoPos) continue;
 
                 // get actual transformed texture -- cannot rely on poly.Texture original format
                 var surfaceIdx = poly._polygon.PosSurface;

@@ -473,14 +473,15 @@ namespace ACViewer.Render
                 {
                     // swatch
                     var swatch = new Texture2D(GameView.Instance.GraphicsDevice, 1, 1);
-                    var a = surface.ColorValue >> 24;
-                    var r = (surface.ColorValue >> 16) & 0xFF;
-                    var g = (surface.ColorValue >> 8) & 0xFF;
-                    var b = surface.ColorValue & 0xFF;
+                    var a = (byte)(surface.ColorValue >> 24);
+                    var r = (byte)(surface.ColorValue >> 16);
+                    var g = (byte)(surface.ColorValue >> 8);
+                    var b = (byte)surface.ColorValue;
 
-                    if (surface.Translucency == 1) a = 0;
+                    if (surface.Translucency > 0)
+                        a = (byte)(a * (1.0f - surface.Translucency));
 
-                    swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(Convert.ToByte(r), Convert.ToByte(g), Convert.ToByte(b), Convert.ToByte(a)) });
+                    swatch.SetDataAsync(new Microsoft.Xna.Framework.Color[] { new Microsoft.Xna.Framework.Color(r, g, b, a) });
                     return swatch;
                 }
 
