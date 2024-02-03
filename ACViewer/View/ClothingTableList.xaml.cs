@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 
 using ACE.DatLoader;
 using ACE.DatLoader.Entity;
 using ACE.DatLoader.FileTypes;
 using ACE.Entity.Enum;
-using Microsoft.Xna.Framework.Audio;
-using SharpDX.Win32;
 
 namespace ACViewer.View
 {

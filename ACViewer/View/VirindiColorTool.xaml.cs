@@ -1,19 +1,14 @@
 ﻿using System;
 using System.Linq;
-using System.Globalization;
 using System.Windows;
-
-using ACE.DatLoader;
-
-using ACViewer.Enum;
-using System.Windows.Controls;
 using System.Data;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Media.Imaging;
-using ACViewer.Data;
-using System.Windows.Data;
 using System.Windows.Media;
+
+using ACViewer.Data;
+using ACE.DatLoader;
 
 namespace ACViewer.View
 {
