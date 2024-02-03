@@ -45,7 +45,8 @@ namespace ACViewer.Render
 
                 foreach (var polygon in cellStruct.Polygons)
                 {
-                    // TODO: improve rendering for 2-sided faces
+                    // only use this hack for envcells / possibly buildings?
+                    // bugged path: 000102BF-> 0D000425-> 080000DF
                     if (polygon._polygon.Stippling == StipplingType.NoPos) continue;
                     
                     var surfaceIdx = polygon._polygon.PosSurface;

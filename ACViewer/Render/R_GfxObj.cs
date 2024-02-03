@@ -59,7 +59,7 @@ namespace ACViewer.Render
             foreach (var poly in GfxObj.Polygons.Values)
             {
                 // TODO: improve rendering for 2-sided faces
-                if (poly.Stippling == StipplingType.NoPos) continue;
+                //if (poly.Stippling == StipplingType.NoPos) continue;
                 
                 var polyVerts = poly.VertexIDs.Count;
                 for (var i = 0; i < polyVerts; i++)

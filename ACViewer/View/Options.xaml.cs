@@ -213,7 +213,7 @@ namespace ACViewer.View
             foreach (var propName in allProperties)
                 NotifyPropertyChanged(propName);
 
-            if (!prevTheme.Equals(Config.Theme))
+            if (prevTheme != null && !prevTheme.Equals(Config.Theme))
                 ThemeManager.SetTheme(Config.Theme);
 
             Close();

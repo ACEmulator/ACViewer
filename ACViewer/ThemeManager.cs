@@ -13,6 +13,8 @@ namespace ACViewer
 
         public static void SetTheme(string themeName)
         {
+            themeName ??= "Default";
+            
             CurrentTheme = themeName.Replace(" ", "");
 
             if (themeName.Equals("Default"))
