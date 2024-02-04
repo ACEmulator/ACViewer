@@ -55,7 +55,7 @@ namespace ACViewer.View
             if (DatManager.PortalDat == null)
             {
                 MessageBox.Show($"Please load the DATs before trying to view item.");
-                //return;
+                return;
             }
 
             DependencyObject dep = (DependencyObject)e.OriginalSource;
