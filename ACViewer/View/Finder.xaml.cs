@@ -17,6 +17,8 @@ namespace ACViewer.View
         public Finder()
         {
             InitializeComponent();
+
+            this.Owner = App.Current.MainWindow;
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)

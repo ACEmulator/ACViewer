@@ -167,6 +167,8 @@ namespace ACViewer.View
 
             InitializeComponent();
 
+            this.Owner = App.Current.MainWindow;
+
             DataContext = this;
 
             ACViewer.Config.ConfigManager.TakeSnapshot();

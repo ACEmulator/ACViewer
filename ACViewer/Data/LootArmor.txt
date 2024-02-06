@@ -1,0 +1,1798 @@
+# wcid, name, clothingbase_did, palettetemplate_int, shade_float
+2628,Aegis,10000114,83,
+2629,Aegis,1000015d,77,
+2630,Aegis,10000157,8,
+2631,Aegis,10000159,82,
+2632,Aegis,1000015a,14,
+2633,Aegis,10000156,2,
+3594,Aegis,1000015b,61,
+1454,Acid Yoroi Breastplate,10000025,20,0.33
+1458,Fiery Helm,1000002d,20,0.66
+2027,Alatar's Helm,1000002c,20,0.66
+2028,Alatar's Platemail Hauberk,100000a5,20,0.66
+2033,Featherlight Plate Breastplate,10000004,20,0.33
+2034,Featherlight Plate Bracers,1000000e,20,0.66
+2035,Featherlight Plate Girth,10000045,20,0.33
+2036,Featherlight Plate Greaves,10000049,20,0.33
+2037,Featherlight Plate Hauberk,100000a5,20,0.66
+2038,Plate Leggings,10000016,20,0.66
+2039,Plate Sleeves,10000032,20,0.66
+2197,Iron Crown,10000035,20,0.66
+3706,Olthoi Cuirass,100000a0,13,0.66
+3707,Obsidian Crown,10000035,39,0.66
+3715,Olthoi Helm,1000002c,13,0.66
+4137,Asheron's Jumpsuit,10000161,2,0.5
+4138,Empyrean Jumpsuit,10000162,14,0.5
+4223,Armoredillo Hide Breastplate,100004d5,4,0.66
+4224,Armoredillo Hide Coat,100004d1,4,0.66
+4225,Gromnie Hide Pauldrons,1000004f,1,0.66
+4226,Gromnie Hide Cuirass,1000009f,10,0.66
+4227,Gromnie Hide Shirt,100000a9,4,0.66
+4228,Reedshark Hide Greaves,10000057,6,0.66
+4229,Reedshark Hide Leggings,1000004d,4,0.66
+4230,Mattekar Hide Sleeves,1000002e,9,0.66
+4231,Mattekar Hide Coat,10000413,9,0.66
+4981,Ice Heaume of Frore,100000ad,22,0.8
+5532,Sentinel Jumpsuit,1000017e,14,1
+5592,Sentinel Jumpsuit 1,1000017e,8,1
+5593,Sentinel Jumpsuit 2,1000017e,13,1
+5594,Sentinel Jumpsuit 3,1000017e,14,1
+6593,Celdon Shadow Breastplate,10000188,20,0.6
+6594,Greater Celdon Shadow Breastplate,10000188,21,0.6
+6595,Lesser Celdon Shadow Breastplate,10000188,14,0.7
+6596,Koujia Shadow Breastplate,1000018c,20,0.8
+6597,Greater Koujia Shadow Breastplate,1000018c,21,1
+6598,Lesser Koujia Shadow Breastplate,1000018c,14,0.2
+6599,Amuli Shadow Coat,100001a1,20,1
+6600,Greater Amuli Shadow Coat,100001a1,21,0.3
+6601,Lesser Amuli Shadow Coat,100001a1,14,0.6
+6602,Celdon Shadow Girth,10000183,20,0.6
+6603,Greater Celdon Shadow Girth,10000183,21,0.6
+6604,Lesser Celdon Shadow Girth,10000183,14,0.7
+6605,Amuli Shadow Leggings,100001a0,9,0.9
+6606,Greater Amuli Shadow Leggings,100001a0,18,0.3
+6607,Lesser Amuli Shadow Leggings,100001a0,14,0.6
+6608,Celdon Shadow Leggings,10000184,20,0.6
+6609,Greater Celdon Shadow Leggings,10000184,21,0.6
+6610,Lesser Celdon Shadow Leggings,10000184,14,0.7
+6611,Koujia Shadow Leggings,10000189,20,0.8
+6612,Greater Koujia Shadow Leggings,10000189,21,1
+6613,Lesser Koujia Shadow Leggings,10000189,14,0.2
+6614,Celdon Shadow Sleeves,10000187,20,0.6
+6615,Greater Celdon Shadow Sleeves,10000187,21,0.6
+6616,Lesser Celdon Shadow Sleeves,10000187,14,0.7
+6617,Koujia Shadow Sleeves,1000018b,9,0.6
+6618,Greater Koujia Shadow Sleeves,1000018b,18,1
+6619,Lesser Koujia Shadow Sleeves,1000018b,14,0.2
+6797,Nexus Celdon Breastplate,10000188,2,0.1
+6798,Nexus Koujia Breastplate,1000018c,2,0.1
+6799,Nexus Amuli Coat,100001a1,2,0.1
+6800,Nexus Celdon Girth,10000183,2,0.1
+6801,Nexus Amuli Leggings,100001a0,2,0.1
+6802,Nexus Celdon Leggings,10000184,2,0.1
+6803,Nexus Koujia Leggings,10000189,2,0.1
+6804,Nexus Celdon Sleeves,10000187,2,0.1
+6805,Nexus Koujia Sleeves,1000018b,2,0.1
+6842,Neydisa Hauberk,10000006,14,0.1
+7400,Heaume of the Inscrutable Mind,1000026b,20,0.2
+7628,Greater Celdon Shadow Breastplate,10000188,21,0.5
+7629,Greater Celdon Breastplate of Acid,10000188,8,0.6
+7630,Greater Celdon Breastplate of Flame,10000188,14,0.2
+7631,Greater Celdon Breastplate of Frost,10000188,2,0.5
+7632,Greater Celdon Breastplate of Lightning,10000188,13,0.5
+7633,Lesser Celdon Shadow Breastplate,10000188,14,0.6
+7634,Lesser Celdon Breastplate of Acid,10000188,8,0.9
+7635,Lesser Celdon Breastplate of Flame,10000188,14,0.7
+7636,Lesser Celdon Breastplate of Frost,10000188,2,0.3
+7637,Lesser Celdon Breastplate of Lightning,10000188,13,0.4
+7638,Celdon Shadow Breastplate,10000188,20,0.5
+7639,Celdon Breastplate of Acid,10000188,8,0.3
+7640,Celdon Breastplate of Flame,10000188,14,0.9
+7641,Celdon Breastplate of Frost,10000188,2,0.9
+7642,Celdon Breastplate of Lightning,10000188,13,0.9
+7643,Greater Koujia Shadow Breastplate,1000018c,21,0.9
+7644,Greater Koujia Breastplate of Acid,1000018c,8,0.3
+7645,Greater Koujia Breastplate of Flame,1000018c,14,0.3
+7646,Greater Koujia Breastplate of Frost,1000018c,2,0.3
+7647,Greater Koujia Breastplate of Lightning,1000018c,13,0.9
+7648,Lesser Koujia Shadow Breastplate,1000018c,14,0.1
+7649,Lesser Koujia Breastplate of Acid,1000018c,8,0.6
+7650,Lesser Koujia Breastplate of Flame,1000018c,14,0.6
+7651,Lesser Koujia Breastplate of Frost,1000018c,2,0.7
+7652,Lesser Koujia Breastplate of Lightning,1000018c,13,0.2
+7653,Koujia Shadow Breastplate,1000018c,20,0.7
+7654,Koujia Breastplate of Acid,1000018c,8,0.9
+7655,Koujia Breastplate of Flame,1000018c,14,0.8
+7656,Koujia Breastplate of Frost,1000018c,2,0.9
+7657,Koujia Breastplate of Lightning,1000018c,13,0.4
+7658,Greater Amuli Shadow Coat,100001a1,21,0.2
+7659,Greater Amuli Coat of Acid,100001a1,8,0.3
+7660,Greater Amuli Coat of Flame,100001a1,19,0.3
+7661,Greater Amuli Coat of Frost,100001a1,2,0.3
+7662,Greater Amuli Coat of Lightning,100001a1,13,0.5
+7663,Lesser Amuli Shadow Coat,100001a1,14,0.5
+7664,Lesser Amuli Coat of Acid,100001a1,8,0.6
+7665,Lesser Amuli Coat of Flame,100001a1,14,0.6
+7666,Lesser Amuli Coat of Frost,100001a1,2,0.6
+7667,Lesser Amuli Coat of Lightning,100001a1,13,0.6
+7668,Amuli Shadow Coat,100001a1,20,0.9
+7669,Amuli Coat of Acid,100001a1,8,0.9
+7670,Amuli Coat of Flame,100001a1,14,1
+7671,Amuli Coat of Frost,100001a1,2,0.8
+7672,Amuli Coat of Lightning,100001a1,13,0.8
+7673,Amuli Shadow Coat,100001a1,20,1
+7674,Greater Celdon Shadow Girth,10000183,21,0.5
+7675,Greater Celdon Girth of Acid,10000183,8,0.6
+7676,Greater Celdon Girth of Flame,10000183,14,0.2
+7677,Greater Celdon Girth of Frost,10000183,2,0.5
+7678,Greater Celdon Girth of Lightning,10000183,13,0.5
+7679,Lesser Celdon Shadow Girth,10000183,14,0.6
+7680,Lesser Celdon Girth of Acid,10000183,8,0.9
+7681,Lesser Celdon Girth of Flame,10000183,14,0.7
+7682,Lesser Celdon Girth of Frost,10000183,2,0.3
+7683,Lesser Celdon Girth of Lightning,10000183,13,0.4
+7684,Celdon Shadow Girth,10000183,20,0.5
+7685,Celdon Girth of Acid,10000183,8,0.3
+7686,Celdon Girth of Flame,10000183,14,0.9
+7687,Celdon Girth of Frost,10000183,2,0.9
+7688,Celdon Girth of Lightning,10000183,13,0.9
+7689,Greater Amuli Shadow Leggings,100001a0,18,0.2
+7690,Greater Amuli Leggings of Acid,100001a0,8,0.3
+7691,Greater Amuli Leggings of Flame,100001a0,14,0.3
+7692,Greater Amuli Leggings of Frost,100001a0,2,0.3
+7693,Greater Amuli Leggings of Lightning,100001a0,13,0.5
+7694,Lesser Amuli Shadow Leggings,100001a0,14,0.5
+7695,Lesser Amuli Leggings of Acid,100001a0,8,0.6
+7696,Lesser Amuli Leggings of Flame,100001a0,14,0.6
+7697,Lesser Amuli Leggings of Frost,100001a0,2,0.6
+7698,Lesser Amuli Leggings of Lightning,100001a0,13,0.6
+7699,Amuli Shadow Leggings,100001a0,9,0.9
+7700,Amuli Leggings of Acid,100001a0,8,0.9
+7701,Amuli Leggings of Flame,100001a0,14,1
+7702,Amuli Leggings of Frost,100001a0,2,0.8
+7703,Amuli Leggings of Lightning,100001a0,13,0.8
+7704,Amuli Shadow Leggings,100001a0,9,0.9
+7705,Greater Celdon Shadow Leggings,10000184,21,0.5
+7706,Greater Celdon Leggings of Acid,10000184,8,0.6
+7707,Greater Celdon Leggings of Flame,10000184,14,0.2
+7708,Greater Celdon Leggings of Frost,10000184,2,0.5
+7709,Greater Celdon Leggings of Lightning,10000184,13,0.5
+7710,Lesser Celdon Shadow Leggings,10000184,14,0.6
+7711,Lesser Celdon Leggings of Acid,10000184,8,0.9
+7712,Lesser Celdon Leggings of Flame,10000184,14,0.7
+7713,Lesser Celdon Leggings of Frost,10000184,2,0.3
+7714,Lesser Celdon Leggings of Lightning,10000184,13,0.4
+7715,Celdon Shadow Leggings,10000184,20,0.5
+7716,Celdon Leggings of Acid,10000184,8,0.3
+7717,Celdon Leggings of Flame,10000184,14,0.9
+7718,Celdon Leggings of Frost,10000184,2,0.9
+7719,Celdon Leggings of Lightning,10000184,13,0.9
+7720,Greater Koujia Shadow Leggings,10000189,21,0.9
+7721,Greater Koujia Leggings of Acid,10000189,8,0.3
+7722,Greater Koujia Leggings of Flame,10000189,14,0.9
+7723,Greater Koujia Leggings of Frost,10000189,2,0.3
+7724,Greater Koujia Leggings of Lightning,10000189,13,0.9
+7725,Lesser Koujia Shadow Leggings,10000189,14,0.1
+7726,Lesser Koujia Leggings of Acid,10000189,8,0.6
+7727,Lesser Koujia Leggings of Flame,10000189,14,0.6
+7728,Lesser Koujia Leggings of Frost,10000189,2,0.6
+7729,Lesser Koujia Leggings of Lightning,10000189,13,0.2
+7730,Koujia Shadow Leggings,10000189,20,0.7
+7731,Koujia Leggings of Acid,10000189,8,0.9
+7732,Koujia Leggings of Flame,10000189,14,0.5
+7733,Koujia Leggings of Frost,10000189,2,0.5
+7734,Koujia Leggings of Lightning,10000189,13,0.7
+7735,Greater Celdon Shadow Sleeves,10000187,21,0.5
+7736,Greater Celdon Sleeves of Acid,10000187,8,0.6
+7737,Greater Celdon Sleeves of Flame,10000187,14,0.2
+7738,Greater Celdon Sleeves of Frost,10000187,2,0.5
+7739,Greater Celdon Sleeves of Lightning,10000187,13,0.5
+7740,Lesser Celdon Shadow Sleeves,10000187,14,0.6
+7741,Lesser Celdon Sleeves of Acid,10000187,8,0.9
+7742,Lesser Celdon Sleeves of Flame,10000187,14,0.7
+7743,Lesser Celdon Sleeves of Frost,10000187,2,0.3
+7744,Lesser Celdon Sleeves of Lightning,10000187,13,0.4
+7745,Celdon Shadow Sleeves,10000187,20,0.5
+7746,Celdon Sleeves of Acid,10000187,8,0.3
+7747,Celdon Sleeves of Flame,10000187,14,0.9
+7748,Celdon Sleeves of Frost,10000187,2,0.9
+7749,Celdon Sleeves of Lightning,10000187,13,0.9
+7750,Greater Koujia Shadow Sleeves,1000018b,18,0.9
+7751,Greater Koujia Sleeves of Acid,1000018b,8,0.3
+7752,Greater Koujia Sleeves of Flame,1000018b,14,0.3
+7753,Greater Koujia Sleeves of Frost,1000018b,2,0.3
+7754,Greater Koujia Sleeves of Lightning,1000018b,13,0.5
+7755,Lesser Koujia Shadow Sleeves,1000018b,14,0.1
+7756,Lesser Koujia Sleeves of Acid,1000018b,8,0.6
+7757,Lesser Koujia Sleeves of Flame,1000018b,14,0.6
+7758,Lesser Koujia Sleeves of Frost,1000018b,2,0.6
+7759,Lesser Koujia Sleeves of Lightning,1000018b,13,0.2
+7760,Koujia Shadow Sleeves,1000018b,9,0.5
+7761,Koujia Sleeves of Acid,1000018b,8,0.9
+7762,Koujia Sleeves of Flame,1000018b,14,0.5
+7763,Koujia Sleeves of Frost,1000018b,2,0.5
+7764,Koujia Sleeves of Lightning,1000018b,13,0.9
+8148,Banderling Mask,10000252,4,0.66
+8149,Drudge Mask,10000253,4,0.66
+8150,Mosswart Mask,10000254,4,0.66
+8151,Skull Mask,10000255,4,0.66
+8152,Tusker Mask,10000258,4,0.66
+8153,Virindi Mask,10000322,3,0.66
+8204,King's Helm,1000026e,4,0.66
+8205,Shadow's Garb,1000026f,4,0.66
+8206,Ogre Mask,10000270,4,0.66
+8394,Olthoi Helm,1000026a,39,0.3
+8472,Fine Armoredillo Hide Shirt,100004d3,22,0.3
+8655,Shreth Hide Gauntlets,1000028c,4,0.66
+8659,Shreth Hide Pants,10000285,6,0.66
+8660,Shreth Hide Shoes,1000028b,19,0.66
+8661,Ursuin Hide Coat,10000286,10,0.66
+8662,Ursuin Hide Girth,10000284,4,0.66
+8663,Ursuin Hide Helmet,1000028a,18,0.5
+8679,A Society Leather Basinet,10000038,1,0.3
+8680,An Explorer Leather Basinet,100004e8,27,0.66
+8681,A Pair Of Society Leather Boots,10000007,1,0.3
+8682,A Pair Of Explorer Leather Boots,100004e6,27,0.1
+8687,A Society Leather Breastplate,10000055,1,0.3
+8688,An Explorer Leather Breastplate,100004ec,27,0.66
+8695,A Society Leather Girth,10000043,1,0.3
+8696,An Explorer Leather Girth,100004ea,27,0.66
+8699,A Pair Of Society Leather Leggings,1000004d,1,0.3
+8700,A Pair Of Explorer Leather Leggings,100004de,27,0.66
+8706,A Pair Of Society Leather Pauldrons,1000004f,1,0.3
+8707,A Pair Of Explorer Leather Pauldrons,100004eb,27,0.66
+8710,A Pair Of Society Leather Sleeves,1000002e,1,0.3
+8711,A Pair Of Explorer Leather Sleeves,100004e0,27,0.66
+8785,Empyrean Scalemail Shirt,100000ab,20,0.66
+8787,Shadow Captain's Heaume,10000282,39,0.1
+8792,Helm of the Lightbringer,10000282,20,1
+8804,Great Work Helm of the Lightbringer,10000289,83,0.66
+8805,Nexus Helm of the Lightbringer,10000289,2,0.66
+8806,Fenmalain Helm of the Lightbringer,10000289,13,0.9
+8807,Caulnalain Helm of the Lightbringer,10000289,13,0.5
+8808,Shendolain Helm of the Lightbringer,10000289,13,0.2
+8809,Herald's Helm of the Lightbringer,10000289,39,0.66
+8867,Weaver's Coat,100001a1,2,0
+8868,Weaver's Leggings,100001a0,2,0
+8875,Amuli Coat,100001a1,20,0.66
+8876,Amuli Leggings,100001a0,9,0.5
+8877,Amuli Coat,100001a1,20,0.66
+8878,Amuli Leggings,100001a0,9,0.5
+8896,Furry Mattekar Hide Coat,10000286,9,0.66
+9021,Boots of the Vault,10000239,9,0.1
+9035,Exarch Plate Girth,10000295,2,0.5
+9036,Exarch Plate Girth,10000295,9,0.5
+9037,Exarch Plate Girth,10000295,20,0.5
+9038,Exarch Plate Leggings,10000296,2,0.5
+9039,Exarch Plate Leggings,10000296,9,0.5
+9040,Exarch Plate Leggings,10000296,20,0.5
+9085,Thaumaturgic Plate Girth,10000292,2,0.5
+9086,Thaumaturgic Plate Girth,10000292,9,0.5
+9087,Thaumaturgic Plate Girth,10000292,20,0.5
+9088,Thaumaturgic Plate Leggings,10000293,2,0.5
+9089,Thaumaturgic Plate Leggings,10000293,9,0.5
+9090,Thaumaturgic Plate Leggings,10000293,20,0.5
+9240,Snake Skin Boots,100002b2,8,0.1
+9241,Ursuin Boots,100002b0,6,0.6
+9245,Snake Skin Coat,100002b1,8,0.66
+9246,Ursuin Hide Coat,10000286,6,0.66
+9247,Sclavus Skin Helmet,100002b3,8,0.5
+9389,Bastion of Tukal,100002c7,13,0.66
+9390,Lugian Armor,100002c8,2,0.66
+9392,Helm of the Crag,100002b7,2,0.25
+9393,Mattekar Arm Guard,100002cc,20,0.86
+9489,Sleeves of Inexhaustibility,100002c3,1,0.8
+10701,Niffis Shell Helm,100002da,20,0.66
+10766,Shackles of Obedience,100002df,20,0.33
+10870,Canescent Mattekar Robe,10000348,2,0.732
+10871,Canescent Mattekar Robe,10000348,14,0.09
+10920,Kareb Mask,10000474,4,0.66
+11364,Siraluun Headdress,1000030d,14,0.66
+11985,Heavy Ursuin Coat,10000286,18,0.9
+11986,Energy Crown,10000323,82,0.66
+11990,Gauntlets of Marksmanship,1000028c,4,0.66
+11998,Virindi Inquisitor's Mask,10000322,14,0.66
+12192,Shadow's Garb,1000026f,4,0.66
+12206,Doll Mask,10000328,61,0.66
+12207,Inviso Mask,10000329,61,0.66
+12208,Scarecrow Mask,1000032a,4,0.66
+12209,Sclavus Mask,1000032b,4,0.66
+12210,Ursuin Mask,1000032d,4,0.66
+12211,Zombie Mask,1000032c,4,0.66
+12212,Pwyll's Crown,1000033f,4,0.66
+12213,Veil of Darkness,10000340,4,0.66
+12214,Koji's Beast,10000341,4,0.66
+12252,Obsidian Director's Mask,10000322,39,0.66
+13210,Academy Coat,10000286,1,0.66
+13211,Academy Coat,10000286,2,0.66
+13212,Academy Coat,10000286,3,0.66
+13213,Academy Coat,10000286,5,0.66
+13214,Academy Coat,10000286,7,0.66
+13215,Academy Coat,10000286,8,0.66
+13216,Academy Coat,10000286,11,0.66
+13217,Academy Coat,10000286,13,0.66
+13218,Academy Coat,10000286,14,0.66
+13219,Academy Coat,10000286,16,0.66
+14594,Helm of the Elements,10000366,20,0.66
+14823,Greater Celdon Shadow Breastplate,10000188,20,0.9
+14824,Greater Celdon Shadow Breastplate,10000188,29,0.6
+14825,Greater Celdon Shadow Breastplate,10000188,27,0.6
+14826,Greater Celdon Shadow Breastplate,10000188,24,0.6
+14827,Greater Koujia Shadow Breastplate,1000018c,20,0.95
+14828,Greater Koujia Shadow Breastplate,1000018c,29,1
+14829,Greater Koujia Shadow Breastplate,1000018c,27,1
+14830,Greater Koujia Shadow Breastplate,1000018c,24,1
+14831,Greater Amuli Shadow Coat,100001a1,20,0.95
+14832,Greater Amuli Shadow Coat,100001a1,29,0.3
+14833,Greater Amuli Shadow Coat,100001a1,27,0.3
+14834,Greater Amuli Shadow Coat,100001a1,24,0.3
+14835,Greater Celdon Shadow Girth,10000183,20,0.95
+14836,Greater Celdon Shadow Girth,10000183,29,0.6
+14837,Greater Celdon Shadow Girth,10000183,27,0.6
+14838,Greater Celdon Shadow Girth,10000183,24,0.6
+14839,Greater Amuli Shadow Leggings,100001a0,4,0.75
+14840,Greater Amuli Shadow Leggings,100001a0,29,0.3
+14841,Greater Amuli Shadow Leggings,100001a0,27,0.3
+14842,Greater Amuli Shadow Leggings,100001a0,24,0.3
+14843,Greater Celdon Shadow Leggings,10000184,20,0.95
+14844,Greater Celdon Shadow Leggings,10000184,29,0.6
+14845,Greater Celdon Shadow Leggings,10000184,27,0.6
+14846,Greater Celdon Shadow Leggings,10000184,24,0.6
+14847,Greater Koujia Shadow Leggings,10000189,20,0.95
+14848,Greater Koujia Shadow Leggings,10000189,29,1
+14849,Greater Koujia Shadow Leggings,10000189,27,1
+14850,Greater Koujia Shadow Leggings,10000189,24,1
+14851,Greater Celdon Shadow Sleeves,10000187,20,0.95
+14852,Greater Celdon Shadow Sleeves,10000187,29,0.6
+14853,Greater Celdon Shadow Sleeves,10000187,27,0.6
+14854,Greater Celdon Shadow Sleeves,10000187,24,0.6
+14855,Greater Koujia Shadow Sleeves,1000018b,9,0.8
+14856,Greater Koujia Shadow Sleeves,1000018b,29,1
+14857,Greater Koujia Shadow Sleeves,1000018b,27,1
+14858,Greater Koujia Shadow Sleeves,1000018b,24,1
+21372,Circlet of Supremacy,100003f5,2,0.66
+21373,Martine's Mask,100003f1,4,0.66
+21527,Saelgauloi,100003e4,39,0
+22013,Olthoi Helm,100003ff,4,0.3
+22014,Virindi Profatrix Mask,100003fd,39,0.66
+22015,Pwyll's Guard,10000409,4,0.66
+22016,Shroud of Night,1000040a,4,0.66
+22017,Koji's Fiend,1000040b,4,0.66
+22022,Banderling Mask,100003fe,4,0.66
+22023,Mosswart Mask,100003fa,4,0.66
+22550,Tusker Paws,10000434,4,1
+22557,Magic Defense Tattoo,10000425,12,0.33
+22558,Mana Conversion Tattoo,10000426,15,0.33
+22559,Melee Defense Tattoo,10000427,14,0.33
+22560,Missile Defense Tattoo,10000428,13,0.33
+22884,Neydisa Hauberk,10000006,14,0.1
+23097,Swarthy Mattekar Robe,10000315,39,0
+23206,Old Boot,1000043b,4,0.8
+23590,Heavy Ursuin Coat,10000286,18,0.9
+23591,Energy Crown,10000323,82,0.66
+23777,Brilliant Amuli Coat,100001a1,39,0.232
+23778,Charged Amuli Coat,100001a1,39,0.232
+23779,Frosty Amuli Coat,100001a1,39,0.232
+23780,Hardened Amuli Coat,100001a1,39,0.232
+23781,Plated Amuli Coat,100001a1,39,0.232
+23782,Scored Amuli Coat,100001a1,39,0.232
+23783,Searing Amuli Coat,100001a1,39,0.232
+23784,Solid Amuli Coat,100001a1,39,0.232
+23785,Brilliant Amuli Leggings,100001a0,93,0.25
+23786,Charged Amuli Leggings,100001a0,93,0.25
+23787,Frosty Amuli Leggings,100001a0,93,0.25
+23788,Hardened Amuli Leggings,100001a0,93,0.25
+23789,Plated Amuli Leggings,100001a0,93,0.25
+23790,Scored Amuli Leggings,100001a0,93,0.25
+23791,Searing Amuli Leggings,100001a0,93,0.25
+23792,Solid Amuli Leggings,100001a0,93,0.25
+23793,Brilliant Celdon Breastplate,10000188,39,0.232
+23794,Charged Celdon Breastplate,10000188,39,0.232
+23795,Frosty Celdon Breastplate,10000188,39,0.232
+23796,Hardened Celdon Breastplate,10000188,39,0.232
+23797,Plated Celdon Breastplate,10000188,39,0.232
+23798,Scored Celdon Breastplate,10000188,39,0.232
+23799,Searing Celdon Breastplate,10000188,39,0.232
+23800,Solid Celdon Breastplate,10000188,39,0.232
+23801,Brilliant Celdon Girth,10000183,39,0.232
+23802,Charged Celdon Girth,10000183,39,0.232
+23803,Frosty Celdon Girth,10000183,39,0.232
+23804,Hardened Celdon Girth,10000183,39,0.232
+23805,Plated Celdon Girth,10000183,39,0.232
+23806,Scored Celdon Girth,10000183,39,0.232
+23807,Searing Celdon Girth,10000183,39,0.232
+23808,Solid Celdon Girth,10000183,39,0.232
+23809,Brilliant Celdon Leggings,10000184,39,0.232
+23810,Charged Celdon Leggings,10000184,39,0.232
+23811,Frosty Celdon Leggings,10000184,39,0.232
+23812,Hardened Celdon Leggings,10000184,39,0.232
+23813,Plated Celdon Leggings,10000184,39,0.232
+23814,Scored Celdon Leggings,10000184,39,0.232
+23815,Searing Celdon Leggings,10000184,39,0.232
+23816,Solid Celdon Leggings,10000184,39,0.232
+23817,Brilliant Celdon Sleeves,10000187,39,0.232
+23818,Charged Celdon Sleeves,10000187,39,0.232
+23819,Frosty Celdon Sleeves,10000187,39,0.232
+23820,Hardened Celdon Sleeves,10000187,39,0.232
+23821,Plated Celdon Sleeves,10000187,39,0.232
+23822,Scored Celdon Sleeves,10000187,39,0.232
+23823,Searing Celdon Sleeves,10000187,39,0.232
+23824,Solid Celdon Sleeves,10000187,39,0.232
+23825,Brilliant Koujia Breastplate,1000018c,93,0.25
+23826,Charged Koujia Breastplate,1000018c,93,0.25
+23827,Frosty Koujia Breastplate,1000018c,93,0.25
+23828,Hardened Koujia Breastplate,1000018c,93,0.25
+23829,Plated Koujia Breastplate,1000018c,93,0.25
+23830,Scored Koujia Breastplate,1000018c,93,0.25
+23831,Searing Koujia Breastplate,1000018c,93,0.25
+23832,Solid Koujia Breastplate,1000018c,93,0.25
+23833,Brilliant Koujia Leggings,10000189,93,0.25
+23834,Charged Koujia Leggings,10000189,93,0.25
+23835,Frosty Koujia Leggings,10000189,93,0.25
+23836,Hardened Koujia Leggings,10000189,93,0.25
+23837,Plated Koujia Leggings,10000189,93,0.25
+23838,Scored Koujia Leggings,10000189,93,0.25
+23839,Searing Koujia Leggings,10000189,93,0.25
+23840,Solid Koujia Leggings,10000189,93,0.25
+23841,Brilliant Koujia Sleeves,1000018b,93,0.25
+23842,Charged Koujia Sleeves,1000018b,93,0.25
+23843,Frosty Koujia Sleeves,1000018b,93,0.25
+23844,Hardened Koujia Sleeves,1000018b,93,0.25
+23845,Plated Koujia Sleeves,1000018b,93,0.25
+23846,Scored Koujia Sleeves,1000018b,93,0.25
+23847,Searing Koujia Sleeves,1000018b,93,0.25
+23848,Solid Koujia Sleeves,1000018b,93,0.25
+23881,Fish Boots,10000056,1,0.1
+23936,Auroric Exarch Girth,1000044c,2,0.5
+23937,Auroric Exarch Girth,1000044c,8,0.5
+23938,Auroric Exarch Girth,1000044c,14,0.5
+23939,Luminescent Thaumaturgic Girth,1000044d,2,0.5
+23940,Luminescent Thaumaturgic Girth,1000044d,8,0.5
+23941,Luminescent Thaumaturgic Girth,1000044d,14,0.5
+23942,Auroric Runic Helm,10000450,2,0.66
+23943,Auroric Runic Helm,10000450,8,0.66
+23944,Auroric Runic Helm,10000450,14,0.66
+23945,Runic Helm of Knorr,10000451,20,0.66
+23946,Luminescent Runic Helm,10000451,2,0.66
+23947,Luminescent Runic Helm,10000451,8,0.66
+23948,Luminescent Runic Helm,10000451,14,0.66
+23949,Auroric Exarch Leggings,1000044e,2,0.5
+23950,Auroric Exarch Leggings,1000044e,8,0.5
+23951,Auroric Exarch Leggings,1000044e,14,0.5
+23952,Luminescent Thaumaturgic Leggings,1000044f,2,0.5
+23953,Luminescent Thaumaturgic Leggings,1000044f,8,0.5
+23954,Luminescent Thaumaturgic Leggings,1000044f,14,0.5
+24057,Fish Boots,10000056,1,0.1
+24137,Dusty Sollerets,10000054,20,0.66
+24173,Jaleh's Leggings,10000471,22,0.1
+24174,Jaleh's Chain Shirt,10000472,2,1
+24268,Olthoi Fighter Sleeves,1000047f,2,0.66
+24454,Artificer's Gauntlets,1000049c,14,0.66
+24457,Enchanter's Gauntlets,1000049c,14,0.66
+24459,Hieromancer's Gauntlets,1000049c,14,0.66
+24461,Life Giver's Gauntlets,1000049c,14,0.66
+24463,Opal Gauntlets,1000049b,2,0.66
+24467,Sunstone Gauntlets,1000049c,14,0.66
+24615,Fine Olthoi Bracers,100004b1,2,0.33
+24616,Good Olthoi Bracers,100004b1,2,0.33
+24617,Fine Olthoi Breastplate,100004b2,2,0.33
+24618,Good Olthoi Breastplate,100004b2,2,0.33
+24619,Fine Olthoi Gauntlets,100004b0,2,0.66
+24620,Good Olthoi Gauntlets,100004b0,2,0.66
+24621,Fine Olthoi Girth,100004af,2,0.33
+24622,Good Olthoi Girth,100004af,2,0.33
+24623,Fine Olthoi Greaves,100004ae,2,0.33
+24624,Good Olthoi Greaves,100004ae,2,0.33
+24625,Fine Olthoi Brood Queen Helm,100004aa,2,0.66
+24626,Good Olthoi Brood Queen Helm,100004aa,2,0.66
+24627,Fine Olthoi Pauldrons,100004ab,2,0.33
+24628,Good Olthoi Pauldrons,100004ab,2,0.33
+24629,Fine Olthoi Sollerets,100004ac,2,0.66
+24630,Good Olthoi Sollerets,100004ac,2,0.66
+24631,Fine Olthoi Tassets,100004ad,2,0.33
+24632,Good Olthoi Tassets,100004ad,2,0.33
+24879,Virindi Profatrix Mask,100004a8,3,0.66
+24889,Greater Olthoi Bracers,100004b1,2,0.33
+24890,Lesser Olthoi Bracers,100004b1,2,0.33
+24891,Greater Olthoi Breastplate,100004b2,2,0.33
+24892,Lesser Olthoi Breastplate,100004b2,2,0.33
+24893,Greater Olthoi Gauntlets,100004b0,2,0.66
+24894,Lesser Olthoi Gauntlets,100004b0,2,0.66
+24895,Greater Olthoi Girth,100004af,2,0.33
+24896,Lesser Olthoi Girth,100004af,2,0.33
+24897,Greater Olthoi Greaves,100004ae,2,0.33
+24898,Lesser Olthoi Greaves,100004ae,2,0.33
+24899,Greater Olthoi Brood Queen Helm,100004aa,2,0.66
+24900,Lesser Olthoi Brood Queen Helm,100004aa,2,0.66
+24901,Greater Olthoi Pauldrons,100004ab,2,0.33
+24902,Lesser Olthoi Pauldrons,100004ab,2,0.33
+24903,Greater Olthoi Sollerets,100004ac,2,0.66
+24904,Lesser Olthoi Sollerets,100004ac,2,0.66
+24905,Greater Olthoi Tassets,100004ad,2,0.33
+24906,Lesser Olthoi Tassets,100004ad,2,0.33
+24945,Antius' Celdon Breastplate,100004b6,14,0.33
+24946,Antius' Celdon Gauntlets,100004bb,14,0.66
+24947,Antius' Celdon Girth,100004b7,14,0.33
+24948,Antius' Celdon Helm,100004b9,14,0.66
+24949,Antius' Celdon Leggings,100004b8,14,0.66
+24950,Antius' Celdon Sollerets,100004ba,14,0.66
+24956,Antius' Celdon Sleeves,100004b5,14,0.66
+25313,Walking Boots,100004c2,20,0.66
+25335,Virindi Consul Mask,100004c3,4,0.66
+25336,Alfric's Bull,100004c6,4,0.66
+25337,The Poet's Mask,100004c5,4,0.66
+25338,Koji's Visage,100004c4,4,0.66
+25513,Amuli Shadow Coat,100001a1,20,1
+25514,Antius' Celdon Gauntlets,100004bb,14,0.66
+25515,Antius' Celdon Helm,100004b9,14,0.66
+25516,Amuli Shadow Leggings,100001a0,9,0.9
+25517,Antius' Celdon Sollerets,100004ba,14,0.66
+25522,Skull Cap,100004d0,4,0.66
+25523,Rendeath Coat,100004d8,14,0.66
+25524,Armoredillo Hide Cuirass,100004d4,4,0.66
+25525,Mutilator Helm,100004ce,13,0.3
+25526,Skeletal Helm,100004cf,14,0.66
+25527,Gauloth Leggings,100004d9,8,0.66
+25529,Sturdy Reedshark Robe,100004d7,14,1
+25554,Knath Head,100004ca,84,0.66
+25555,Moarsman Mask,100004cc,4,0.66
+25556,Scary Minion Mask,100004cd,4,0.66
+25557,Eye Patch,100004c9,39,0.66
+25653,Koujia Breastplate,1000018c,20,0.33
+25654,Platemail Gauntlets,10000011,20,0.66
+25655,Helm of the Crag,100002b7,2,0.25
+25656,Koujia Leggings,10000189,20,0.66
+25657,Koujia Sleeves,1000018b,9,0.66
+25658,Sollerets,10000054,20,0.66
+25812,Sollerets of Grace,10000510,20,0.66
+25839,Doomshark Hide Coat,10000514,4,0.66
+25841,Scourge's Hide Leggings,10000512,39,0.66
+25842,Plaguefang's Robe,10000513,14,1
+25953,Cowl of the Sand,10000529,17,0.66
+25954,Shadow's Mind,1000026f,4,0.66
+25955,Shadow's Strike,1000026f,4,0.66
+25956,Shadow's Eye,1000026f,4,0.66
+26006,Ice Heaume of Frore,1000052c,1,0.8
+26010,Envoy's Robe,10000532,1,1
+26057,Envoy's Heaume,10000533,1,0.66
+26498,Crown of Anointed Blood,10000537,8,0.66
+26499,Crown of Anointed Blood,10000537,39,0.66
+26500,Crown of Anointed Blood,10000537,14,0.66
+26501,Ancient Armored Vestment,10000536,84,0.66
+26502,Ancient Armored Vestment,10000536,93,0.66
+26503,Ancient Armored Vestment,10000536,85,0.66
+27087,Bastion of Tukal,100002c7,13,0.66
+27088,Helm of the Crag,100002b7,2,0.25
+27090,Sleeves of Inexhaustibility,100002c3,1,0.8
+27128,Ancient Armored Bracers,1000053c,84,0.66
+27129,Ancient Armored Bracers,1000053c,93,0.66
+27130,Ancient Armored Bracers,1000053c,85,0.66
+27407,Drudge Championship Belt,10000553,4,0.5
+27453,Renegade Hauberk,100002c8,14,0.66
+27454,Renegade Leggings,10000556,14,0.66
+27651,Ornate Tumerok Breastplate,1000055a,9,0
+27652,Horned Lugian Helm,10000558,14,0.66
+27761,Adjanite Crown,10000561,8,0.66
+27888,Mire Witch's Loincloth,1000055f,4,0.66
+27889,Swamp Lord's War Paint,10000560,17,0.66
+27909,Ancient Armored Long Boots,1000055d,8,0.66
+27910,Ancient Armored Long Boots,1000055d,39,0.66
+27911,Ancient Armored Long Boots,1000055d,14,0.66
+27912,Ancient Armored Gauntlets,1000055c,8,0.66
+27913,Ancient Armored Gauntlets,1000055c,39,0.66
+27914,Ancient Armored Gauntlets,1000055c,14,0.66
+28068,Guardian's Uniform,10000568,41,0.732
+28142,Gromnie Hide Boots,10000577,14,0.1
+28143,Ruddy Winged Boots,10000576,14,0.1
+28144,Gromnie Hide Amuli Coat,10000578,2,0.66
+28145,Heavy Gromnie Hide Coat,10000578,76,0.66
+28146,Gromnie Hide Coat,10000573,18,0.66
+28147,Dusky Winged Coat,10000572,9,0.66
+28148,Gromnie Hide Gauntlets,1000056f,1,0.66
+28149,Gromnie Hide Helmet,10000575,20,0.5
+28150,Turquoise Winged Helmet,10000574,1,0.5
+28151,Gromnie Hide Amuli Leggings,10000579,13,0.5
+28152,Heavy Gromnie Hide Leggings,10000579,17,0.5
+28153,Lustrous Winged Leggings,10000570,20,0.5
+28154,Amethyst Oculus,1000057a,13,0.66
+28155,Ashen Oculus,1000057a,9,0.66
+28156,Teal Oculus,1000057a,1,0.66
+28157,Emerald Oculus,1000057a,8,0.66
+28158,Ivory Oculus,1000057a,20,0.66
+28159,Ruby Oculus,1000057a,14,0.66
+28160,Rusty Oculus,1000057a,44,0.66
+28161,Sapphire Oculus,1000057a,2,0.66
+28162,Gromnie Hide Leggings,10000571,8,0.5
+28256,Canescent Mattekar Robe,10000315,2,1
+28257,Canescent Mattekar Robe,10000315,14,1
+28337,Ancient Armored Leggings,1000057b,8,0.66
+28338,Ancient Armored Leggings,1000057b,39,0.66
+28339,Ancient Armored Leggings,1000057b,14,0.66
+28577,Uber Balance Testing Coat,100001a1,39,0.232
+28578,Uber Balance Testing Gauntlets,1000049c,14,0.66
+28579,Uber Balance Testing Helm,10000451,20,0.66
+28580,Uber Balance Testing Leggings,100001a0,93,0.25
+28581,Uber Balance Testing Sollerets,10000510,20,0.66
+28585,Extreme Balance Testing Coat,100001a1,39,0.232
+28586,High Balance Testing Coat,100001a1,39,0.232
+28587,Low Balance Testing Coat,100001a1,39,0.232
+28588,Mid Balance Testing Coat,100001a1,39,0.232
+28589,Extreme Balance Testing Gauntlets,1000049c,14,0.66
+28590,High Balance Testing Gauntlets,1000049c,14,0.66
+28591,Low Balance Testing Gauntlets,1000049c,14,0.66
+28592,Mid Balance Testing Gauntlets,1000049c,14,0.66
+28593,Extreme Balance Testing Helm,10000451,20,0.66
+28594,High Balance Testing Helm,10000451,20,0.66
+28595,Low Balance Testing Helm,10000451,20,0.66
+28596,Mid Balance Testing Helm,10000451,20,0.66
+28597,Extreme Balance Testing Leggings,100001a0,93,0.25
+28598,High Balance Testing Leggings,100001a0,93,0.25
+28599,Low Balance Testing Leggings,100001a0,93,0.25
+28600,Mid Balance Testing Leggings,100001a0,93,0.25
+28602,High Balance Testing Sollerets,10000510,20,0.66
+28603,Low Balance Testing Sollerets,10000510,20,0.66
+28604,Mid Balance Testing Sollerets,10000510,20,0.66
+28619,Tenassa Helm,100000ad,20,0.66
+28631,Tenass Cuirass,100000a0,20,0.66
+28862,Burun Guruk Mask,1000057d,4,0.66
+28863,Burun Ruuk Mask,1000057f,4,0.66
+28864,Chittick Mask,10000583,4,0.66
+28865,Mite Mask,1000057e,4,0.66
+28866,Left Peg Leg,10000585,4,0.1
+28868,Right Peg Leg,10000586,4,0.1
+28869,Peg Legs,10000584,4,0.1
+29535,Noble Leggings,1000058e,21,0.66
+29536,Noble Leggings of Balance,1000058e,21,0.66
+29537,Noble Leggings of Health,1000058e,21,0.66
+29538,Noble Leggings of Brilliance,1000058e,21,0.66
+29539,Noble Leggings of Speed,1000058e,21,0.66
+29540,Noble Leggings of Will,1000058e,21,0.66
+29541,Noble Leggings of Might,1000058e,21,0.66
+29542,Enscorcelled Robe,10000592,21,1
+29544,Marksman's Robe,10000591,21,1
+29545,Noble Sollerets,1000058c,21,0.66
+29546,Noble Sollerets of Balance,1000058c,21,0.66
+29547,Noble Sollerets of Health,1000058c,21,0.66
+29548,Noble Sollerets of Brilliance,1000058c,21,0.66
+29549,Noble Sollerets of Speed,1000058c,21,0.66
+29550,Noble Sollerets of Will,1000058c,21,0.66
+29551,Noble Sollerets of Might,1000058c,21,0.66
+29818,Badlands Siraluun Headdress,1000030d,16,0.66
+29819,Kithless Siraluun Headdress,1000030d,14,0.66
+29820,Littoral Siraluun Headdress,1000030d,17,0.66
+29821,Marsh Siraluun Headdress,1000030d,1,0.66
+29822,Strand Siraluun Headdress,1000030d,10,0.66
+29823,Tidal Siraluun Headdress,1000030d,9,0.66
+29824,Timber Siraluun Headdress,1000030d,8,0.66
+29825,Untamed Siraluun Headdress,1000030d,2,0.66
+30262,Ancient Armored Helm,10000595,4,0.66
+30263,Ancient Armored Helm,10000594,4,0.66
+30264,Ancient Armored Helm,10000593,4,0.66
+30702,Royal Color,1000059b,17,0.66
+30703,Royal Oil,1000059b,14,0.66
+30704,Royal Paint,1000059b,82,0.66
+30705,Royal Dye,1000059b,8,0.66
+30740,Tiara,100005a4,20,0.66
+30741,Party Hat,100005a5,13,0.66
+30881,Salvager's Helm,100000ad,14,0.66
+1455,Cold Shield,1000009b,,
+1456,Fire Shield,1000015e,,
+1457,Superior Shield,100004a7,1,
+3942,Aegis,10000155,39,
+6439,Emblem of Marriage,1000009a,61,
+7312,Kite Shield,1000009a,4,
+7969,Kite Shield,1000009a,4,
+8030,Shendolain Crystal Shield,10000245,13,
+8033,Shendolain Soul Crystal Shield,10000245,13,
+8689,A Society Buckler,1000015f,8,
+8690,An Explorer Buckler,1000015f,8,
+9094,Unkindled Thaumaturgic Plate Coat,10000291,20,0.5
+9095,Unkindled Thaumaturgic Plate Girth,10000292,20,0.5
+9096,Unkindled Thaumaturgic Plate Leggings,10000293,20,0.5
+9391,Lugian Crest,100002ca,19,
+14423,Folded Strathelar Guards Uniform,1000035c,17,0.7
+14918,Emblem of Marriage,1000037f,8,
+15402,Cragstone's Shield,1000037d,27,
+15863,Bronze Large Kite Shield,10000099,27,
+15864,Bronze Round Shield,1000015e,27,
+15865,Bronze Tower Shield,1000009b,27,
+15866,Bronze Cragstone's Shield,1000037d,25,
+15867,Bronze Large Kite Shield,1000037d,25,
+15868,Bronze Round Shield,1000015e,25,
+15869,Bronze Tower Shield,1000009b,25,
+20641,Cragstone's Shield,1000037d,25,
+23135,Kite Shield,1000009a,4,
+23683,Kite Shield,1000009a,4,
+23684,Kite Shield,1000009a,4,
+23686,Kite Shield,1000009a,4,
+25547,Greater Olthoi Shield,100004db,,
+25548,Fine Olthoi Shield,100004db,,
+25549,Good Olthoi Shield,100004db,,
+25550,Lesser Olthoi Shield,100004db,,
+25811,Shield of Power,100004fe,1,
+28163,Round Shield,1000015e,4,
+35,Chainmail Basinet,1000003a,20,0.66
+36,Leather Bracers,1000000c,4,0.66
+37,Scalemail Bracers,1000000e,20,0.66
+38,Studded Leather Bracers,1000000f,4,0.66
+39,Leather Breastplate,10000055,4,0.66
+40,Platemail Breastplate,10000004,20,0.33
+41,Scalemail Breastplate,10000027,20,0.33
+42,Studded Leather Breastplate,10000028,18,0.33
+43,Yoroi Breastplate,10000025,20,0.33
+45,Leather Cap,10000009,4,0.66
+46,Metal Cap,10000040,20,0.66
+47,Leather Coat,100000a4,4,0.66
+48,Studded Leather Coat,100000a7,4,0.66
+50,Leather Cuirass,1000009f,4,0.66
+51,Platemail Cuirass,100000a0,20,0.66
+52,Scalemail Cuirass,100000a1,20,0.66
+53,Studded Leather Cuirass,100000a2,4,0.66
+54,Yoroi Cuirass,100000a3,20,0.66
+55,Chainmail Gauntlets,10000014,20,0.66
+56,Leather Gauntlets,10000008,4,0.66
+57,Platemail Gauntlets,10000011,20,0.66
+58,Scalemail Gauntlets,10000012,20,0.66
+59,Studded Leather Gauntlets,10000013,4,0.66
+60,Leather Girth,10000043,4,0.66
+61,Platemail Girth,10000045,20,0.33
+62,Scalemail Girth,10000046,20,0.66
+63,Studded Leather Girth,10000048,4,0.66
+64,Yoroi Girth,10000047,20,0.66
+65,Leather Greaves,10000057,4,0.66
+66,Platemail Greaves,10000049,20,0.33
+67,Scalemail Greaves,1000004a,20,0.66
+68,Studded Leather Greaves,1000004b,4,0.66
+69,Yoroi Greaves,1000004c,20,0.66
+71,Chainmail Hauberk,10000006,20,0.66
+72,Platemail Hauberk,100000a5,20,0.66
+73,Scalemail Hauberk,100000a6,20,0.66
+74,Heaume,100000ad,20,0.66
+75,Helmet,1000002c,20,0.66
+76,Horned Helm,1000002d,20,0.66
+77,Kabuton,10000022,20,0.33
+78,Kote,1000003f,20,0.33
+80,Chainmail Leggings,10000015,20,0.33
+81,Leather Leggings,1000004d,4,0.66
+82,Platemail Leggings,10000016,20,0.66
+83,Scalemail Leggings,10000017,20,0.66
+84,Studded Leather Leggings,10000019,18,0.66
+85,Chainmail Coif,10000034,20,0.66
+86,Leather Pauldrons,1000004f,4,0.66
+87,Platemail Pauldrons,10000050,20,0.33
+88,Scalemail Pauldrons,10000051,20,0.66
+89,Studded Leather Pauldrons,10000052,4,0.66
+90,Yoroi Pauldrons,10000053,20,0.66
+96,Chainmail Shirt,100000a8,20,1
+97,Leather Shirt,100000a9,4,0.66
+98,Scalemail Shirt,100000ab,20,0.66
+99,Studded Leather Shirt,100000ac,4,0.66
+101,Chainmail Sleeves,10000030,20,0.66
+102,Leather Sleeves,1000002e,4,0.66
+103,Platemail Sleeves,10000032,20,0.66
+104,Scalemail Sleeves,10000031,20,0.66
+105,Studded Leather Sleeves,1000002f,4,0.66
+106,Yoroi Sleeves,10000033,20,0.66
+107,Sollerets,10000054,20,0.66
+108,Chainmail Tassets,100003d7,20,0.66
+109,Leather Tassets,100003d4,4,0.66
+110,Platemail Tassets,100003d5,20,0.33
+111,Scalemail Tassets,100003d3,20,0.66
+112,Studded Leather Tassets,100003d8,4,0.66
+113,Yoroi Tassets,100003d6,20,0.66
+114,Platemail Vambraces,1000000d,20,0.33
+115,Leather Boots,10000007,4,0.1
+116,Studded Leather Boots,10000056,4,0.1
+296,Crown,10000035,21,0.66
+413,Chainmail Bracers,1000003e,20,0.66
+414,Chainmail Breastplate,10000026,20,0.66
+415,Chainmail Girth,10000041,20,0.66
+416,Chainmail Pauldrons,1000004e,20,0.66
+458,Leather Cowl,1000000a,4,0.66
+550,Baigha,100000ae,20,0.66
+551,Leather Basinet,10000038,4,0.66
+552,Scalemail Basinet,1000003b,20,0.66
+554,Studded Leather Basinet,10000039,4,0.5
+723,Studded Leather Cowl,1000000a,4,0.66
+793,Scalemail Coif,1000009d,20,0.66
+1453,Fire Bracers,1000000c,14,0.66
+1518,Superior Helmet,1000002c,20,0.66
+2017,Green Mire Yoroi Cuirass,100000a3,8,0.66
+2032,Branith's Shirt,1000046d,4,0.66
+2437,Yoroi Leggings,100000f1,20,0.66
+2605,Chainmail Greaves,100000f0,20,0.66
+4222,Armoredillo Hide Bracers,100004d2,4,0.66
+5893,Hoary Mattekar Robe,10000314,61,1
+6003,Koujia Breastplate,1000018c,20,0.33
+6004,Koujia Leggings,10000189,20,0.66
+6005,Koujia Sleeves,1000018b,9,0.66
+6043,Celdon Girth,10000183,20,0.33
+6044,Celdon Breastplate,10000188,20,0.33
+6045,Celdon Leggings,10000184,20,0.66
+6046,Amuli Coat,100001a1,20,0.66
+6047,Amuli Leggings,100001a0,9,0.5
+6048,Celdon Sleeves,10000187,20,0.66
+7897,Steel Toed Boots,10000239,4,0.1
+8396,Heaume,100000ad,20,0.33
+8488,Armet,1000026b,20,0.66
+8489,Heaume,10000278,20,0.66
+8636,Hoory Mattekar Robe,10000315,67,1
+8685,A Pair Of Society Leather Bracers,1000000c,1,0.3
+8686,A Pair Of Explorer Leather Bracers,100004e2,27,0.66
+9032,Exarch Plate Coat,10000294,2,0.5
+9033,Exarch Plate Coat,10000294,9,0.5
+9034,Exarch Plate Coat,10000294,20,0.5
+9082,Thaumaturgic Plate Coat,10000291,2,0.5
+9083,Thaumaturgic Plate Coat,10000291,9,0.5
+9084,Thaumaturgic Plate Coat,10000291,20,0.5
+12138,Helm of the Simulacra,10000325,2,
+12139,Imbued Helm of the Simulacra,10000325,5,0.66
+13239,Leather Cap,10000009,4,0.66
+13240,Leather Gauntlets,10000008,4,0.66
+13241,Leather Leggings,1000004d,4,0.66
+21150,Covenant Sollerets,100003e2,20,0.66
+21151,Covenant Bracers,100003dc,20,0.33
+21152,Covenant Breastplate,100003e4,20,0.33
+21153,Covenant Gauntlets,100003dd,20,0.66
+21154,Covenant Girth,100003de,20,0.33
+21155,Covenant Greaves,100003df,20,0.33
+21156,Covenant Helm,100003e0,20,0.66
+21157,Covenant Pauldrons,100003e1,20,0.33
+21159,Covenant Tassets,100003e3,20,0.33
+22024,Full Mu-miyah Guise,100003fc,46,0.66
+22551,Atlatl Tattoo,10000429,1,0.33
+22552,Axe Tattoo,1000042a,2,0.33
+22553,Bow Tattoo,1000042b,3,0.33
+22554,Crossbow Tattoo,1000042c,4,0.33
+22555,Dagger Tattoo,1000042d,5,0.33
+22556,Mace Tattoo,1000042e,6,0.33
+22561,Spear Tattoo,1000042f,7,0.33
+22562,Staff Tattoo,10000430,8,0.33
+22563,Sword Tattoo,10000431,9,0.33
+22564,Unarmed Tattoo,10000432,10,1
+23592,Gauntlets of Marksmanship,1000028c,4,0.66
+23930,Auroric Exarch Coat,1000044a,2,0.5
+23931,Auroric Exarch Coat,1000044a,8,0.5
+23932,Auroric Exarch Coat,1000044a,14,0.5
+23933,Luminescent Thaumaturgic Coat,1000044b,2,0.5
+23934,Luminescent Thaumaturgic Coat,1000044b,8,0.5
+23935,Luminescent Thaumaturgic Coat,1000044b,14,0.5
+24455,Missile Specialist's Gauntlets,1000049c,14,0.66
+24456,Missile Specialist's Gauntlets,1000049c,14,0.66
+24458,Light Weapons Specialist's Gauntlets,1000049c,14,0.66
+24460,Finesse Weapons Specialist's Gauntlets,1000049c,14,0.66
+24462,Light Weapons Specialist's Gauntlets,1000049c,14,0.66
+24464,Light Weapons Specialist's Gauntlets,1000049c,14,0.66
+24465,Light Weapons Specialist's Gauntlets,1000049c,14,0.66
+24466,Light Weapons Specialist's Gauntlets,1000049c,14,0.66
+24468,Heavy Weapons Specialist's Gauntlets,1000049c,14,0.66
+24469,Missile Specialist's Gauntlets,1000049c,14,0.66
+25528,Hearty Reedshark Robe,100004d6,8,0
+25636,Leather Helm,100004e7,4,0.66
+25637,Leather Bracers,100004e2,4,0.66
+25638,Leather Vest,100004ec,4,0.66
+25639,Leather Jerkin,100004e1,4,0.66
+25640,Leather Cowl,100004e8,4,0.66
+25641,Leather Cuirass,100004e3,4,0.66
+25642,Leather Gauntlets,100004e4,4,0.66
+25643,Leather Girth,100004ea,4,0.66
+25644,Leather Greaves,100004df,4,0.66
+25645,Leather Leggings,100004de,4,0.66
+25646,Long Leather Gauntlets,100004e5,4,
+25647,Leather Pants,100004ed,4,0.66
+25648,Leather Pauldrons,100004eb,4,0.66
+25649,Leather Shirt,100004dc,4,0.66
+25650,Leather Shorts,100004dd,4,0.66
+25651,Leather Sleeves,100004e0,4,0.66
+25652,Leather Tassets,100004e9,4,0.66
+25661,Leather Boots,100004e6,4,0.1
+25840,Snarl's Jerkin,10000511,4,0.66
+25982,Battle Pants,1000052d,61,0
+26004,Crown of Bone,10000530,39,0.66
+27215,Chiran Coat,1000053d,20,0.66
+27216,Chiran Gauntlets,1000053f,20,0.66
+27217,Chiran Helm,10000541,20,0.33
+27218,Chiran Leggings,10000540,20,0
+27219,Chiran Sandals,1000053e,20,0.66
+27220,Lorica Boots,10000542,20,0.66
+27221,Lorica Breastplate,10000547,20,0.33
+27222,Lorica Gauntlets,10000543,20,0.66
+27223,Lorica Helm,10000544,20,0.33
+27224,Lorica Leggings,10000545,20,0.66
+27225,Lorica Sleeves,10000546,20,0.66
+27226,Nariyid Boots,1000054c,20,0.66
+27227,Nariyid Breastplate,1000054b,20,0.33
+27228,Nariyid Gauntlets,1000054e,20,0.66
+27229,Nariyid Girth,10000548,20,0.33
+27230,Nariyid Helm,1000054d,20,0.33
+27231,Nariyid Leggings,1000054a,20,0.66
+27232,Nariyid Sleeves,10000549,20,0.66
+28611,Viamontian Laced Boots,100005b5,,0.1
+28617,Alduressa Helm,100005bd,20,0.096
+28618,Diforsa Helm,100005be,20,
+28620,Alduressa Leggings,100005bf,20,0.096
+28621,Diforsa Leggings,100005c0,20,
+28622,Tenassa Leggings,100005c1,20,0.579
+28623,Diforsa Pauldrons,100005c2,20,
+28624,Tenassa Sleeves,100005c3,20,0.579
+28625,Diforsa Sollerets,100005c4,20,
+28626,Diforsa Tassets,100005c5,20,
+28627,Diforsa Bracers,100005c6,20,
+28628,Diforsa Breastplate,100005c7,20,
+28629,Alduressa Coat,100005c8,20,0.096
+28630,Diforsa Cuirass,100005c9,20,
+28632,Diforsa Gauntlets,100005cb,20,
+28633,Diforsa Girth,100005cc,20,
+28634,Diforsa Greaves,100005cd,20,
+28814,Lorca Sammel's Gauntlets,100005d4,,
+28852,Fiun Spellcasting Gloves,100005d5,,
+29050,Ruschk Hunter Leggings,100005d6,1,0
+29058,Helm of Gratitude,100005d7,1,0
+29364,Silver Invader Lord Helm,100005d8,,
+29365,Blooded Silver Invader Lord Helm,100005d9,1,0
+29366,Copper Invader Lord Helm,100005da,,
+29367,Blooded Copper Invader Lord Helm,100005db,1,0
+29368,Gold Invader Lord Helm,100005dc,,
+29369,Blooded Gold Invader Lord Helm,100005dd,1,0
+29370,Platinum Invader Lord Helm,100005de,,
+29371,Blooded Platinum Invader Lord Helm,100005df,,
+29494,Breastplate of Karlun,100005e1,39,0
+29514,Noble Coat,1000058d,21,0.66
+29515,Noble Coat of Balance,1000058d,21,0.66
+29516,Noble Coat of Health,1000058d,21,0.66
+29517,Noble Coat of Brilliance,1000058d,21,0.66
+29518,Noble Coat of Speed,1000058d,21,0.66
+29519,Noble Coat of Will,1000058d,21,0.66
+29520,Noble Coat of Might,1000058d,21,0.66
+29521,Noble Gauntlets,1000058b,21,0.66
+29522,Noble Gauntlets of Balance,1000058b,21,0.66
+29523,Noble Gauntlets of Health,1000058b,21,0.66
+29524,Noble Gauntlets of Brilliance,1000058b,21,0.66
+29525,Noble Gauntlets of Speed,1000058b,21,0.66
+29526,Noble Gauntlets of Will,1000058b,21,0.66
+29527,Noble Gauntlets of Strength,1000058b,21,0.66
+29528,Noble Helm,1000058f,21,0.66
+29529,Noble Helm of Balance,1000058f,21,0.66
+29530,Noble Helm of Health,1000058f,21,0.66
+29531,Noble Helm of Brilliance,1000058f,21,0.66
+29532,Noble Helm of Speed,1000058f,21,0.66
+29533,Noble Helm of Will,1000058f,21,0.66
+29534,Noble Helm of Might,1000058f,21,0.66
+29543,Armsman's Robe,10000590,21,1
+30367,Footman's Boots,100005e3,1,0.66
+30368,Steel Wall Boots,100005e4,1,
+30369,Tracker Boots,100005e5,1,
+30393,Suzuhara's Girth of Flame Protection,10000597,14,0.66
+30510,Adept's Fervor,100005e6,1,0.66
+30511,Gelidite Mitre,100005e7,4,0.66
+30512,Imperial Chevaird's Helm,100005e8,1,0.66
+30513,Greaves of Leikotha's Tears,100005e9,4,0.66
+30514,Gelidite Greaves,100005ea,4,0.66
+30515,Gelidite Tassets,100005eb,4,0.66
+30516,Tassets of Leikotha's Tears,100005ec,4,0.66
+30517,Gelidite Girth,100005ed,4,0.66
+30518,Girth of Leikotha's Tears,100005ee,4,0.66
+30519,Gelidite Breastplate,100005ef,4,0.66
+30520,Breastplate of Leikotha's Tears,100005f0,4,0.66
+30521,Pauldrons of Leikotha's Tears,100005f1,4,0.66
+30522,Gelidite Pauldrons,100005f2,4,0.66
+30523,Bracers of Leikotha's Tears,100005f3,4,0.66
+30524,Gelidite Bracers,100005f4,4,0.66
+30525,Gauntlets of Leikotha's Tears,100005f5,4,0.66
+30526,Gelidite Gauntlets,100005f6,4,0.66
+30527,Valkeer's Helm,100005f7,1,0.66
+30528,Helm of Leikotha's Tears,100005f8,4,0.66
+30529,Gelidite Boots,100005f9,1,
+30530,Dusk Leggings,100005fa,1,0.66
+30531,Patriarch's Twilight Tights,100005fb,1,0.66
+30532,Dusk Coat,100005fc,1,
+30533,Patriarch's Twilight Coat,100005fd,1,
+30534,Gauntlets of the Crimson Star,100005fe,1,0.66
+30546,Coat of the Zaikhal Defender,100005c8,30,
+30645,Aviator's Cap,1000059e,4,0.66
+30948,Diforsa Hauberk,100005e0,20,
+30949,Diforsa Sleeves,100005e2,20,
+30950,Alduressa Boots,100005d3,20,0.1
+30951,Alduressa Gauntlets,1000060e,20,0.66
+31026,Tenassa Breastplate,100005ca,20,0.579
+31249,Viamontian Laced Boots,100005b5,,0.1
+31322,Squalid Leggings,10000615,21,
+31363,Axe Head Helm,10000614,4,
+31393,Mitts of the Hunter,10000624,4,0
+31394,Circle of Raven Might,10000623,4,
+31510,Surloshen's Helm,10000620,2,
+31708,Hea Bone and Hide Shirt,10000630,4,0
+31751,Squalid Coat,10000616,21,
+31864,Teardrop Crown,1000063b,21,0.66
+31865,Circlet,1000063d,21,0.66
+31866,Coronet,1000063c,21,0.66
+31867,Diadem,1000063e,21,0.66
+31868,Signet Crown,1000063a,21,0.66
+32148,Shadow Wings Breastplate,1000064b,39,0.66
+32149,White Rabbit Mask,1000064c,4,0
+32151,Virindi Desecrator Mask,10000660,4,
+32156,Maddened Fiun Mask,1000064d,4,0.66
+32157,Hollow Minion Mask,1000064e,4,0.66
+32158,Homunculus Mask,1000064f,4,0
+32159,Penguin Mask,10000650,4,0
+32160,Uber Penguin Mask,10000651,4,0.66
+32161,Ruschk Mask,10000652,4,0
+32162,Snowman Mask,10000653,4,0.66
+32163,Two Headed Snowman Mask,10000654,4,0
+32165,Giant Snowman Mask,10000656,4,0.66
+32166,Snowman Mask with Hat,10000657,4,0.66
+32167,Snowman Mask with Fez,10000655,4,0
+32168,Dual Eye Patch,1000065c,39,0
+32169,Eye Patch,1000065a,39,
+32249,Noble Gauntlets of Loyalty,1000058b,21,0.66
+32300,Nexus Commander's Helm,10000640,2,0.667
+32306,Viamontian Lord's Helm,10000662,13,0
+32520,Fleet Strike Gauntlets,10000664,61,
+32559,Blackmoor Helm,100004b9,17,0
+32630,Whispering Blade Gloves,10000667,,
+32679,Whispering Blade Boots,10000669,1,0
+32687,Rossu Morta Boots,1000066a,1,0
+32756,Prismatic Amuli Coat,1000066d,39,
+32757,Prismatic Amuli Leggings,1000066e,39,
+32759,Prismatic Celdon Breastplate,1000066f,39,
+32761,Prismatic Celdon Girth,10000670,39,
+32762,Prismatic Celdon Leggings,10000671,39,
+32765,Prismatic Celdon Sleeves,10000672,39,
+32927,White Rabbit Girth,1000067d,61,
+33104,Helm of Isin Dule,10000680,39,
+33202,Harbinger Arm Guard,10000682,39,0
+33574,Relic Alduressa Coat,10000684,14,
+33575,Relic Alduressa Gauntlets,10000685,14,
+33576,Relic Alduressa Helm,10000686,14,
+33577,Relic Alduressa Leggings,10000687,14,
+33578,Relic Alduressa Sollerets,10000688,14,
+33579,Ancient Relic Vestment and Bracers,10000689,39,
+33580,Ancient Relic Gauntlets,1000068a,39,
+33581,Ancient Relic Helm,1000068b,39,
+33582,Ancient Relic Leggings,1000068c,39,
+33583,Ancient Relic Sollerets,1000068d,39,
+33584,Noble Relic Coat of Brilliance,1000068e,21,
+33585,Noble Relic Gauntlets of Strength,1000068f,21,
+33586,Noble Relic Helm of Will,10000690,21,
+33587,Noble Relic Leggings of Health,10000691,21,
+33588,Noble Relic Sollerets of Speed,10000692,21,
+33597,Pathwarden Plate Hauberk,100000a5,20,0.714
+33598,Pathwarden Scale Hauberk,100000a6,20,0.786
+33599,Pathwarden Yoroi Hauberk,10000693,20,0.714
+33600,Pathwarden Diforsa Hauberk,100005e0,20,0.1
+33601,Pathwarden Plate Leggings,10000016,20,0.857
+33602,Pathwarden Scale Leggings,10000017,20,0.786
+33603,Pathwarden Yoroi Leggings,100000f1,20,0.786
+33604,Pathwarden Diforsa Leggings,100005c0,20,0.1
+33605,Pathwarden Sollerets,1000028b,20,0.714
+33606,Pathwarden Gauntlets,10000011,20,0.714
+33607,Pathwarden Helm,1000002c,20,0.643
+33821,Breastplate of Splendor,10000695,20,0
+33822,Breastplate of Grace,10000696,20,0
+33823,Breastplate of Power,10000697,20,0
+33887,Helm of the White Totem,10000644,90,0.5
+33888,Helm of the Black Totem,10000644,39,0.5
+33889,Helm of the Abyssal Totem,10000644,13,
+33949,Enhanced Gauntlets of Marksmanship,10000013,4,0.667
+33973,Shou-jen Jika-Tabi,10000698,9,
+33974,Shou-jen Shozoku Sleeve Gauntlets,1000069a,9,
+33975,Shou-jen Shozoku Jacket,10000699,9,
+33976,Shou-jen Shozoku Mask,1000069c,9,
+33977,Shou-jen Shozoku Trousers,1000069b,9,
+34025,Falatacot Abbess Mask,1000069f,69,
+34026,Mask of the Hopeslayer,100006a0,9,
+34027,Shadow Mask,10000674,39,
+34040,Fiun Crown,100006b4,21,0.667
+34100,The Red Bull,100006a2,14,
+34143,The Boar of Cinghalle,100006a4,8,
+34144,The Stag of Bellenesse,100006a5,9,
+34214,The Dragon of Power,100006ad,8,
+34217,Mask of the Malik,100006b5,13,
+34218,The Helm of the Golden Flame,100006b6,21,
+34255,Karlun's Visage,100006b7,14,
+35805,Fists of Stone,100005cb,20,0.1
+35857,Mask of the Depths,10000660,,
+35938,Tusker Skull Helm,100006de,4,
+36048,Visage of the Shadow Virindi,100006e8,39,0
+36174,Harbinger's Foci,100006e2,,
+36352,Asheron Mask,1000065e,,
+36353,Undead Sailor Mask,100006ed,4,
+36354,Cow Mask,100006e3,4,
+36355,Mukkir Mask,100006e6,39,
+36356,Undead Captain Mask,100006ef,4,0.66
+36357,Bandana with Eyepatch,100006ee,4,
+36358,Undead Captain's Hat,100006f0,4,
+36638,Helm of the Crag,100002b7,2,0.25
+36719,Balor's Robe,1000018d,90,
+36747,Empowered Bracers of the Perfect Light,100006f2,,
+36748,Empowered Breastplate of the Perfect Light,100006f3,,
+36749,Empowered Pauldrons of the Perfect Light,100006f4,,
+36948,Empowered Helm of the Perfect Light,1000071f,,
+37111,Empowered Girth of the Perfect Light,10000724,,
+37112,Empowered Greaves of the Perfect Light,10000725,,
+37113,Empowered Tassets of the Perfect Light,10000726,,
+37187,Olthoi Alduressa Gauntlets,10000737,,
+37188,Olthoi Amuli Gauntlets,10000716,,
+37189,Olthoi Celdon Gauntlets,100006f9,,
+37190,Olthoi Koujia Gauntlets,10000716,2,
+37191,Olthoi Gauntlets,10000716,20,0.66
+37192,Olthoi Celdon Girth,100006fa,,
+37193,Olthoi Girth,1000071c,20,0.33
+37194,Olthoi Greaves,10000717,20,0.33
+37195,Olthoi Alduressa Helm,10000738,,
+37196,Olthoi Amuli Helm,10000735,,
+37197,Olthoi Celdon Helm,100006fb,,
+37198,Olthoi Koujia Kabuton,10000732,2,
+37199,Olthoi Helm,1000071d,20,0.66
+37200,Olthoi Alduressa Leggings,10000739,,
+37201,Olthoi Amuli Leggings,1000072b,,
+37202,Olthoi Celdon Leggings,100006fc,,
+37203,Olthoi Koujia Leggings,10000734,2,
+37204,Olthoi Pauldrons,10000718,20,0.33
+37205,Olthoi Celdon Sleeves,100006fd,,
+37206,Olthoi Koujia Sleeves,1000072d,2,
+37207,Olthoi Alduressa Boots,1000073a,,
+37208,Olthoi Amuli Sollerets,100006f7,,
+37209,Olthoi Celdon Sollerets,100006f7,,
+37210,Olthoi Koujia Sollerets,1000071a,2,
+37211,Olthoi Sollerets,1000071a,20,0.66
+37212,Olthoi Tassets,10000719,20,0.33
+37213,Olthoi Bracers,10000715,20,0.33
+37214,Olthoi Celdon Breastplate,100006f8,,
+37215,Olthoi Koujia Breastplate,10000733,2,
+37216,Olthoi Breastplate,1000071b,20,0.33
+37217,Olthoi Alduressa Coat,10000736,,
+37299,Olthoi Amuli Coat,1000072c,,
+38044,Green Mire Yoroi Cuirass,100000a3,8,0.66
+38083,Visage of Menilesh,1000072f,,
+38463,Celestial Hand Breastplate,1000073c,,
+38464,Celestial Hand Gauntlets,1000073d,,
+38465,Celestial Hand Girth,1000073e,,
+38466,Celestial Hand Greaves,1000073f,,
+38467,Celestial Hand Helm,10000740,,
+38468,Celestial Hand Pauldrons,10000741,,
+38469,Celestial Hand Tassets,10000743,,
+38470,Celestial Hand Vambraces,1000073b,,
+38471,Celestial Hand Sollerets,10000742,,
+38472,Eldrytch Web Breastplate,1000074e,,
+38473,Eldrytch Web Gauntlets,1000074f,,
+38474,Eldrytch Web Girth,10000750,,
+38475,Eldrytch Web Greaves,10000751,,
+38476,Eldrytch Web Helm,10000752,,
+38477,Eldrytch Web Pauldrons,10000753,,
+38478,Eldrytch Web Tassets,10000755,,
+38479,Eldrytch Web Vambraces,1000074d,,
+38480,Eldrytch Web Sollerets,10000754,,
+38481,Radiant Blood Breastplate,10000745,,
+38482,Radiant Blood Gauntlets,10000746,,
+38483,Radiant Blood Girth,10000747,,
+38484,Radiant Blood Greaves,10000748,,
+38485,Radiant Blood Helm,10000749,,
+38486,Radiant Blood Pauldrons,1000074a,,
+38487,Radiant Blood Tassets,1000074c,,
+38488,Radiant Blood Vambraces,10000744,,
+38489,Radiant Blood Sollerets,1000074b,,
+39027,Armored Sclavus Mask,1000075a,4,
+39028,Armored Sclavus Mask,1000075b,4,
+39029,Armored Sclavus Mask,1000075c,4,
+40446,Upgraded Enscorcelled Robe,10000592,21,1
+40447,Upgraded Armsman's Robe,10000590,21,1
+40448,Upgraded Marksman's Robe,10000591,21,1
+40508,Machinist's Gloves,100004e4,4,0.66
+40601,Upgraded Snarl's Jerkin,10000511,4,0.66
+40602,Upgraded Scourge's Hide Leggings,10000512,39,0.66
+40603,Upgraded Plaguefang's Robe,10000513,14,1
+40801,Nexus Crawler's Mask,100007b0,39,
+41197,Coat of Darkness,10000736,17,0
+41198,Gauntlets of Darkness,10000737,17,0
+41199,Helm of Darkness,10000738,17,0
+41200,Leggings of Darkness,10000739,17,0
+41201,Sollerets of Darkness,1000073a,17,0
+42121,Platemail Hauberk of the Ogre,100000a5,13,0
+42667,Top Hat,100007a0,21,0.66
+42749,Haebrean Breastplate,100007a5,20,0.33
+42750,Haebrean Gauntlets,100007a6,20,0.33
+42751,Haebrean Girth,100007a7,20,0.33
+42752,Haebrean Greaves,100007a8,20,0.33
+42753,Haebrean Helm,100007a9,20,0.893
+42754,Haebrean Pauldrons,100007aa,20,0.33
+42755,Haebrean Boots,100007ab,20,0.66
+42756,Haebrean Tassets,100007ac,20,0.33
+42757,Haebrean Vambraces,100007a4,20,0.33
+43048,Knorr Academy Breastplate,100007b2,10,0.268
+43049,Knorr Academy Gauntlets,100007b3,6,0.75
+43050,Knorr Academy Girth,100007b4,1,0.66
+43051,Knorr Academy Greaves,100007b5,8,0.107
+43052,Knorr Academy Pauldrons,100007b7,5,0.804
+43053,Knorr Academy Boots,100007b8,2,1
+43054,Knorr Academy Tassets,100007b9,12,0.661
+43055,Knorr Academy Vambraces,100007b1,13,0.839
+43068,Knorr Academy Helm,100007b6,14,0.429
+43197,Apostate Grand Director's Mask,100007b0,14,
+43241,Gurog Guise,100007bb,4,
+43274,Empyrean Over-robe,100006ba,2,
+43420,Corruptor's Gauntlets,1000049c,14,0.66
+43595,Soldier Thorax Metamorphi,100007c3,,
+43596,Soldier Thorax Metamorphi,100007c3,,
+43597,Soldier Thorax Metamorphi,100007c3,,
+43598,Soldier Thorax Metamorphi,100007c3,,
+43599,Soldier Pincer Metamorphi,100007c3,,
+43600,Soldier Pincer Metamorphi,100007c3,,
+43601,Soldier Pincer Metamorphi,100007c3,,
+43602,Soldier Pincer Metamorphi,100007c3,,
+43603,Soldier Abdomen Metamorphi,100007c3,,
+43604,Soldier Abdomen Metamorphi,100007c3,,
+43605,Soldier Abdomen Metamorphi,100007c3,,
+43606,Soldier Abdomen Metamorphi,100007c3,,
+43607,Soldier Tibia Metamorphi,100007c3,,
+43608,Soldier Tibia Metamorphi,100007c3,,
+43609,Soldier Tibia Metamorphi,100007c3,,
+43610,Soldier Tibia Metamorphi,100007c3,,
+43611,Soldier Head Metamorphi,100007c3,,
+43612,Soldier Head Metamorphi,100007c3,,
+43613,Soldier Head Metamorphi,100007c3,,
+43614,Soldier Head Metamorphi,100007c3,,
+43615,Soldier Trochanter Metamorphi,100007c3,,
+43616,Soldier Trochanter Metamorphi,100007c3,,
+43617,Soldier Trochanter Metamorphi,100007c3,,
+43618,Soldier Trochanter Metamorphi,100007c3,,
+43619,Soldier Foot Metamorphi,100007c3,,
+43620,Soldier Foot Metamorphi,100007c3,,
+43621,Soldier Foot Metamorphi,100007c3,,
+43622,Soldier Foot Metamorphi,100007c3,,
+43623,Soldier Femur Metamorphi,100007c3,,
+43624,Soldier Femur Metamorphi,100007c3,,
+43625,Soldier Femur Metamorphi,100007c3,,
+43626,Soldier Femur Metamorphi,100007c3,,
+43627,Soldier Pedipalp Metamorphi,100007c3,,
+43628,Soldier Pedipalp Metamorphi,100007c3,,
+43629,Soldier Pedipalp Metamorphi,100007c3,,
+43630,Soldier Pedipalp Metamorphi,100007c3,,
+43636,Spitter Thorax Metamorphi,100007c3,,
+43637,Spitter Thorax Metamorphi,100007c3,,
+43638,Spitter Thorax Metamorphi,100007c3,,
+43639,Spitter Thorax Metamorphi,100007c3,,
+43640,Spitter Pincer Metamorphi,100007c3,,
+43641,Spitter Pincer Metamorphi,100007c3,,
+43642,Spitter Pincer Metamorphi,100007c3,,
+43643,Spitter Pincer Metamorphi,100007c3,,
+43644,Spitter Abdomen Metamorphi,100007c3,,
+43645,Spitter Abdomen Metamorphi,100007c3,,
+43646,Spitter Abdomen Metamorphi,100007c3,,
+43647,Spitter Abdomen Metamorphi,100007c3,,
+43648,Spitter Tibia Metamorphi,100007c3,,
+43649,Spitter Tibia Metamorphi,100007c3,,
+43650,Spitter Tibia Metamorphi,100007c3,,
+43651,Spitter Tibia Metamorphi,100007c3,,
+43652,Spitter Head Metamorphi,100007c3,,
+43653,Spitter Head Metamorphi,100007c3,,
+43654,Spitter Head Metamorphi,100007c3,,
+43655,Spitter Head Metamorphi,100007c3,,
+43656,Spitter Trochanter Metamorphi,100007c3,,
+43657,Spitter Trochanter Metamorphi,100007c3,,
+43658,Spitter Trochanter Metamorphi,100007c3,,
+43659,Spitter Trochanter Metamorphi,100007c3,,
+43660,Spitter Foot Metamorphi,100007c3,,
+43661,Spitter Foot Metamorphi,100007c3,,
+43662,Spitter Foot Metamorphi,100007c3,,
+43663,Spitter Foot Metamorphi,100007c3,,
+43664,Spitter Femur Metamorphi,100007c3,,
+43665,Spitter Femur Metamorphi,100007c3,,
+43666,Spitter Femur Metamorphi,100007c3,,
+43667,Spitter Femur Metamorphi,100007c3,,
+43668,Spitter Pedipalp Metamorphi,100007c3,,
+43669,Spitter Pedipalp Metamorphi,100007c3,,
+43670,Spitter Pedipalp Metamorphi,100007c3,,
+43671,Spitter Pedipalp Metamorphi,100007c3,,
+43828,Sedgemail Leather Vest,100007c7,3,0.933
+43829,Sedgemail Leather Cowl,100007c8,18,0.733
+43830,Sedgemail Leather Gauntlets,100007c9,10,0.25
+43831,Sedgemail Leather Pants,100007ca,13,0.6
+43832,Sedgemail Leather Shoes,100007cb,13,0.75
+43833,Sedgemail Leather Sleeves,100007cc,1,1
+43925,Upgraded Relic Alduressa Coat,10000684,14,
+43926,Upgraded Ancient Relic Vestment and Bracers,10000689,39,
+43927,Upgraded Noble Relic Coat of Brilliance,1000068e,21,
+43928,Upgraded Relic Alduressa Gauntlets,10000685,14,
+43929,Upgraded Ancient Relic Gauntlets,1000068a,39,
+43930,Upgraded Noble Relic Gauntlets of Strength,1000068f,21,
+43931,Upgraded Relic Alduressa Helm,10000686,14,
+43932,Upgraded Ancient Relic Helm,1000068b,39,
+43933,Upgraded Noble Relic Helm of Will,10000690,21,
+43934,Upgraded Relic Alduressa Leggings,10000687,14,
+43935,Upgraded Ancient Relic Leggings,1000068c,39,
+43936,Upgraded Noble Relic Leggings of Health,10000691,21,
+43937,Upgraded Relic Alduressa Sollerets,10000688,14,
+43938,Upgraded Ancient Relic Sollerets,1000068d,39,
+43939,Upgraded Noble Relic Sollerets of Speed,10000692,21,
+44799,Faran Over-robe,100007e2,9,
+44800,Dho Vest and Over-Robe,100007e4,9,
+44801,Suikan Over-robe,100007e5,7,
+44802,Vestiri Over-robe,100007e6,13,
+44803,Empyrean Over-robe,100007e3,4,
+45030,Balor's Over-robe,1000018d,90,
+45031,Hoary Mattekar Over-robe,100007e2,61,1
+45032,Hoory Mattekar Over-robe,100007e2,67,1
+45960,Amateur Explorer Vambraces,100007a4,22,0.673
+45961,Seasoned Explorer Breastplate,100007a5,84,0.646
+45962,Amateur Explorer Breastplate,100007a5,22,0.673
+45963,Seasoned Explorer Gauntlets,100007a6,84,0.646
+45964,Amateur Explorer Gauntlets,100007a6,22,0.673
+45965,Seasoned Explorer Girth,100007a7,84,0.646
+45966,Amateur Explorer Girth,100007a7,22,0.673
+45967,Seasoned Explorer Greaves,100007a8,84,0.646
+45968,Amateur Explorer Greaves,100007a8,22,0.673
+45969,Seasoned Explorer Helm,100007a9,84,0.646
+45970,Amateur Explorer Helm,100007a9,22,0.673
+45971,Seasoned Explorer Pauldrons,100007de,84,0.646
+45972,Amateur Explorer Pauldrons,100007de,22,0.673
+45975,Seasoned Explorer Boots,100007ab,84,0.646
+45976,Amateur Explorer Boots,100007ab,22,0.673
+45977,Seasoned Explorer Tassets,100007ac,84,0.646
+45978,Amateur Explorer Tassets,100007ac,22,0.673
+45979,Seasoned Explorer Vambraces,100007a4,84,0.646
+46345,O-Yoroi Leggings,1000082b,39,0.236
+46551,O-Yoroi Gauntlets,1000082e,39,0.6
+46552,O-Yoroi Helm,1000082f,39,0.236
+46553,O-Yoroi Sandals,10000830,39,0.6
+46615,O-Yoroi Coat,10000833,39,0.236
+46641,Reinforced Shou-jen Jika-Tabi,10000834,9,0
+46642,Reinforced Shou-jen Shozoku Jacket,10000835,9,0
+46643,Reinforced Shou-jen Shozoku Gauntlets,10000836,9,0
+46644,Reinforced Shou-jen Shozoku Trousers,10000837,9,0
+46645,Reinforced Shou-jen Shozoku Mask,10000838,9,0
+47199,Forging Gloves,100004e4,93,0.5
+49620,Shadow Bracers,10000847,85,
+49621,Shadow Breastplate,100007c7,85,0.067
+49622,Shadow Gauntlets,100007c9,85,
+49623,Shadow Girth,10000848,85,0.067
+49624,Shadow Greaves,10000849,85,0.067
+49625,Shadow Helm,100007c8,85,0.067
+49626,Shadow Pauldrons,1000084a,85,0.067
+49627,Shadow Sollerets,100007cb,85,
+49628,Shadow Tassets,10000846,85,0.067
+49772,Shadow Tassets,10000846,92,0.067
+49773,Shadow Bracers,10000847,93,
+49774,Shadow Breastplate,100007c7,93,0.067
+49775,Shadow Gauntlets,100007c9,93,
+49776,Shadow Girth,10000848,93,0.067
+49777,Shadow Greaves,10000849,93,0.067
+49778,Shadow Helm,100007c8,93,0.067
+49779,Shadow Pauldrons,1000084a,93,0.067
+49780,Shadow Sollerets,100007cb,93,
+49781,Shadow Tassets,10000846,93,0.067
+49782,Shadow Bracers,10000847,92,
+49783,Shadow Breastplate,100007c7,92,0.067
+49784,Shadow Gauntlets,100007c9,92,
+49785,Shadow Girth,10000848,92,0.067
+49786,Shadow Greaves,10000849,92,0.067
+49787,Shadow Helm,100007c8,92,0.067
+49788,Shadow Pauldrons,1000084a,92,0.067
+49789,Shadow Sollerets,100007cb,92,
+49792,Major Shadow Bracers,10000847,93,
+49796,Major Shadow Breastplate,100007c7,93,0.586
+49800,Major Shadow Gauntlets,100007c9,93,
+49804,Major Shadow Girth,10000848,93,0.586
+49808,Major Shadow Greaves,10000849,93,0.586
+49812,Major Shadow Helm,100007c8,93,0.586
+49816,Major Shadow Pauldrons,1000084a,93,0.586
+49820,Major Shadow Sollerets,100007cb,93,
+49824,Major Shadow Tassets,10000846,93,0.586
+49863,Major Shadow Bracers,10000847,92,
+49891,Major Shadow Sollerets,100007cb,92,
+49901,Prismatic Shadow Bracers,1000084c,9,
+49905,Prismatic Shadow Breastplate,1000084d,9,
+49909,Prismatic Shadow Gauntlets,1000084e,9,
+49913,Prismatic Shadow Girth,1000084f,9,
+49917,Prismatic Shadow Greaves,10000850,9,
+49921,Prismatic Shadow Helm,10000851,9,
+49925,Prismatic Shadow Pauldrons,10000852,9,
+49929,Prismatic Shadow Sollerets,10000853,9,
+49933,Prismatic Shadow Tassets,1000084b,9,
+51854,Rynthid Minion of Torment's Mask,10000858,,0
+51855,Rynthid Minion of Rage's Mask,1000085b,,0
+51856,Rynthid Berserker's Mask,1000085d,,0
+51857,Rynthid Ravager's Mask,1000085c,,0
+51858,Rynthid Sorcerer of Torment's Mask,10000859,,0
+51859,Rynthid Sorcerer of Rage's Mask,1000085a,,0
+52201,Accursed Scarecrow Mask,10000868,,
+52580,Holiday Sweater,1000086c,,
+70281,Viamontian Commander's Helm,10000662,13,0
+70282,Viamontian Knight's Helm,10000662,13,0
+70283,Viamontian Tribune's Helm,10000662,13,0
+70313,Corrupted Noble Sollerets,1000058c,21,0.66
+70314,Noble Sollerets of Loyalty,1000058c,21,0.66
+70315,Corrupted Noble Leggings,1000058e,21,0.66
+70316,Noble Leggings of Loyalty,1000058e,21,0.66
+70317,Corrupted Noble Gauntlets,1000058b,21,0.66
+70318,Corrupted Noble Helm,1000058f,21,0.66
+70319,Noble Helm of Loyalty,1000058f,21,0.66
+70320,Corrupted Noble Coat,1000058d,21,0.66
+70321,Noble Coat of Loyalty,1000058d,21,0.66
+70338,Swift Strike Gauntlets,10000664,61,
+70339,Quick Strike Gauntlets,10000664,61,
+70385,Major Shadow Bracers,10000847,85,
+70386,Major Shadow Breastplate,100007c7,85,0.586
+70387,Major Shadow Gauntlets,100007c9,85,
+70388,Major Shadow Girth,10000848,85,0.586
+70389,Major Shadow Greaves,10000849,85,0.586
+70390,Major Shadow Helm,100007c8,85,0.586
+70391,Major Shadow Pauldrons,1000084a,85,0.586
+70392,Major Shadow Sollerets,100007cb,85,
+70393,Major Shadow Tassets,10000846,85,0.586
+70394,Major Shadow Bracers,10000847,92,
+70395,Major Shadow Breastplate,100007c7,92,0.586
+70396,Major Shadow Gauntlets,100007c9,92,
+70397,Major Shadow Girth,10000848,92,0.586
+70398,Major Shadow Greaves,10000849,92,0.586
+70399,Major Shadow Helm,100007c8,92,0.586
+70400,Major Shadow Pauldrons,1000084a,92,0.586
+70401,Major Shadow Sollerets,100007cb,92,
+70402,Major Shadow Tassets,10000846,92,0.586
+70403,Major Shadow Bracers,10000847,85,
+70404,Major Shadow Breastplate,100007c7,85,0.897
+70405,Major Shadow Gauntlets,100007c9,85,
+70406,Major Shadow Girth,10000848,85,0.897
+70407,Major Shadow Greaves,10000849,85,0.897
+70408,Major Shadow Helm,100007c8,85,0.897
+70409,Major Shadow Pauldrons,1000084a,85,0.897
+70410,Major Shadow Sollerets,100007cb,85,
+70411,Major Shadow Tassets,10000846,85,0.897
+70412,Major Shadow Bracers,10000847,93,
+70413,Major Shadow Breastplate,100007c7,93,0.897
+70414,Major Shadow Gauntlets,100007c9,93,
+70415,Major Shadow Girth,10000848,93,0.897
+70416,Major Shadow Greaves,10000849,93,0.897
+70417,Major Shadow Helm,100007c8,93,0.897
+70418,Major Shadow Pauldrons,1000084a,93,0.897
+70419,Major Shadow Sollerets,100007cb,93,
+70420,Major Shadow Tassets,10000846,93,0.897
+70421,Major Shadow Breastplate,100007c7,92,0.897
+70422,Major Shadow Gauntlets,100007c9,92,
+70423,Major Shadow Girth,10000848,92,0.897
+70424,Major Shadow Greaves,10000849,92,0.897
+70425,Major Shadow Helm,100007c8,92,0.897
+70426,Major Shadow Pauldrons,1000084a,92,0.897
+70427,Major Shadow Tassets,10000846,92,0.897
+70428,Major Shadow Bracers,10000847,85,
+70429,Major Shadow Breastplate,100007c7,85,0.69
+70430,Major Shadow Gauntlets,100007c9,85,
+70431,Major Shadow Girth,10000848,85,0.69
+70432,Major Shadow Greaves,10000849,85,0.69
+70433,Major Shadow Helm,100007c8,85,0.69
+70434,Major Shadow Pauldrons,1000084a,85,0.69
+70435,Major Shadow Sollerets,100007cb,85,
+70436,Major Shadow Tassets,10000846,85,0.69
+70437,Major Shadow Bracers,10000847,93,
+70438,Major Shadow Breastplate,100007c7,93,0.69
+70439,Major Shadow Gauntlets,100007c9,93,
+70440,Major Shadow Girth,10000848,93,0.69
+70441,Major Shadow Greaves,10000849,93,0.69
+70442,Major Shadow Helm,100007c8,93,0.69
+70443,Major Shadow Pauldrons,1000084a,93,0.69
+70444,Major Shadow Sollerets,100007cb,93,
+70445,Major Shadow Tassets,10000846,93,0.69
+70446,Major Shadow Bracers,10000847,92,
+70447,Major Shadow Breastplate,100007c7,92,0.69
+70448,Major Shadow Gauntlets,100007c9,92,
+70449,Major Shadow Girth,10000848,92,0.69
+70450,Major Shadow Greaves,10000849,92,0.69
+70451,Major Shadow Helm,100007c8,92,0.69
+70452,Major Shadow Pauldrons,1000084a,92,0.69
+70453,Major Shadow Sollerets,100007cb,92,
+70454,Major Shadow Tassets,10000846,92,0.69
+70455,Major Shadow Bracers,10000847,85,
+70456,Major Shadow Breastplate,100007c7,85,0.483
+70457,Major Shadow Gauntlets,100007c9,85,
+70458,Major Shadow Girth,10000848,85,0.483
+70459,Major Shadow Greaves,10000849,85,0.483
+70460,Major Shadow Helm,100007c8,85,0.483
+70461,Major Shadow Pauldrons,1000084a,85,0.483
+70462,Major Shadow Sollerets,100007cb,85,
+70463,Major Shadow Tassets,10000846,85,0.586
+70464,Major Shadow Bracers,10000847,93,
+70465,Major Shadow Breastplate,100007c7,93,0.483
+70466,Major Shadow Gauntlets,100007c9,93,
+70467,Major Shadow Girth,10000848,93,0.483
+70468,Major Shadow Greaves,10000849,93,0.483
+70469,Major Shadow Helm,100007c8,93,0.483
+70470,Major Shadow Pauldrons,1000084a,93,0.483
+70471,Major Shadow Sollerets,100007cb,93,
+70472,Major Shadow Tassets,10000846,93,0.483
+70473,Major Shadow Bracers,10000847,92,
+70474,Major Shadow Breastplate,100007c7,92,0.483
+70475,Major Shadow Gauntlets,100007c9,92,
+70476,Major Shadow Girth,10000848,92,0.483
+70477,Major Shadow Greaves,10000849,92,0.483
+70478,Major Shadow Helm,100007c8,92,0.483
+70479,Major Shadow Pauldrons,1000084a,92,0.483
+70480,Major Shadow Sollerets,100007cb,92,
+70481,Major Shadow Tassets,10000846,92,0.483
+70482,Blackfire Shadow Bracers,10000847,85,
+70483,Blackfire Shadow Breastplate,100007c7,85,0.586
+70484,Blackfire Shadow Gauntlets,100007c9,85,
+70485,Blackfire Shadow Girth,10000848,85,0.586
+70486,Blackfire Shadow Greaves,10000849,85,0.586
+70487,Blackfire Shadow Helm,100007c8,85,0.586
+70488,Blackfire Shadow Pauldrons,1000084a,85,0.586
+70489,Blackfire Shadow Sollerets,100007cb,85,
+70490,Blackfire Shadow Tassets,10000846,85,0.586
+70491,Blackfire Shadow Bracers,10000847,93,
+70492,Blackfire Shadow Breastplate,100007c7,93,0.586
+70493,Blackfire Shadow Gauntlets,100007c9,93,
+70494,Blackfire Shadow Girth,10000848,93,0.586
+70495,Blackfire Shadow Greaves,10000849,93,0.586
+70496,Blackfire Shadow Helm,100007c8,93,0.586
+70497,Blackfire Shadow Pauldrons,1000084a,93,0.586
+70498,Blackfire Shadow Sollerets,100007cb,93,
+70499,Blackfire Shadow Tassets,10000846,93,0.586
+70500,Blackfire Shadow Bracers,10000847,92,
+70501,Blackfire Shadow Breastplate,100007c7,92,0.586
+70502,Blackfire Shadow Gauntlets,100007c9,92,
+70503,Blackfire Shadow Girth,10000848,92,0.586
+70504,Blackfire Shadow Greaves,10000849,92,0.586
+70505,Blackfire Shadow Helm,100007c8,92,0.586
+70506,Blackfire Shadow Pauldrons,1000084a,92,0.586
+70507,Blackfire Shadow Sollerets,100007cb,92,
+70508,Blackfire Shadow Tassets,10000846,92,0.586
+70509,Blackfire Shadow Bracers,10000847,85,
+70510,Blackfire Shadow Breastplate,100007c7,85,0.897
+70511,Blackfire Shadow Gauntlets,100007c9,85,
+70512,Blackfire Shadow Girth,10000848,85,0.897
+70513,Blackfire Shadow Greaves,10000849,85,0.897
+70514,Blackfire Shadow Helm,100007c8,85,0.897
+70515,Blackfire Shadow Pauldrons,1000084a,85,0.897
+70516,Blackfire Shadow Sollerets,100007cb,85,
+70517,Blackfire Shadow Tassets,10000846,85,0.897
+70518,Blackfire Shadow Bracers,10000847,93,
+70519,Blackfire Shadow Breastplate,100007c7,93,0.897
+70520,Blackfire Shadow Gauntlets,100007c9,93,
+70521,Blackfire Shadow Girth,10000848,93,0.897
+70522,Blackfire Shadow Greaves,10000849,93,0.897
+70523,Blackfire Shadow Helm,100007c8,93,0.897
+70524,Blackfire Shadow Pauldrons,1000084a,93,0.897
+70525,Blackfire Shadow Sollerets,100007cb,93,
+70526,Blackfire Shadow Tassets,10000846,93,0.897
+70527,Blackfire Shadow Bracers,10000847,92,
+70528,Blackfire Shadow Breastplate,100007c7,92,0.897
+70529,Blackfire Shadow Gauntlets,100007c9,92,
+70530,Blackfire Shadow Girth,10000848,92,0.897
+70531,Blackfire Shadow Greaves,10000849,92,0.897
+70532,Blackfire Shadow Helm,100007c8,92,0.897
+70533,Blackfire Shadow Pauldrons,1000084a,92,0.897
+70534,Blackfire Shadow Sollerets,100007cb,92,
+70535,Blackfire Shadow Tassets,10000846,92,0.897
+70536,Blackfire Shadow Bracers,10000847,85,
+70537,Blackfire Shadow Breastplate,100007c7,85,0.69
+70538,Blackfire Shadow Gauntlets,100007c9,85,
+70539,Blackfire Shadow Girth,10000848,85,0.69
+70540,Blackfire Shadow Greaves,10000849,85,0.69
+70541,Blackfire Shadow Helm,100007c8,85,0.69
+70542,Blackfire Shadow Pauldrons,1000084a,85,0.69
+70543,Blackfire Shadow Sollerets,100007cb,85,
+70544,Blackfire Shadow Tassets,10000846,85,0.69
+70545,Blackfire Shadow Bracers,10000847,93,
+70546,Blackfire Shadow Breastplate,100007c7,93,0.69
+70547,Blackfire Shadow Gauntlets,100007c9,93,
+70548,Blackfire Shadow Girth,10000848,93,0.69
+70549,Blackfire Shadow Greaves,10000849,93,0.69
+70550,Blackfire Shadow Helm,100007c8,93,0.69
+70551,Blackfire Shadow Pauldrons,1000084a,93,0.69
+70552,Blackfire Shadow Sollerets,100007cb,93,
+70553,Blackfire Shadow Tassets,10000846,93,0.69
+70554,Blackfire Shadow Bracers,10000847,92,
+70555,Blackfire Shadow Breastplate,100007c7,92,0.69
+70556,Blackfire Shadow Gauntlets,100007c9,92,
+70557,Blackfire Shadow Girth,10000848,92,0.69
+70558,Blackfire Shadow Greaves,10000849,92,0.69
+70559,Blackfire Shadow Helm,100007c8,92,0.69
+70560,Blackfire Shadow Pauldrons,1000084a,92,0.69
+70561,Blackfire Shadow Sollerets,100007cb,92,
+70562,Blackfire Shadow Tassets,10000846,92,0.69
+70563,Blackfire Shadow Bracers,10000847,85,
+70564,Blackfire Shadow Breastplate,100007c7,85,0.483
+70565,Blackfire Shadow Gauntlets,100007c9,85,
+70566,Blackfire Shadow Girth,10000848,85,0.483
+70567,Blackfire Shadow Greaves,10000849,85,0.483
+70568,Blackfire Shadow Helm,100007c8,85,0.483
+70569,Blackfire Shadow Pauldrons,1000084a,85,0.483
+70570,Blackfire Shadow Sollerets,100007cb,85,
+70571,Blackfire Shadow Tassets,10000846,85,0.483
+70572,Blackfire Shadow Bracers,10000847,93,
+70573,Blackfire Shadow Breastplate,100007c7,93,0.483
+70574,Blackfire Shadow Gauntlets,100007c9,93,
+70575,Blackfire Shadow Girth,10000848,93,0.483
+70576,Blackfire Shadow Greaves,10000849,93,0.483
+70577,Blackfire Shadow Helm,100007c8,93,0.483
+70578,Blackfire Shadow Pauldrons,1000084a,93,0.483
+70579,Blackfire Shadow Sollerets,100007cb,93,
+70580,Blackfire Shadow Tassets,10000846,93,0.483
+70581,Blackfire Shadow Bracers,10000847,92,
+70582,Blackfire Shadow Breastplate,100007c7,92,0.483
+70583,Blackfire Shadow Gauntlets,100007c9,92,
+70584,Blackfire Shadow Girth,10000848,92,0.483
+70585,Blackfire Shadow Greaves,10000849,92,0.483
+70586,Blackfire Shadow Helm,100007c8,92,0.483
+70587,Blackfire Shadow Pauldrons,1000084a,92,0.483
+70588,Blackfire Shadow Sollerets,100007cb,92,
+70589,Blackfire Shadow Tassets,10000846,92,0.483
+70590,Enhanced Shadow Bracers,10000847,85,
+70591,Enhanced Shadow Breastplate,100007c7,85,0.586
+70592,Enhanced Shadow Gauntlets,100007c9,85,
+70593,Enhanced Shadow Girth,10000848,85,0.586
+70594,Enhanced Shadow Greaves,10000849,85,0.586
+70595,Enhanced Shadow Helm,100007c8,85,0.586
+70596,Enhanced Shadow Pauldrons,1000084a,85,0.586
+70597,Enhanced Shadow Sollerets,100007cb,85,
+70598,Enhanced Shadow Tassets,10000846,85,0.586
+70599,Enhanced Shadow Bracers,10000847,93,
+70600,Enhanced Shadow Breastplate,100007c7,93,0.586
+70601,Enhanced Shadow Gauntlets,100007c9,93,
+70602,Enhanced Shadow Girth,10000848,93,0.586
+70603,Enhanced Shadow Greaves,10000849,93,0.586
+70604,Enhanced Shadow Helm,100007c8,93,0.586
+70605,Enhanced Shadow Pauldrons,1000084a,93,0.586
+70606,Enhanced Shadow Sollerets,100007cb,93,
+70607,Enhanced Shadow Tassets,10000846,93,0.586
+70608,Enhanced Shadow Bracers,10000847,92,
+70609,Enhanced Shadow Breastplate,100007c7,92,0.586
+70610,Enhanced Shadow Gauntlets,100007c9,92,
+70611,Enhanced Shadow Girth,10000848,92,0.586
+70612,Enhanced Shadow Greaves,10000849,92,0.586
+70613,Enhanced Shadow Helm,100007c8,92,0.586
+70614,Enhanced Shadow Pauldrons,1000084a,92,0.586
+70615,Enhanced Shadow Sollerets,100007cb,92,
+70616,Enhanced Shadow Tassets,10000846,92,0.586
+70617,Enhanced Shadow Bracers,10000847,85,
+70618,Enhanced Shadow Breastplate,100007c7,85,0.897
+70619,Enhanced Shadow Gauntlets,100007c9,85,
+70620,Enhanced Shadow Girth,10000848,85,0.897
+70621,Enhanced Shadow Greaves,10000849,85,0.897
+70622,Enhanced Shadow Helm,100007c8,85,0.897
+70623,Enhanced Shadow Pauldrons,1000084a,85,0.897
+70624,Enhanced Shadow Sollerets,100007cb,85,
+70625,Enhanced Shadow Tassets,10000846,85,0.897
+70626,Enhanced Shadow Bracers,10000847,93,
+70627,Enhanced Shadow Breastplate,100007c7,93,0.897
+70628,Enhanced Shadow Gauntlets,100007c9,93,
+70629,Enhanced Shadow Girth,10000848,93,0.897
+70630,Enhanced Shadow Greaves,10000849,93,0.897
+70631,Enhanced Shadow Helm,100007c8,93,0.897
+70632,Enhanced Shadow Pauldrons,1000084a,93,0.897
+70633,Enhanced Shadow Sollerets,100007cb,93,
+70634,Enhanced Shadow Tassets,10000846,93,0.897
+70635,Enhanced Shadow Bracers,10000847,92,
+70636,Enhanced Shadow Breastplate,100007c7,92,0.897
+70637,Enhanced Shadow Gauntlets,100007c9,92,
+70638,Enhanced Shadow Girth,10000848,92,0.897
+70639,Enhanced Shadow Greaves,10000849,92,0.897
+70640,Enhanced Shadow Helm,100007c8,92,0.897
+70641,Enhanced Shadow Pauldrons,1000084a,92,0.897
+70642,Enhanced Shadow Sollerets,100007cb,92,
+70643,Enhanced Shadow Tassets,10000846,92,0.897
+70644,Enhanced Shadow Bracers,10000847,85,
+70645,Enhanced Shadow Breastplate,100007c7,85,0.69
+70646,Enhanced Shadow Gauntlets,100007c9,85,
+70647,Enhanced Shadow Girth,10000848,85,0.69
+70648,Enhanced Shadow Greaves,10000849,85,0.69
+70649,Enhanced Shadow Helm,100007c8,85,0.69
+70650,Enhanced Shadow Pauldrons,1000084a,85,0.69
+70651,Enhanced Shadow Sollerets,100007cb,85,
+70652,Enhanced Shadow Tassets,10000846,85,0.69
+70653,Enhanced Shadow Bracers,10000847,93,
+70654,Enhanced Shadow Breastplate,100007c7,93,0.69
+70655,Enhanced Shadow Gauntlets,100007c9,93,
+70656,Enhanced Shadow Girth,10000848,93,0.69
+70657,Enhanced Shadow Greaves,10000849,93,0.69
+70658,Enhanced Shadow Helm,100007c8,93,0.69
+70659,Enhanced Shadow Pauldrons,1000084a,93,0.69
+70660,Enhanced Shadow Sollerets,100007cb,93,
+70661,Enhanced Shadow Tassets,10000846,93,0.69
+70662,Enhanced Shadow Bracers,10000847,92,
+70663,Enhanced Shadow Breastplate,100007c7,92,0.69
+70664,Enhanced Shadow Gauntlets,100007c9,92,
+70665,Enhanced Shadow Girth,10000848,92,0.69
+70666,Enhanced Shadow Greaves,10000849,92,0.69
+70667,Enhanced Shadow Helm,100007c8,92,0.69
+70668,Enhanced Shadow Pauldrons,1000084a,92,0.69
+70669,Enhanced Shadow Sollerets,100007cb,92,
+70670,Enhanced Shadow Tassets,10000846,92,0.69
+70671,Enhanced Shadow Bracers,10000847,85,
+70672,Enhanced Shadow Breastplate,100007c7,85,0.483
+70673,Enhanced Shadow Gauntlets,100007c9,85,
+70674,Enhanced Shadow Girth,10000848,85,0.483
+70675,Enhanced Shadow Greaves,10000849,85,0.483
+70676,Enhanced Shadow Helm,100007c8,85,0.483
+70677,Enhanced Shadow Pauldrons,1000084a,85,0.483
+70678,Enhanced Shadow Sollerets,100007cb,85,
+70679,Enhanced Shadow Tassets,10000846,85,0.483
+70680,Enhanced Shadow Bracers,10000847,93,
+70681,Enhanced Shadow Breastplate,100007c7,93,0.483
+70682,Enhanced Shadow Gauntlets,100007c9,93,
+70683,Enhanced Shadow Girth,10000848,93,0.483
+70684,Enhanced Shadow Greaves,10000849,93,0.483
+70685,Enhanced Shadow Helm,100007c8,93,0.483
+70686,Enhanced Shadow Pauldrons,1000084a,93,0.483
+70687,Enhanced Shadow Sollerets,100007cb,93,
+70688,Enhanced Shadow Tassets,10000846,93,0.483
+70689,Enhanced Shadow Bracers,10000847,92,
+70690,Enhanced Shadow Breastplate,100007c7,92,0.483
+70691,Enhanced Shadow Gauntlets,100007c9,92,
+70692,Enhanced Shadow Girth,10000848,92,0.483
+70693,Enhanced Shadow Greaves,10000849,92,0.483
+70694,Enhanced Shadow Helm,100007c8,92,0.483
+70695,Enhanced Shadow Pauldrons,1000084a,92,0.483
+70696,Enhanced Shadow Sollerets,100007cb,92,
+70697,Enhanced Shadow Tassets,10000846,92,0.483
+71142,The Royal Bull of Sanamar,100006a3,14,
+71170,Upgraded Doomshark Hide Coat,10000514,4,0.66
+71246,Two Hander Specialist's Gauntlets,1000049c,14,0.66
+71261,Greater Helm of the Elements,10000366,20,0.66
+72893,Modified Saelgauloi,100003e4,39,0
+72898,Modified Circlet of Supremacy,100003f5,2,0.66
+80226,Cloaked Covenant Breastplate,100007a3,20,0.33
+87038,Helm of Isin Dule,10000681,39,
+87142,Enhanced Energy Crown,10000323,82,0.66
+87188,Borelean Jumpsuit,10000683,20,0.33
+87371,Haebrean Breastplate,100007a5,20,0.33
+87372,Haebrean Girth,100007a7,20,0.33
+87373,Haebrean Tassets,100007ac,20,0.33
+87374,Haebrean Pauldrons,100007aa,20,0.33
+87375,Haebrean Boots,100007ab,20,0.66
+87376,Haebrean Greaves,100007a8,20,0.33
+87377,Haebrean Vambraces,100007a4,20,0.33
+87378,Haebrean Gauntlets,100007a6,20,0.33
+87459,Bastion of Tukal,100002c7,13,0.66
+87460,Sleeves of Inexhaustibility,100002c3,1,0.8
+87463,Shou-jen Jika-Tabi,10000698,9,
+87464,Shou-jen Shozoku Sleeve Gauntlets,1000069a,9,
+87465,Shou-jen Shozoku Jacket,10000699,9,
+87466,Shou-jen Shozoku Trousers,1000069b,9,
+44,Buckler,1000015f,8,
+91,Kite Shield,1000009a,4,
+92,Large Kite Shield,10000099,4,
+93,Round Shield,1000015e,4,
+94,Large Round Shield,10000092,4,
+95,Tower Shield,1000009b,4,
+1270,Bandit Shield,10000097,39,
+1313,Metal Round Shield,10000094,4,
+1517,Fiery Shield,1000009a,,
+2019,Trothyr's Shield,10000092,14,
+8028,Caulnalain Crystal Shield,10000245,13,
+8029,Fenmalain Crystal Shield,10000245,13,
+8031,Caulnalain Soul Crystal Shield,10000245,13,
+8032,Fenmalain Soul Crystal Shield,10000245,13,
+12024,Diamond Shield,10000320,,
+12154,Imbued Shield of the Simulacra,10000097,5,
+12155,Shield of the Simulacra,10000097,5,
+21158,Covenant Shield,100003d9,4,
+22885,Bandit Shield,10000097,39,
+23356,Sanguinary Aegis,10000156,2,
+23357,Sanguinary Aegis,10000157,8,
+23358,Sanguinary Aegis,10000159,82,
+23359,Sanguinary Aegis,1000015a,14,
+23360,Sanguinary Aegis,1000015b,61,
+23615,Diamond Shield,10000320,,
+25843,Nefane Shield,10000515,1,
+28321,Caulnalain Crystal Shield,10000245,13,
+28322,Fenmalain Crystal Shield,10000245,13,
+28323,Shendolain Crystal Shield,10000245,13,
+31392,Raven Hand Aegis,10000817,9,
+31395,Raven Aegis,10000817,9,
+32782,Shield of Sanamar,10000803,,
+32783,Shield of Silyun,10000804,,
+33257,Prismatic Diamond Shield,10000320,,
+33824,Shield of Truth,1000015f,8,
+35295,Shield of Perfect Light,1000080a,,
+35887,Paradox-touched Olthoi Shield,100004db,39,
+35982,Aegis of the Golden Flame,100007fd,,
+36524,Pumpkin Shield,10000811,,
+37291,Olthoi Shield,1000072a,4,
+40604,Upgraded Nefane Shield,10000515,1,
+43140,Shield of the Gold Gear,10000800,,
+44264,Corrupted Aegis,10000155,39,
+46707,Corrupted Aegis,10000155,39,
+52142,Round Shield,1000015e,4,
+52708,Kite Shield,1000009a,4,
+70209,Seasoned Explorer Shield,10000099,17,0
+70210,Amateur Explorer Shield,10000099,17,0

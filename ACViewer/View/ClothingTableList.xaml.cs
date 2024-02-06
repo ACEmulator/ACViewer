@@ -1,8 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
 using ACE.DatLoader;
+using ACE.DatLoader.Entity;
 using ACE.DatLoader.FileTypes;
 using ACE.Entity.Enum;
 
@@ -18,7 +21,10 @@ namespace ACViewer.View
         public static MainWindow MainWindow => MainWindow.Instance;
         public static ModelViewer ModelViewer => ModelViewer.Instance;
 
-        private static ClothingTable CurrentClothingItem { get; set; }
+        public static ClothingTable CurrentClothingItem { get; private set; }
+        public static uint PaletteTemplate { get; private set; }
+        public static float Shade { get; private set; }
+        public static uint Icon { get; private set; }
 
         public ClothingTableList()
         {
@@ -28,7 +34,7 @@ namespace ACViewer.View
             DataContext = this;
         }
 
-        public void OnClickClothingBase(ClothingTable clothing, uint fileID)
+        public void OnClickClothingBase(ClothingTable clothing, uint fileID, uint? paletteTemplate = null, float? shade = null)
         {
             CurrentClothingItem = clothing;
             SetupIds.Items.Clear();
@@ -53,7 +59,7 @@ namespace ACViewer.View
                 return;
 
             // Add 0 / Undefined PaletteTemplate. This will display the item with no PaletteTemplate/Shade. See 0x100002CE
-            PaletteTemplates.Items.Add(new ListBoxItem{ Content = "None", DataContext = (uint)0 });
+            PaletteTemplates.Items.Add(new ListBoxItem { Content = "None", DataContext = (uint)0 });
 
             foreach (var subPal in CurrentClothingItem.ClothingSubPalEffects.Keys.OrderBy(i => i))
             {
@@ -65,7 +71,32 @@ namespace ACViewer.View
             }
 
             SetupIds.SelectedIndex = 0;
-            PaletteTemplates.SelectedIndex = 0;
+
+            if (paletteTemplate == null)
+            {
+                PaletteTemplates.SelectedIndex = 0;
+            }
+            else
+            {
+                // SELECT OUR PALETTE TEMPLATE
+                string pal = (PaletteTemplate)paletteTemplate + " - " + paletteTemplate;
+                for (var i = 0; i < PaletteTemplates.Items.Count; i++)
+                {
+                    ListBoxItem palItem = PaletteTemplates.Items[i] as ListBoxItem;
+                    if (palItem.Content.ToString() == pal)
+                    {
+                        PaletteTemplates.SelectedItem = PaletteTemplates.Items[i];
+                        PaletteTemplates.ScrollIntoView(PaletteTemplates.SelectedItem);
+                        break;
+                    }
+                }
+            }
+
+            if (shade.HasValue && shade > 0 && Shades.Visibility == Visibility.Visible)
+            {
+                int palIndex = (int)((Shades.Maximum - 0.000001) * shade);
+                Shades.Value = palIndex;
+            }
         }
 
         private void SetupIDs_OnClick(object sender, SelectionChangedEventArgs e)
@@ -91,6 +122,9 @@ namespace ACViewer.View
                 //uint palTemp = 0;
                 if (CurrentClothingItem.ClothingSubPalEffects.ContainsKey(palTemp) == false)
                     return;
+
+                // Set this as a reference for the Color Tool
+                PaletteTemplate = palTemp;
 
                 int maxPals = 0;
                 for (var i = 0; i < CurrentClothingItem.ClothingSubPalEffects[palTemp].CloSubPalettes.Count; i++)
@@ -119,8 +153,11 @@ namespace ACViewer.View
         {
             Shades.Visibility = Visibility.Hidden;
             Shades.IsEnabled = false;
-            Shades.Value = 0; 
+            Shades.Value = 0;
             Shades.Maximum = 1;
+
+            // Set this as a reference for the Color Tool
+            Shade = 0;
         }
 
         public void LoadModelWithClothingBase()
@@ -132,13 +169,18 @@ namespace ACViewer.View
             if (PaletteTemplates.SelectedIndex == -1) return;
 
             float shade = 0;
-            
+
             if (Shades.Visibility == Visibility.Visible)
             {
                 shade = (float)(Shades.Value / Shades.Maximum);
-                if (float.IsNaN(shade)) 
+                if (float.IsNaN(shade))
                     shade = 0;
             }
+
+            Shade = shade;
+
+            lblShade.Visibility = Shades.Visibility;
+            lblShade.Content = "Shade: " + shade.ToString();
 
             var selectedSetup = SetupIds.SelectedItem as ListBoxItem;
             var setupId = (uint)selectedSetup.DataContext;
@@ -155,6 +197,65 @@ namespace ACViewer.View
                 return;
 
             LoadModelWithClothingBase();
+        }
+
+        public class VctInfo
+        {
+            public uint PalId;
+            public uint Color;
+        }
+
+        public static List<VctInfo> GetVirindiColorToolInfo()
+        {
+            List<VctInfo> result = new List<VctInfo>();
+
+            if (CurrentClothingItem == null) return result;
+
+            // If there are no Palette Templates, there's nothing to provide...
+            if (CurrentClothingItem.ClothingSubPalEffects.Count == 0) return result;
+
+            // Make sure there is a selected Palette Template to load and it's valid
+            if (!CurrentClothingItem.ClothingSubPalEffects.ContainsKey(PaletteTemplate)) return result;
+
+            if (float.IsNaN(Shade))
+                Shade = 0;
+
+            Icon = CurrentClothingItem.GetIcon(PaletteTemplate);
+
+            var palEffects = CurrentClothingItem.ClothingSubPalEffects[PaletteTemplate];
+
+            for (var i = 0; i < palEffects.CloSubPalettes.Count; i++)
+            {
+                CloSubPalette subPal = palEffects.CloSubPalettes[i];
+
+                var palSet = DatManager.PortalDat.ReadFromDat<PaletteSet>(subPal.PaletteSet);
+                var paletteID = palSet.GetPaletteID(Shade);
+                var palette = DatManager.PortalDat.ReadFromDat<Palette>(paletteID);
+                foreach (var r in subPal.Ranges)
+                {
+
+                    uint mid = Convert.ToUInt32(r.NumColors / 2);
+                    uint colorIdx = r.Offset + mid;
+
+                    uint color = 0;
+                    if (palette.Colors.Count >= colorIdx)
+                    {
+                        color = palette.Colors[(int)colorIdx];
+                    }
+
+                    VctInfo vctInfo = new VctInfo();
+                    vctInfo.PalId = paletteID & 0xFFFF;
+                    vctInfo.Color = color & 0xFFFFFF;
+                    result.Add(vctInfo);
+                }
+            }
+
+            return result;
+        }
+
+        public static uint GetIcon()
+        {
+            return CurrentClothingItem.GetIcon(PaletteTemplate);
         }
     }
 }

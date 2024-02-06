@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ACViewer.View"
         mc:Ignorable="d"
+        ShowInTaskbar="False"
         Title="Options" Height="446" Width="600" Icon="../Icons/Settings_16x.png" Style="{DynamicResource CustomWindowStyle}">
     <Grid Margin="0,0,-8,0">
         <Label Content="AC Folder:" HorizontalAlignment="Left" Margin="17,11,0,0" VerticalAlignment="Top"/>

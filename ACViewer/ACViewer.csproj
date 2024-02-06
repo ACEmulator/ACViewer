@@ -20,11 +20,13 @@
     <None Remove="Content\Content.mgcb" />
     <None Remove="Content\Fonts\password.ttf" />
     <None Remove="Icons\about.png" />
+    <None Remove="Icons\Armor.png" />
     <None Remove="Icons\Checkmark_16x.png" />
     <None Remove="Icons\export-file.png" />
     <None Remove="Icons\help.png" />
     <None Remove="Icons\HelpApplication_16x.png" />
     <None Remove="Icons\OpenFile_16x.png" />
+    <None Remove="Icons\plume.png" />
     <None Remove="Icons\portal.png" />
     <None Remove="Icons\question-mark.png" />
     <None Remove="Icons\Question_16x.png" />
@@ -60,11 +62,13 @@
   <ItemGroup>
     <Resource Include="Content\Fonts\password.ttf" />
     <Resource Include="Icons\about.png" />
+    <Resource Include="Icons\armor.png" />
     <Resource Include="Icons\Checkmark_16x.png" />
     <Resource Include="Icons\export-file.png" />
     <Resource Include="Icons\help.png" />
     <Resource Include="Icons\HelpApplication_16x.png" />
     <Resource Include="Icons\OpenFile_16x.png" />
+    <Resource Include="Icons\plume.png" />
     <Resource Include="Icons\portal.png" />
     <Resource Include="Icons\question-mark.png" />
     <Resource Include="Icons\Question_16x.png" />
@@ -88,6 +92,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Data\Locations.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\LootArmor.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

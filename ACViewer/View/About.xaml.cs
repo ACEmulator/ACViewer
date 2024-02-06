@@ -15,6 +15,9 @@ namespace ACViewer.View
         public About()
         {
             InitializeComponent();
+
+            this.Owner = App.Current.MainWindow;
+
             DataContext = this;
         }
 

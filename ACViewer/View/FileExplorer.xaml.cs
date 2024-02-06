@@ -105,6 +105,7 @@ namespace ACViewer.View
             };
 
             DIDTables.Load();
+            LootArmorList.Load();
 
             History = new History();
 
@@ -128,16 +129,19 @@ namespace ACViewer.View
                     ScriptList.Instance.Visibility = Visibility.Hidden;
                     ClothingTableList.Instance.Visibility = Visibility.Visible;
                     MotionList.Instance.Visibility = Visibility.Hidden;
+                    MainWindow.menuMain.miVirindiColorTool.Visibility = Visibility.Visible;
                     break;
                 case 0x34: // PhysicsScriptTable
                     ScriptList.Instance.Visibility = Visibility.Hidden;
                     ClothingTableList.Instance.Visibility = Visibility.Hidden;
                     MotionList.Instance.Visibility = Visibility.Visible;
+                    MainWindow.menuMain.miVirindiColorTool.Visibility = Visibility.Collapsed;
                     break;
                 default:
                     ScriptList.Instance.Visibility = Visibility.Hidden;
                     ClothingTableList.Instance.Visibility = Visibility.Hidden;
                     MotionList.Instance.Visibility = Visibility.Visible;
+                    MainWindow.menuMain.miVirindiColorTool.Visibility = Visibility.Collapsed;
                     break;
             }
 

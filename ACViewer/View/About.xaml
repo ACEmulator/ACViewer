@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ACViewer.View"
+        ShowInTaskbar="False"
         mc:Ignorable="d"
         Title="About" Height="170" Width="280" ResizeMode="NoResize" Icon="../Icons/Question_16x.png" Style="{DynamicResource CustomWindowStyle}">
     <Grid>
