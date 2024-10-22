@@ -25,6 +25,9 @@ namespace ACViewer.Render
 
         // multiple SamplerStates in the same .fx file apparently don't work
         public static Effect Effect_Clamp { get; set; }
+        
+        // Add to existing properties
+        private MapViewerOptions Config => ConfigManager.Config.MapViewer;
 
         public Camera Camera
         {
@@ -67,21 +70,23 @@ namespace ACViewer.Render
 
             GraphicsDevice.RasterizerState = rs;
         }
-
+        
         public void Draw()
         {
             GraphicsDevice.Clear(ConfigManager.Config.BackgroundColors.WorldViewer);
 
             SetRasterizerState(false);
-            
+    
             Effect.Parameters["xView"].SetValue(Camera.ViewMatrix);
             Effect_Clamp.Parameters["xView"].SetValue(Camera.ViewMatrix);
 
-            //landblock.Draw();
-            Buffer.Draw();
+            if (ConfigManager.Config.MapViewer.EnableZSlicing)
+                Buffer.DrawWithZSlicing();
+            else
+                Buffer.Draw();
 
-            //DrawEmitters_Naive();
             DrawEmitters_Batch();
+            DrawHUD();
         }
 
         public bool ParticlesInitted { get; set; }
@@ -186,14 +191,29 @@ namespace ACViewer.Render
 
         private static readonly Vector2 TextPos = new Vector2(10, 10);
 
+        // DrawHUD to show Z-slice information
         public void DrawHUD()
         {
-            var cameraPos = GameView.Camera.GetPosition();
+            var text = "";
+    
+            if (ConfigManager.Config.MapViewer.EnableZSlicing)
+            {
+                var config = ConfigManager.Config.MapViewer;
+                string levelPrefix = config.CurrentZLevel < 0 ? "B" : "";  // Add "B" prefix for basement levels
+                int displayLevel = config.CurrentZLevel < 0 ? -config.CurrentZLevel : config.CurrentZLevel;
+        
+                text += $"Current Z-Level: {levelPrefix}{displayLevel}\n";  // Shows B1, B2, etc. for basement levels
+                text += $"Height Range: {(config.CurrentZLevel - 1) * config.LevelHeight:F1}m - {config.CurrentZLevel * config.LevelHeight:F1}m\n";
+            }
 
+            var cameraPos = Camera.GetPosition();
             if (cameraPos != null)
+                text += $"Location: {cameraPos}";
+
+            if (!string.IsNullOrEmpty(text))
             {
                 SpriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearClamp);
-                SpriteBatch.DrawString(Font, $"Location: {cameraPos}", TextPos, Color.White);
+                SpriteBatch.DrawString(Font, text, TextPos, Color.White);
                 SpriteBatch.End();
             }
         }

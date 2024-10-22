@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -25,9 +26,8 @@ namespace ACViewer.Render
         public Dictionary<TextureFormatChain, GfxObjInstance_TextureFormat> BaseFormats_Alpha { get; set; }
 
         public List<VertexPositionNormalTextures> Vertices { get; set; }
-
+        
         public List<VertexInstance> Instances { get; set; }
-
         public VertexInstance[] Instances_ { get; set; }
 
         public VertexBuffer Shared_VB { get; set; }
@@ -39,9 +39,7 @@ namespace ACViewer.Render
         public GfxObjInstance_Shared(GfxObj gfxObj, Dictionary<TextureFormat, TextureAtlasChain> textureAtlasChains, Dictionary<uint, uint> textureChanges = null, PaletteChanges paletteChanges = null)
         {
             GfxObj = gfxObj;
-
             BuildStatic(gfxObj, textureAtlasChains, textureChanges, paletteChanges);
-
             Instances = new List<VertexInstance>();
         }
 
@@ -184,6 +182,51 @@ namespace ACViewer.Render
 
             foreach (var baseFormat in BaseFormats_Alpha.Values)
                 baseFormat.Draw(Instances.Count);
+        }
+        
+        public void DrawFiltered(Func<Vector3, bool> filter)
+        {
+            if (Bindings == null) return;
+
+            if (isDirty)
+            {
+                Instances_VB.SetData(Instances_);
+                isDirty = false;
+            }
+
+            // Store original instances
+            var originalInstances = Instances_.ToArray();
+        
+            // Filter instances
+            var filteredInstances = Instances.Where(instance => filter(instance.Position)).ToArray();
+        
+            if (filteredInstances.Length > 0)
+            {
+                // Update vertex buffer with filtered instances
+                Instances_ = filteredInstances;
+                Instances_VB.SetData(filteredInstances);
+
+                GraphicsDevice.SetVertexBuffers(Bindings);
+
+                Effect.CurrentTechnique = Effect.Techniques["TexturedInstance"];
+                Effect_Clamp.CurrentTechnique = Effect_Clamp.Techniques["TexturedInstance"];
+
+                foreach (var baseFormat in BaseFormats_Solid.Values)
+                    baseFormat.Draw(filteredInstances.Length);
+
+                if (Buffer.drawAlpha)
+                {
+                    Effect.CurrentTechnique = Effect.Techniques["TexturedInstanceAlpha"];
+                    Effect_Clamp.CurrentTechnique = Effect_Clamp.Techniques["TexturedInstanceAlpha"];
+                }
+
+                foreach (var baseFormat in BaseFormats_Alpha.Values)
+                    baseFormat.Draw(filteredInstances.Length);
+            }
+
+            // Restore original instances
+            Instances_ = originalInstances;
+            Instances_VB.SetData(originalInstances);
         }
 
         public void Dispose()
