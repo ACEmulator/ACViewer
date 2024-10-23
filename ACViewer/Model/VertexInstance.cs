@@ -5,9 +5,10 @@ namespace ACViewer.Model
 {
     public struct VertexInstance : IVertexType
     {
-        public Vector3 Position;
+        public Vector3 Position { get; set; }
         public Vector4 Orientation;
         public Vector3 Scale;
+        
 
         public readonly static VertexDeclaration VertexDeclaration = new VertexDeclaration
         (

@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ACE.Entity.Enum;
-
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer.Render
@@ -17,6 +18,28 @@ namespace ACViewer.Render
         public VertexBuffer InstanceBuffer { get; set; }
 
         public R_Environment R_Environment { get; set; }
+        
+        public void DrawFiltered(Func<Vector3, bool> filter)
+        {
+            // Store original instances
+            var originalInstances = new List<VertexInstanceEnv>(Instances_Env);
+
+            // Filter instances based on Z position
+            Instances_Env = Instances_Env.Where(instance => filter(instance.Position)).ToList();
+
+            if (Instances_Env.Count > 0)
+            {
+                // Rebuild instance buffer with filtered instances
+                BuildInstanceBuffer();
+                BuildBindings();
+                Draw();
+            }
+
+            // Restore original instances
+            Instances_Env = originalInstances;
+            BuildInstanceBuffer();
+            BuildBindings();
+        }
 
         public InstanceBatch(R_EnvCell envCell)
         {

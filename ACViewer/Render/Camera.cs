@@ -295,6 +295,31 @@ namespace ACViewer
                 Position -= Vector3.Cross(Up, Dir) * Speed;
             if (keyboardState.IsKeyDown(Keys.Space))
                 Position += Up * Speed;
+            // Shift key control for downward movement
+            if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
+                Position -= Up * Speed;
+            
+            // Z-level controls
+            if (keyboardState.IsKeyDown(Keys.F3) && LastKeyboardState != null && !LastKeyboardState.IsKeyDown(Keys.F3))
+            {
+                ConfigManager.Config.MapViewer.EnableZSlicing = !ConfigManager.Config.MapViewer.EnableZSlicing;
+                ConfigManager.Config.MapViewer.CurrentZLevel = 1;
+            }
+
+            // Z-level adjustment
+            if (ConfigManager.Config.MapViewer.EnableZSlicing)
+            {
+                if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)))
+                {
+                    var config = ConfigManager.Config.MapViewer;
+                    if (keyboardState.IsKeyDown(Keys.OemPlus) && !LastKeyboardState.IsKeyDown(Keys.OemPlus))
+                        config.CurrentZLevel = Math.Min(config.CurrentZLevel + 1, 20);
+                    if (keyboardState.IsKeyDown(Keys.OemMinus) && !LastKeyboardState.IsKeyDown(Keys.OemMinus))
+                        config.CurrentZLevel--;
+                }
+            }
+
+            LastKeyboardState = keyboardState; 
 
             // camera speed control
             if (mouseState.ScrollWheelValue != PrevMouseState.ScrollWheelValue)
@@ -368,6 +393,7 @@ namespace ACViewer
             //Console.WriteLine("Camera dir: " + GameView.Instance.Render.Camera.Dir);
         }
 
+        private KeyboardState LastKeyboardState;
         public int centerX => GameView.GraphicsDevice.Viewport.Width / 2;
         public int centerY => GameView.GraphicsDevice.Viewport.Height / 2;
 
