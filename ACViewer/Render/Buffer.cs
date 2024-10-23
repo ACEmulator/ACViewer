@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using ACE.DatLoader.Entity;
 using ACE.Server.Physics;
-
+using ACViewer.Config;
+using ACViewer.Extensions;
 using ACViewer.Enum;
 using ACViewer.Model;
 
@@ -86,6 +88,95 @@ namespace ACViewer.Render
 
             AnimatedTextureAtlasChains = new Dictionary<TextureFormat, TextureAtlasChain>();
         }
+        
+        private bool IsInCurrentZLevel(Vector3 position)
+        {
+            if (!ConfigManager.Config.MapViewer.EnableZSlicing)
+                return true;
+
+            var config = ConfigManager.Config.MapViewer;
+            float levelBottom = (config.CurrentZLevel - 1) * config.LevelHeight;
+            float levelTop = levelBottom + config.LevelHeight;
+
+            return position.Z >= levelBottom && position.Z < levelTop;
+        }
+
+        public void DrawWithZSlicing()
+        {
+            Effect.Parameters["xWorld"].SetValue(Matrix.Identity);
+            Effect.Parameters["xLightDirection"].SetValue(-Vector3.UnitZ);
+            Effect.Parameters["xAmbient"].SetValue(0.5f);
+
+            Effect_Clamp.Parameters["xWorld"].SetValue(Matrix.Identity);
+            Effect_Clamp.Parameters["xLightDirection"].SetValue(-Vector3.UnitZ);
+            Effect_Clamp.Parameters["xAmbient"].SetValue(0.5f);
+
+            PerfTimer.Start(ProfilerSection.Draw);
+
+            if (drawTerrain)
+            {
+                SetRasterizerState();
+                TerrainBatch.DrawWithZFiltering(IsInCurrentZLevel);
+            }
+
+            if (drawEnvCells)
+                DrawBufferWithZSlicing(RB_EnvCell, true);
+
+            if (drawStaticObjs)
+                DrawBufferWithZSlicing(RB_StaticObjs);
+
+            if (drawBuildings)
+                DrawBufferWithZSlicing(RB_Buildings);
+
+            if (drawScenery)
+                DrawBufferWithZSlicing(RB_Scenery);
+
+            if (drawInstances && Server.InstancesLoaded)
+                DrawBufferWithZSlicing(RB_Instances);
+
+            if (drawEncounters && Server.EncountersLoaded)
+                DrawBufferWithZSlicing(RB_Encounters);
+
+            DrawBufferWithZSlicing(RB_Animated);
+
+            if (Picker.HitVertices != null)
+                Picker.DrawHitPoly();
+
+            PerfTimer.Stop(ProfilerSection.Draw);
+        }
+
+        private void DrawBufferWithZSlicing(Dictionary<uint, GfxObjInstance_Shared> batches)
+        {
+            SetRasterizerState(CullMode.None);
+
+            foreach (var batch in batches.Values)
+                batch.DrawFiltered(IsInCurrentZLevel);
+        }
+
+        private void DrawBufferWithZSlicing(Dictionary<GfxObjTexturePalette, GfxObjInstance_Shared> batches)
+        {
+            SetRasterizerState(CullMode.None);
+
+            foreach (var batch in batches.Values)
+                batch.DrawFiltered(IsInCurrentZLevel);
+        }
+
+        private void DrawBufferWithZSlicing(Dictionary<TextureSet, InstanceBatch> batches, bool culling = false)
+        {
+            var cullMode = WorldViewer.Instance.DungeonMode || culling ? 
+                CullMode.CullClockwiseFace : CullMode.None;
+
+            SetRasterizerState(cullMode);
+
+            Effect.CurrentTechnique = Effect.Techniques["TexturedInstanceEnv"];
+            Effect_Clamp.CurrentTechnique = Effect_Clamp.Techniques["TexturedInstanceEnv"];
+
+            foreach (var batch in batches.Values)
+            {
+                batch.DrawFiltered(IsInCurrentZLevel);
+            }
+        }
+
 
         public void ClearBuffer()
         {

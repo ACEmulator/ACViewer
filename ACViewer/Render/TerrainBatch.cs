@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ACViewer.Render
@@ -55,6 +56,33 @@ namespace ACViewer.Render
 
             foreach (var batch in Batches)
                 batch.Draw();
+        }
+        
+        public void DrawWithZFiltering(Func<Vector3, bool> filter)
+        {
+            Effect.CurrentTechnique = Effect.Techniques["LandscapeSinglePass"];
+
+            if (OverlayAtlasChain.TextureAtlases.Count > 0)
+                Effect.Parameters["xOverlays"].SetValue(OverlayAtlasChain.TextureAtlases[0]._Textures);
+            if (AlphaAtlasChain.TextureAtlases.Count > 0)
+                Effect.Parameters["xAlphas"].SetValue(AlphaAtlasChain.TextureAtlases[0]._Textures);
+
+            foreach (var batch in Batches)
+            {
+                if (batch.Vertices.Count == 0) continue;
+
+                var originalVertices = new List<LandVertex>(batch.Vertices);
+                batch.Vertices = batch.Vertices.Where(v => filter(v.Position)).ToList();
+
+                if (batch.Vertices.Count > 0)
+                {
+                    batch.OnCompleted();
+                    batch.Draw();
+                }
+
+                batch.Vertices = originalVertices;
+                batch.OnCompleted();
+            }
         }
 
         public void Dispose()

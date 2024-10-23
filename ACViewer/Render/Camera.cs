@@ -10,10 +10,13 @@ using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
 
 using ACViewer.Config;
+using ACViewer.Entity;
 using ACViewer.Enum;
 using ACViewer.Extensions;
 using ACViewer.Render;
 using ACViewer.View;
+using GameTime = Microsoft.Xna.Framework.GameTime;
+using Position = ACE.Server.Physics.Common.Position;
 
 namespace ACViewer
 {
@@ -275,6 +278,12 @@ namespace ACViewer
         public bool Locked { get; set; }
 
         public System.Windows.Point LastSetPoint { get; set; }
+        
+        private bool WasBindingActive(GameKeyBinding binding)
+        {
+            if (LastKeyboardState == null) return false;
+            return binding.Matches(LastKeyboardState, GameView.InputManager.GetCurrentModifiers());
+        }
 
         public void Update(GameTime gameTime)
         {
@@ -285,16 +294,46 @@ namespace ACViewer
 
             if (!GameView.IsActive) return;
 
-            if (keyboardState.IsKeyDown(Keys.W))
+            // Get key bindings
+            var config = ConfigManager.Config.KeyBindingConfig;
+
+            // Movement controls
+            if (GameView.InputManager.IsBindingActive(config.MoveForward))
                 Position += Dir * Speed;
-            if (keyboardState.IsKeyDown(Keys.S))
+            if (GameView.InputManager.IsBindingActive(config.MoveBackward))
                 Position -= Dir * Speed;
-            if (keyboardState.IsKeyDown(Keys.A))
+            if (GameView.InputManager.IsBindingActive(config.StrafeLeft))
                 Position += Vector3.Cross(Up, Dir) * Speed;
-            if (keyboardState.IsKeyDown(Keys.D))
+            if (GameView.InputManager.IsBindingActive(config.StrafeRight))
                 Position -= Vector3.Cross(Up, Dir) * Speed;
-            if (keyboardState.IsKeyDown(Keys.Space))
+            if (GameView.InputManager.IsBindingActive(config.MoveUp))
                 Position += Up * Speed;
+            if (GameView.InputManager.IsBindingActive(config.MoveDown))
+                Position -= Up * Speed;
+
+            // Z-level controls
+            if (GameView.InputManager.IsBindingActive(config.ToggleZLevel) && !WasBindingActive(config.ToggleZLevel))
+            {
+                ConfigManager.Config.MapViewer.EnableZSlicing = !ConfigManager.Config.MapViewer.EnableZSlicing;
+                ConfigManager.Config.MapViewer.CurrentZLevel = 1;
+            }
+
+            // Z-level adjustment
+            if (ConfigManager.Config.MapViewer.EnableZSlicing)
+            {
+                if (GameView.InputManager.IsBindingActive(config.IncreaseZLevel) && !WasBindingActive(config.IncreaseZLevel))
+                {
+                    var mapConfig = ConfigManager.Config.MapViewer;
+                    mapConfig.CurrentZLevel = Math.Min(mapConfig.CurrentZLevel + 1, 20);
+                }
+                if (GameView.InputManager.IsBindingActive(config.DecreaseZLevel) && !WasBindingActive(config.DecreaseZLevel))
+                {
+                    var mapConfig = ConfigManager.Config.MapViewer;
+                    mapConfig.CurrentZLevel--;
+                }
+            }
+
+            LastKeyboardState = keyboardState;
 
             // camera speed control
             if (mouseState.ScrollWheelValue != PrevMouseState.ScrollWheelValue)
@@ -368,6 +407,7 @@ namespace ACViewer
             //Console.WriteLine("Camera dir: " + GameView.Instance.Render.Camera.Dir);
         }
 
+        private KeyboardState LastKeyboardState;
         public int centerX => GameView.GraphicsDevice.Viewport.Width / 2;
         public int centerY => GameView.GraphicsDevice.Viewport.Height / 2;
 
