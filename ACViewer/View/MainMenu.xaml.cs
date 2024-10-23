@@ -4,17 +4,18 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-
+using System.Windows.Input;
 using Microsoft.Win32;
 
 using ACE.DatLoader;
 using ACE.DatLoader.Entity;
 using ACE.DatLoader.FileTypes;
-
+using ACViewer.Commands;
 using ACViewer.Config;
 using ACViewer.Data;
 using ACViewer.Enum;
 using ACViewer.Render;
+using InputManager = ACViewer.Input.InputManager;
 
 namespace ACViewer.View
 {
@@ -26,7 +27,7 @@ namespace ACViewer.View
         public static MainWindow MainWindow => MainWindow.Instance;
 
         public static MainMenu Instance { get; set; }
-
+        public InputManager _inputManager { get; private set; }
         public static GameView GameView => GameView.Instance;
 
         public static Options Options { get; set; }
@@ -40,6 +41,17 @@ namespace ACViewer.View
             get => TextureCache.UseMipMaps;
             set => TextureCache.UseMipMaps = value;
         }
+        
+        private ICommand _openKeyboardConfigCommand;
+        public ICommand OpenKeyboardConfigCommand
+        {
+            get
+            {
+                return _openKeyboardConfigCommand ?? (_openKeyboardConfigCommand = new RelayCommand(
+                    param => KeyboardConfig_Click(this, null)
+                ));
+            }
+        }
 
         public static bool LoadInstances { get; set; }
 
@@ -48,7 +60,37 @@ namespace ACViewer.View
         public MainMenu()
         {
             InitializeComponent();
+            DataContext = this;
             Instance = this;
+            _inputManager = new InputManager(ConfigManager.Config.KeyBindingConfig);
+
+            // Add keyboard shortcut command binding
+            var keyBinding = new KeyBinding(
+                OpenKeyboardConfigCommand,
+                Key.K,
+                ModifierKeys.Control
+            );
+            this.InputBindings.Add(keyBinding);
+        }
+        
+        
+        private void KeyboardConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var configWindow = new KeyboardConfig(ConfigManager.Config);
+            configWindow.Owner = MainWindow.Instance;
+
+            if (configWindow.ShowDialog() == true)
+            {
+                if (ConfigManager.SaveKeyBindings())
+                {
+                    _inputManager.UpdateBindings(ConfigManager.Config.KeyBindingConfig);
+                }
+            }
+        }
+        
+        public void UpdateKeyBindings(KeyBindingConfig newBindings)
+        {
+            _inputManager?.UpdateBindings(newBindings);
         }
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)

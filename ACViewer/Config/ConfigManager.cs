@@ -1,6 +1,7 @@
-﻿using System;
+﻿// File: ACViewer/Config/ConfigManager.cs
+using System;
 using System.IO;
-
+using System.Windows;
 using Newtonsoft.Json;
 
 namespace ACViewer.Config
@@ -8,7 +9,7 @@ namespace ACViewer.Config
     public static class ConfigManager
     {
         private static readonly string Filename = "ACViewer.json";
-        
+        private static readonly string KeybindingsFile = "keybindings.json";
         private static Config config { get; set; }
 
         public static Config Config
@@ -17,7 +18,6 @@ namespace ACViewer.Config
             {
                 if (config == null)
                     config = new Config();
-
                 return config;
             }
         }
@@ -26,11 +26,12 @@ namespace ACViewer.Config
 
         public static void SaveConfig()
         {
-            var settings = new JsonSerializerSettings();
-            settings.Formatting = Formatting.Indented;
-            
-            var json = JsonConvert.SerializeObject(config, settings);
+            var settings = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented
+            };
 
+            var json = JsonConvert.SerializeObject(config, settings);
             File.WriteAllText(Filename, json);
         }
 
@@ -41,10 +42,10 @@ namespace ACViewer.Config
 
         public static Config ReadConfig()
         {
-            if (!File.Exists(Filename)) return null;
+            if (!File.Exists(Filename))
+                return null;
 
             var json = File.ReadAllText(Filename);
-
             var _config = JsonConvert.DeserializeObject<Config>(json);
 
             if (_config == null)
@@ -52,6 +53,7 @@ namespace ACViewer.Config
                 Console.WriteLine($"ConfigManager.LoadConfig() - failed to parse {Filename}");
                 return null;
             }
+
             return _config;
         }
 
@@ -69,12 +71,54 @@ namespace ACViewer.Config
         {
             get
             {
-                return config != null && config.Database != null && !string.IsNullOrWhiteSpace(config.Database.Host) &&
-                    config.Database.Port > 0 &&
-                    !string.IsNullOrWhiteSpace(config.Database.DatabaseName) &&
-                    !string.IsNullOrWhiteSpace(config.Database.Username) &&
-                    !string.IsNullOrWhiteSpace(config.Database.Password);
+                return config != null &&
+                       config.Database != null &&
+                       !string.IsNullOrWhiteSpace(config.Database.Host) &&
+                       config.Database.Port > 0 &&
+                       !string.IsNullOrWhiteSpace(config.Database.DatabaseName) &&
+                       !string.IsNullOrWhiteSpace(config.Database.Username) &&
+                       !string.IsNullOrWhiteSpace(config.Database.Password);
             }
+        }
+
+        public static bool SaveKeyBindings()
+        {
+            try
+            {
+                var json = JsonConvert.SerializeObject(Config.KeyBindingConfig, Formatting.Indented);
+                File.WriteAllText(KeybindingsFile, json);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving keybindings: {ex.Message}", "Save Error", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        public static bool LoadKeyBindings()
+        {
+            if (!File.Exists(KeybindingsFile))
+                return false;
+
+            try
+            {
+                var json = File.ReadAllText(KeybindingsFile);
+                var bindings = JsonConvert.DeserializeObject<KeyBindingConfig>(json);
+                if (bindings != null)
+                {
+                    Config.KeyBindingConfig = bindings;
+                    Config.KeyBindingConfig.ValidateConfig();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading keybindings: {ex.Message}", "Load Error", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            return false;
         }
     }
 }

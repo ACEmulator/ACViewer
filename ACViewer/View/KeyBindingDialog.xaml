@@ -1,0 +1,33 @@
+﻿<Window x:Class="ACViewer.View.KeyBindingDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Press New Key" 
+        Height="150" Width="300"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Press the desired key combination..."
+                   TextWrapping="Wrap"
+                   HorizontalAlignment="Center"/>
+
+        <TextBlock Grid.Row="1"
+                   x:Name="txtCurrentKeys"
+                   Text="Waiting for input..."
+                   FontSize="16"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
+
+        <TextBlock Grid.Row="2"
+                   Text="Press Esc to cancel"
+                   HorizontalAlignment="Center"
+                   Foreground="Gray"/>
+    </Grid>
+</Window>
