@@ -10,10 +10,13 @@ using ACE.Server.Physics.Animation;
 using ACE.Server.Physics.Common;
 
 using ACViewer.Config;
+using ACViewer.Entity;
 using ACViewer.Enum;
 using ACViewer.Extensions;
 using ACViewer.Render;
 using ACViewer.View;
+using GameTime = Microsoft.Xna.Framework.GameTime;
+using Position = ACE.Server.Physics.Common.Position;
 
 namespace ACViewer
 {
@@ -275,6 +278,12 @@ namespace ACViewer
         public bool Locked { get; set; }
 
         public System.Windows.Point LastSetPoint { get; set; }
+        
+        private bool WasBindingActive(GameKeyBinding binding)
+        {
+            if (LastKeyboardState == null) return false;
+            return binding.Matches(LastKeyboardState, GameView.InputManager.GetCurrentModifiers());
+        }
 
         public void Update(GameTime gameTime)
         {
@@ -285,22 +294,25 @@ namespace ACViewer
 
             if (!GameView.IsActive) return;
 
-            if (keyboardState.IsKeyDown(Keys.W))
+            // Get key bindings
+            var config = ConfigManager.Config.KeyBindingConfig;
+
+            // Movement controls
+            if (GameView.InputManager.IsBindingActive(config.MoveForward))
                 Position += Dir * Speed;
-            if (keyboardState.IsKeyDown(Keys.S))
+            if (GameView.InputManager.IsBindingActive(config.MoveBackward))
                 Position -= Dir * Speed;
-            if (keyboardState.IsKeyDown(Keys.A))
+            if (GameView.InputManager.IsBindingActive(config.StrafeLeft))
                 Position += Vector3.Cross(Up, Dir) * Speed;
-            if (keyboardState.IsKeyDown(Keys.D))
+            if (GameView.InputManager.IsBindingActive(config.StrafeRight))
                 Position -= Vector3.Cross(Up, Dir) * Speed;
-            if (keyboardState.IsKeyDown(Keys.Space))
+            if (GameView.InputManager.IsBindingActive(config.MoveUp))
                 Position += Up * Speed;
-            // Shift key control for downward movement
-            if (keyboardState.IsKeyDown(Keys.LeftShift) || keyboardState.IsKeyDown(Keys.RightShift))
+            if (GameView.InputManager.IsBindingActive(config.MoveDown))
                 Position -= Up * Speed;
-            
+
             // Z-level controls
-            if (keyboardState.IsKeyDown(Keys.F3) && LastKeyboardState != null && !LastKeyboardState.IsKeyDown(Keys.F3))
+            if (GameView.InputManager.IsBindingActive(config.ToggleZLevel) && !WasBindingActive(config.ToggleZLevel))
             {
                 ConfigManager.Config.MapViewer.EnableZSlicing = !ConfigManager.Config.MapViewer.EnableZSlicing;
                 ConfigManager.Config.MapViewer.CurrentZLevel = 1;
@@ -309,17 +321,19 @@ namespace ACViewer
             // Z-level adjustment
             if (ConfigManager.Config.MapViewer.EnableZSlicing)
             {
-                if ((keyboardState.IsKeyDown(Keys.LeftAlt) || keyboardState.IsKeyDown(Keys.RightAlt)))
+                if (GameView.InputManager.IsBindingActive(config.IncreaseZLevel) && !WasBindingActive(config.IncreaseZLevel))
                 {
-                    var config = ConfigManager.Config.MapViewer;
-                    if (keyboardState.IsKeyDown(Keys.OemPlus) && !LastKeyboardState.IsKeyDown(Keys.OemPlus))
-                        config.CurrentZLevel = Math.Min(config.CurrentZLevel + 1, 20);
-                    if (keyboardState.IsKeyDown(Keys.OemMinus) && !LastKeyboardState.IsKeyDown(Keys.OemMinus))
-                        config.CurrentZLevel--;
+                    var mapConfig = ConfigManager.Config.MapViewer;
+                    mapConfig.CurrentZLevel = Math.Min(mapConfig.CurrentZLevel + 1, 20);
+                }
+                if (GameView.InputManager.IsBindingActive(config.DecreaseZLevel) && !WasBindingActive(config.DecreaseZLevel))
+                {
+                    var mapConfig = ConfigManager.Config.MapViewer;
+                    mapConfig.CurrentZLevel--;
                 }
             }
 
-            LastKeyboardState = keyboardState; 
+            LastKeyboardState = keyboardState;
 
             // camera speed control
             if (mouseState.ScrollWheelValue != PrevMouseState.ScrollWheelValue)

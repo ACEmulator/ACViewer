@@ -25,6 +25,7 @@ namespace ACViewer.View
 
             LoadConfig();
         }
+        
 
         private static Config.Config Config => ConfigManager.Config;
         
@@ -57,6 +58,20 @@ namespace ACViewer.View
 
             if (ConfigManager.Config.Theme != null)
                 ThemeManager.SetTheme(ConfigManager.Config.Theme);
+        }
+        
+        private void KeyboardConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var configWindow = new KeyboardConfig(ConfigManager.Config);
+            configWindow.Owner = MainWindow.Instance;
+
+            if (configWindow.ShowDialog() == true)
+            {
+                if (ConfigManager.SaveKeyBindings())
+                {
+                    GameView.Instance.UpdateInputManager(ConfigManager.Config.KeyBindingConfig);
+                }
+            }
         }
 
         private DateTime lastUpdateTime { get; set; }

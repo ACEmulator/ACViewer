@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Window x:Class="ACViewer.View.KeyboardConfig"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Keyboard Configuration" 
+        Height="600" Width="800" 
+        WindowStartupLocation="CenterOwner">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header with search and profile selection -->
+        <Grid Grid.Row="0" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <TextBox Grid.Column="1" x:Name="SearchBox" TextChanged="SearchBox_TextChanged" Margin="0,0,10,0"/>
+            
+            <TextBlock Grid.Column="2" Text="Profile:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox Grid.Column="3" x:Name="ProfileComboBox" Width="120" SelectionChanged="ProfileComboBox_SelectionChanged">
+                <ComboBoxItem Content="Default (WASD)"/>
+                <ComboBoxItem Content="Alternative (ESDF)"/>
+                <ComboBoxItem Content="Arrow Keys"/>
+            </ComboBox>
+        </Grid>
+
+        <!-- Main content area -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="CategoryList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="0,0,0,20">
+                            <!-- Category Header -->
+                            <TextBlock Text="{Binding Category}" 
+                                     FontWeight="Bold" 
+                                     FontSize="16" 
+                                     Margin="0,0,0,5"/>
+                            
+                            <!-- Bindings in this category -->
+                            <ItemsControl ItemsSource="{Binding Bindings}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="20,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="200"/>
+                                                <ColumnDefinition Width="150"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <!-- Command name -->
+                                            <TextBlock Text="{Binding DisplayName}" 
+                                                     VerticalAlignment="Center"/>
+                                            
+                                            <!-- Current binding display -->
+                                            <Border Grid.Column="1" 
+                                                    BorderBrush="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"
+                                                    BorderThickness="1"
+                                                    Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+                                                    Margin="5,2">
+                                                <TextBlock Text="{Binding CurrentBinding}" 
+                                                         Padding="5,2"
+                                                         HorizontalAlignment="Center"/>
+                                            </Border>
+                                            
+                                            <!-- Change button -->
+                                            <Button Grid.Column="2" 
+                                                    Content="Change" 
+                                                    Click="ChangeBinding_Click"
+                                                    Tag="{Binding}"
+                                                    Margin="5,0"
+                                                    Padding="10,2"/>
+                                            
+                                            <!-- Clear button -->
+                                            <Button Grid.Column="3" 
+                                                    Content="Clear" 
+                                                    Click="ClearBinding_Click"
+                                                    Tag="{Binding}"
+                                                    Padding="10,2"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!-- Bottom button panel -->
+        <Grid Grid.Row="2" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Import/Export buttons -->
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Import" Click="ImportBindings_Click" Padding="10,3" Margin="0,0,10,0"/>
+                <Button Content="Export" Click="ExportBindings_Click" Padding="10,3"/>
+            </StackPanel>
+
+            <!-- Main action buttons -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Content="Reset All" Click="ResetAll_Click" Padding="10,3" Margin="0,0,10,0"/>
+                <Button Content="OK" Click="OK_Click" Padding="20,3" Margin="0,0,10,0" IsDefault="True"/>
+                <Button Content="Cancel" Click="Cancel_Click" Padding="10,3" IsCancel="True"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

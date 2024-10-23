@@ -21,6 +21,8 @@ namespace ACViewer
 
         public WpfKeyboard _keyboard { get; set; }
         public WpfMouse _mouse { get; set; }
+        
+        public Input.InputManager InputManager { get; private set; }
 
         public KeyboardState PrevKeyboardState { get; set; }
         public MouseState PrevMouseState { get; set; }
@@ -73,13 +75,12 @@ namespace ACViewer
 
         // text rendering
         public SpriteFont Font { get; set; }
-
+        
         protected override void Initialize()
         {
             // must be initialized. required by Content loading and rendering (will add itself to the Services)
             // note that MonoGame requires this to be initialized in the constructor, while WpfInterop requires it to
             // be called inside Initialize (before base.Initialize())
-            //var dummy = new DummyView();
             _graphicsDeviceManager = new WpfGraphicsDeviceService(this)
             {
                 PreferMultiSampling = UseMSAA
@@ -92,12 +93,26 @@ namespace ACViewer
             _keyboard = new WpfKeyboard(this);
             _mouse = new WpfMouse(this);
 
+            // Initialize input manager
+            InputManager = new Input.InputManager(Config.ConfigManager.Config.KeyBindingConfig);
+
+            // Load saved key bindings
+            if (Config.ConfigManager.LoadKeyBindings())
+            {
+                InputManager.UpdateBindings(Config.ConfigManager.Config.KeyBindingConfig);
+            }
+
             Instance = this;
 
             // must be called after the WpfGraphicsDeviceService instance was created
             base.Initialize();
 
             SizeChanged += new SizeChangedEventHandler(GameView_SizeChanged);
+        }
+        
+        public void UpdateInputManager(Config.KeyBindingConfig newConfig)
+        {
+            InputManager?.UpdateBindings(newConfig);
         }
 
         protected override void LoadContent()
