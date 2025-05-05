@@ -128,20 +128,21 @@ namespace ACViewer.View
             Console.WriteLine($"Debug mode {(DebugMode ? "enabled" : "disabled")}");
         });
 
-		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-		{
-			Config.WindowPos.X = (int)Left;
-			Config.WindowPos.Y = (int)Top;
-			Config.WindowPos.Width = (int)Width;
-			Config.WindowPos.Height = (int)Height;
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Config.WindowPos.X = (int)Left;
+            Config.WindowPos.Y = (int)Top;
+            Config.WindowPos.Width = (int)Width;
+            Config.WindowPos.Height = (int)Height;
             Config.WindowPos.VSplit = (int)VSplit.Width.Value;
             Config.WindowPos.HSplit = (int)HSplit.Height.Value;
-			Config.WindowPos.IsMaximized = WindowState == WindowState.Maximized;
-            ConfigManager.SaveConfig();
-		}
+            Config.WindowPos.IsMaximized = WindowState == WindowState.Maximized;
 
-		private void Window_SourceInitialized(object sender, EventArgs e)
-		{
+            ConfigManager.SaveConfig();
+        }
+
+        private void Window_SourceInitialized(object sender, EventArgs e)
+        {
             if (Config.WindowPos.X == int.MinValue)
                 return;
 
@@ -150,10 +151,10 @@ namespace ACViewer.View
             Width = Config.WindowPos.Width;
             Height = Config.WindowPos.Height;
             VSplit.Width = new GridLength(Config.WindowPos.VSplit, GridUnitType.Pixel);
-			HSplit.Height = new GridLength(Config.WindowPos.HSplit, GridUnitType.Pixel);
+            HSplit.Height = new GridLength(Config.WindowPos.HSplit, GridUnitType.Pixel);
 
-			if (Config.WindowPos.IsMaximized)
+            if (Config.WindowPos.IsMaximized)
                 WindowState = WindowState.Maximized;
-		}
-	}
+        }
+    }
 }
