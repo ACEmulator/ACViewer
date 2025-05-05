@@ -71,7 +71,7 @@ namespace ACViewer.View
             {
                 var match = LootArmorList.Loot.OrderBy(x => x.Key).First(x => x.Value.ClothingBase == ClothingTableList.CurrentClothingItem.Id.ToString("X8"));
                 lblName.Content = match.Value.Name;
-            }catch (Exception ex)
+            }catch (Exception)
             {
                 lblName.Content = "";
             }

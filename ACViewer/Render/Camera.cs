@@ -300,7 +300,7 @@ namespace ACViewer
                 Position -= Up * Speed;
             
             // Z-level controls
-            if (keyboardState.IsKeyDown(Keys.F3) && LastKeyboardState != null && !LastKeyboardState.IsKeyDown(Keys.F3))
+            if (keyboardState.IsKeyDown(Keys.F3) && !LastKeyboardState.IsKeyDown(Keys.F3))
             {
                 ConfigManager.Config.MapViewer.EnableZSlicing = !ConfigManager.Config.MapViewer.EnableZSlicing;
                 ConfigManager.Config.MapViewer.CurrentZLevel = 1;
