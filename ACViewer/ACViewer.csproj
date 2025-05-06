@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon />
     <StartupObject />
@@ -45,6 +45,7 @@
 	  <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
 	  <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
 	  <PackageReference Include="MonoGame.Framework.WpfInterop" Version="1.9.2" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="UkooLabs.FbxSharpie" Version="1.0.99" />
   </ItemGroup>
 
