@@ -72,6 +72,16 @@
                     </MenuItem.Icon>                    
                 </MenuItem>
             </MenuItem>
+            <MenuItem x:Name="menuBack" Header="Back" Click="Back_Click" InputGestureText="Backspace" IsEnabled="False">
+                <MenuItem.ContextMenu>
+                    <ContextMenu x:Name="menuBackContext" Opened="BackContext_Opened" />
+                </MenuItem.ContextMenu>
+            </MenuItem>
+            <MenuItem x:Name="menuForward" Header="Forward" Click="Forward_Click" InputGestureText="Alt+Right" IsEnabled="False">
+                <MenuItem.ContextMenu>
+                    <ContextMenu x:Name="menuForwardContext" Opened="ForwardContext_Opened" />
+                </MenuItem.ContextMenu>
+            </MenuItem>
         </Menu>            
     </Grid>
 </UserControl>

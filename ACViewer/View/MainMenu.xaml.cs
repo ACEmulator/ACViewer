@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -400,6 +401,153 @@ namespace ACViewer.View
         {
             var armorWindow = new ArmorList();
             armorWindow.ShowDialog();
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            if (FileExplorer.Instance?.History == null) return;
+
+            var prevDID = FileExplorer.Instance.History.Back();
+
+            if (prevDID == null) return;
+
+            // Navigate without adding to history (we're already in history)
+            FileExplorer.Instance.SuppressHistory = true;
+            Finder.Navigate(prevDID.Value.ToString("X8"));
+            FileExplorer.Instance.SuppressHistory = false;
+
+            UpdateNavigationButtons();
+        }
+
+        private void Forward_Click(object sender, RoutedEventArgs e)
+        {
+            if (FileExplorer.Instance?.History == null) return;
+
+            var nextDID = FileExplorer.Instance.History.Forward();
+
+            if (nextDID == null) return;
+
+            // Navigate without adding to history (we're already in history)
+            FileExplorer.Instance.SuppressHistory = true;
+            Finder.Navigate(nextDID.Value.ToString("X8"));
+            FileExplorer.Instance.SuppressHistory = false;
+
+            UpdateNavigationButtons();
+        }
+
+        public void UpdateNavigationButtons()
+        {
+            var history = FileExplorer.Instance?.History;
+            if (history == null || menuBack == null || menuForward == null) return;
+
+            menuBack.IsEnabled = history.CanGoBack();
+            menuForward.IsEnabled = history.CanGoForward();
+        }
+
+        private void BackContext_Opened(object sender, RoutedEventArgs e)
+        {
+            var contextMenu = sender as ContextMenu;
+            if (contextMenu == null) return;
+
+            contextMenu.Items.Clear();
+
+            var history = FileExplorer.Instance?.History;
+            if (history == null) return;
+
+            var backList = history.GetBackList();
+            for (int i = 0; i < backList.Count; i++)
+            {
+                var did = backList[i];
+                var menuItem = new MenuItem
+                {
+                    Header = GetFileTypeLabel(did),
+                    Tag = -(i + 1) // Negative offset for going back
+                };
+                menuItem.Click += HistoryItem_Click;
+                contextMenu.Items.Add(menuItem);
+            }
+        }
+
+        private void ForwardContext_Opened(object sender, RoutedEventArgs e)
+        {
+            var contextMenu = sender as ContextMenu;
+            if (contextMenu == null) return;
+
+            contextMenu.Items.Clear();
+
+            var history = FileExplorer.Instance?.History;
+            if (history == null) return;
+
+            var forwardList = history.GetForwardList();
+            for (int i = 0; i < forwardList.Count; i++)
+            {
+                var did = forwardList[i];
+                var menuItem = new MenuItem
+                {
+                    Header = GetFileTypeLabel(did),
+                    Tag = i + 1 // Positive offset for going forward
+                };
+                menuItem.Click += HistoryItem_Click;
+                contextMenu.Items.Add(menuItem);
+            }
+        }
+
+        private void HistoryItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem?.Tag == null) return;
+
+            var offset = (int)menuItem.Tag;
+            var history = FileExplorer.Instance?.History;
+            if (history == null) return;
+
+            var targetDID = history.NavigateByOffset(offset);
+            if (targetDID == null) return;
+
+            // Navigate without adding to history
+            FileExplorer.Instance.SuppressHistory = true;
+            Finder.Navigate(targetDID.Value.ToString("X8"));
+            FileExplorer.Instance.SuppressHistory = false;
+
+            UpdateNavigationButtons();
+        }
+
+        private string GetFileTypeLabel(uint did)
+        {
+            var fileTypeID = did >> 24;
+            var fileTypeName = "Unknown";
+
+            // Check FileExplorer's FileTypes list
+            if (FileExplorer.FileTypes != null)
+            {
+                // First try exact match (for special IDs like CharGen)
+                var exactMatch = FileExplorer.FileTypes.FirstOrDefault(ft => ft.ID == did);
+                if (exactMatch != null)
+                {
+                    fileTypeName = exactMatch.Name;
+                }
+                else
+                {
+                    // Then try by high byte
+                    var typeMatch = FileExplorer.FileTypes.FirstOrDefault(ft => ft.ID == fileTypeID);
+                    if (typeMatch != null)
+                    {
+                        fileTypeName = typeMatch.Name;
+                    }
+                    else
+                    {
+                        // Special cases for Cell and Landblock
+                        if ((did & 0xFFFF) == 0xFFFF)
+                            fileTypeName = "Landblock";
+                        else if ((did & 0xFFFF) == 0xFFFE)
+                            fileTypeName = "LandblockInfo";
+                        else if (fileTypeID == 0)
+                            fileTypeName = "EnvCell";
+                    }
+                }
+            }
+
+            return $"{fileTypeName} - 0x{did:X8}";
         }
     }
 }
