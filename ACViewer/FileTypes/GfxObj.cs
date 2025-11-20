@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 using ACE.Entity.Enum;
 
@@ -21,14 +23,25 @@ namespace ACViewer.FileTypes
 
             var surfaces = new TreeNode("Surfaces");
 
-            foreach (var surface in _gfxObj.Surfaces)
-                surfaces.Items.Add(new TreeNode($"{surface:X8}", clickable: true));
+            for (var i = 0; i < _gfxObj.Surfaces.Count; i++)
+            {
+                var surface = _gfxObj.Surfaces[i];
+                surfaces.Items.Add(new TreeNode($"Surface {i}: {surface:X8}", clickable: true));
+            }
+
+            // Build surface usage summary
+            var surfaceUsageSummary = BuildSurfaceUsageSummary();
 
             var vertexArray = new TreeNode("VertexArray");
             foreach (var item in new VertexArray(_gfxObj.VertexArray).BuildTree())
                 vertexArray.Items.Add(item);
 
-            treeView.Items.AddRange(new List<TreeNode>() { surfaces, vertexArray });
+            var nodesToAdd = new List<TreeNode>() { surfaces };
+            if (surfaceUsageSummary != null)
+                nodesToAdd.Add(surfaceUsageSummary);
+            nodesToAdd.Add(vertexArray);
+
+            treeView.Items.AddRange(nodesToAdd);
 
             if (_gfxObj.Flags.HasFlag(GfxObjFlags.HasPhysics))
             {
@@ -74,6 +87,61 @@ namespace ACViewer.FileTypes
             }
 
             return treeView;
+        }
+
+        private TreeNode BuildSurfaceUsageSummary()
+        {
+            if (_gfxObj.Polygons == null || _gfxObj.Polygons.Count == 0)
+                return null;
+
+            // Map surface index -> list of polygon indices that use it
+            var surfaceToPolygons = new Dictionary<int, List<int>>();
+
+            foreach (var kvp in _gfxObj.Polygons)
+            {
+                var polygonIndex = kvp.Key;
+                var polygon = kvp.Value;
+
+                // Track PosSurface
+                if (polygon.PosSurface >= 0 && polygon.PosSurface < _gfxObj.Surfaces.Count)
+                {
+                    if (!surfaceToPolygons.ContainsKey((int)polygon.PosSurface))
+                        surfaceToPolygons[(int)polygon.PosSurface] = new List<int>();
+                    surfaceToPolygons[(int)polygon.PosSurface].Add(polygonIndex);
+                }
+
+                // Track NegSurface if different from PosSurface
+                if (polygon.NegSurface >= 0 && polygon.NegSurface < _gfxObj.Surfaces.Count && polygon.NegSurface != polygon.PosSurface)
+                {
+                    if (!surfaceToPolygons.ContainsKey((int)polygon.NegSurface))
+                        surfaceToPolygons[(int)polygon.NegSurface] = new List<int>();
+                    surfaceToPolygons[(int)polygon.NegSurface].Add(polygonIndex);
+                }
+            }
+
+            if (surfaceToPolygons.Count == 0)
+                return null;
+
+            var summaryNode = new TreeNode("Surface Usage Summary:");
+
+            foreach (var surfaceIdx in surfaceToPolygons.Keys.OrderBy(k => k))
+            {
+                var polygonIndices = surfaceToPolygons[surfaceIdx];
+                var surfaceId = _gfxObj.Surfaces[surfaceIdx];
+
+                var usageNode = new TreeNode($"Surface {surfaceIdx} ({surfaceId:X8}): Used by {polygonIndices.Count} polygon(s)");
+
+                // Show first few polygon indices
+                var polygonList = string.Join(", ", polygonIndices.Take(10));
+                if (polygonIndices.Count > 10)
+                    polygonList += $", ... ({polygonIndices.Count - 10} more)";
+
+                usageNode.Items.Add(new TreeNode($"Polygons: {polygonList}"));
+
+                summaryNode.Items.Add(usageNode);
+            }
+
+            return summaryNode;
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
+using ACE.DatLoader;
 using ACE.Entity.Enum;
 
 using ACViewer.Entity;
@@ -139,9 +141,85 @@ namespace ACViewer.FileTypes
                 treeView.Items.Add(new TreeNode($"Default sound table: {_setup.DefaultSoundTable:X8}", clickable: true));
 
             if (_setup.DefaultScriptTable != 0)
+            {
                 treeView.Items.Add(new TreeNode($"Default script table: {_setup.DefaultScriptTable:X8}", clickable: true));
 
+                // Add particle effects summary
+                var particleEffectsSummary = BuildParticleEffectsSummary();
+                if (particleEffectsSummary != null && particleEffectsSummary.Items.Count > 0)
+                    treeView.Items.Add(particleEffectsSummary);
+            }
+
             return treeView;
+        }
+
+        private TreeNode BuildParticleEffectsSummary()
+        {
+            if (_setup.DefaultScriptTable == 0)
+                return null;
+
+            try
+            {
+                var scriptTable = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.PhysicsScriptTable>(_setup.DefaultScriptTable);
+                if (scriptTable == null || scriptTable.ScriptTable == null || scriptTable.ScriptTable.Count == 0)
+                    return null;
+
+                var summaryNode = new TreeNode("Particle Effects Summary:");
+
+                foreach (var kvp in scriptTable.ScriptTable.OrderBy(x => x.Key))
+                {
+                    var playScript = (PlayScript)kvp.Key;
+                    var scriptTableData = kvp.Value;
+
+                    // For each script mod entry, get the PhysicsScript and look for CreateParticleHooks
+                    foreach (var scriptMod in scriptTableData.Scripts)
+                    {
+                        try
+                        {
+                            var physicsScript = DatManager.PortalDat.ReadFromDat<ACE.DatLoader.FileTypes.PhysicsScript>(scriptMod.ScriptId);
+                            if (physicsScript == null || physicsScript.ScriptData == null || physicsScript.ScriptData.Count == 0)
+                                continue;
+
+                            var particleHooks = new List<ACE.DatLoader.Entity.AnimationHooks.CreateParticleHook>();
+
+                            foreach (var scriptData in physicsScript.ScriptData)
+                            {
+                                if (scriptData.Hook.HookType == AnimationHookType.CreateParticle)
+                                {
+                                    var hook = scriptData.Hook as ACE.DatLoader.Entity.AnimationHooks.CreateParticleHook;
+                                    if (hook != null)
+                                        particleHooks.Add(hook);
+                                }
+                            }
+
+                            if (particleHooks.Count > 0)
+                            {
+                                var playScriptNode = new TreeNode($"{playScript}" + (scriptMod.Mod != 0 ? $" (Mod: {scriptMod.Mod})" : ""));
+
+                                foreach (var hook in particleHooks)
+                                {
+                                    var hookNode = new TreeNode($"CreateParticle - EmitterInfo: {hook.EmitterInfoId:X8}, Part: {(int)hook.PartIndex}, EmitterId: {hook.EmitterId}", clickable: true);
+                                    playScriptNode.Items.Add(hookNode);
+                                }
+
+                                summaryNode.Items.Add(playScriptNode);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Skip entries that can't be loaded
+                            Console.WriteLine($"Error loading PhysicsScript {scriptMod.ScriptId:X8}: {ex.Message}");
+                        }
+                    }
+                }
+
+                return summaryNode.Items.Count > 0 ? summaryNode : null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error building particle effects summary: {ex.Message}");
+                return null;
+            }
         }
     }
 }
