@@ -89,7 +89,7 @@ namespace ACViewer.View
                 var portalFiles = DatManager.PortalDat.AllFiles.Count;
 
                 MainWindow.Status.WriteLine($"CellFiles={cellFiles}, PortalFiles={portalFiles}");*/
-                MainWindow.Status.WriteLine(runWorkerCompletedEventArgs.Error?.Message ?? "Done");
+                MainWindow.Status.WriteLine(runWorkerCompletedEventArgs.Error?.Message ?? "Dat files loaded");
                     
 
                 if (DatManager.CellDat == null || DatManager.PortalDat == null) return;
@@ -310,6 +310,11 @@ namespace ACViewer.View
         private void LoadInstances_Click(object sender, RoutedEventArgs e)
         {
             ToggleInstances();
+        }
+
+        private void RefreshWeenieSearchIndex_Click(object sender, RoutedEventArgs e)
+        {
+            Server.RefreshWeenieSearchIndex();
         }
 
         public static void ToggleInstances(bool updateConfig = true)

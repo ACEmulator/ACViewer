@@ -12,17 +12,87 @@
             <RowDefinition Height="22.5"/>
             <RowDefinition Height=".5*"/>
             <RowDefinition Height=".5*"/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition MaxWidth="178"/>
         </Grid.ColumnDefinitions>
-        <Label Content="File Type" Grid.ColumnSpan="2"/>
+        <Label Content="File Type" Grid.Row="0" Grid.ColumnSpan="2"/>
         <ComboBox Name="FileType" Width="174" ItemsSource="{Binding FileTypes}" Grid.Row="1"  Grid.ColumnSpan="2" Margin="7.5,0,0,0" SelectionChanged="FileType_SelectionChanged" HorizontalAlignment="Left"/>
         <ListBox Name="Files" Margin="7.5,7.5,0,0" ItemsSource="{Binding FileIDs}" Grid.Row="2" SelectionChanged="Files_SelectionChanged"/>
+        <ListBox Name="SearchResultsList" Margin="7.5,7.5,0,0" Grid.Row="2" SelectionChanged="SearchResults_SelectionChanged" Visibility="Collapsed"
+                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Item">
+            <ListBox.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander IsExpanded="False" Background="#22000000" Margin="0,0,0,1">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal" Background="Transparent" Cursor="Hand" ToolTip="Click to jump to this asset" MouseLeftButtonDown="GroupHeader_Click">
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Padding="2,2,0,2"/>
+                                                    <TextBlock Text="{Binding ItemCount, StringFormat=' ({0})'}" FontWeight="Bold" Opacity="0.7" Padding="0,2,2,2"/>
+                                                </StackPanel>
+                                            </Expander.Header>
+                                            <ItemsPresenter Margin="15,0,0,0"/>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListBox.GroupStyle>
+        </ListBox>
         <local:FileInfo Grid.Row="3" Margin="7.5,7.5,0,0" />
         <local:MotionList Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" />
         <local:ScriptList Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Visibility="Hidden" />
         <local:ClothingTableList Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" Visibility="Hidden" />
+        <DockPanel Grid.Row="4" Grid.ColumnSpan="2" Margin="7.5,0,7.5,0">
+            <Label Content="Weenie Search" DockPanel.Dock="Left" Padding="0,5,5,5"/>
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Margin="5,0,0,0">
+                <Label Content="Type" VerticalAlignment="Center" Padding="0,0,5,0"/>
+                <ToggleButton Name="TypeFilterToggle" Width="120" HorizontalContentAlignment="Left" Content="All Types" ToolTipService.ShowOnDisabled="True">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="#66808080"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ToggleButton.Style>
+                </ToggleButton>
+                <Popup Name="TypeFilterPopup" PlacementTarget="{Binding ElementName=TypeFilterToggle}" Placement="Bottom"
+                       StaysOpen="False" IsOpen="{Binding IsChecked, ElementName=TypeFilterToggle, Mode=TwoWay}">
+                    <Border Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" BorderBrush="Gray" BorderThickness="1">
+                        <ScrollViewer MaxHeight="300" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding TypeFilterOptions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <CheckBox Content="{Binding Name}" IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                              Margin="4,2" Checked="TypeFilterOption_Changed" Unchecked="TypeFilterOption_Changed"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                </Popup>
+            </StackPanel>
+            <TextBox Name="SearchBox" VerticalContentAlignment="Center" TextChanged="SearchBox_TextChanged" ToolTipService.ShowOnDisabled="True">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Triggers>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#66808080"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </DockPanel>
     </Grid>
 </UserControl>

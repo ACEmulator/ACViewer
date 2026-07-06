@@ -7,6 +7,9 @@ using System.Runtime.CompilerServices;
 using System.Media;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 using ACE.DatLoader;
 using ACE.DatLoader.FileTypes;
@@ -17,6 +20,27 @@ using ACViewer.FileTypes;
 
 namespace ACViewer.View
 {
+    /// <summary>
+    /// One checkable entry in the Weenie Type multi-select popup
+    /// </summary>
+    public class TypeFilterOption : INotifyPropertyChanged
+    {
+        public string Name { get; set; }
+
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSelected)));
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
+
     /// <summary>
     /// Interaction logic for FileType.xaml
     /// </summary>
@@ -55,12 +79,45 @@ namespace ACViewer.View
             }
         }
 
+        private List<Data.WeenieSearchEntry> _searchResults { get; set; }
+
+        public List<Data.WeenieSearchEntry> SearchResults
+        {
+            get => _searchResults;
+            set
+            {
+                _searchResults = value;
+                NotifyPropertyChanged("SearchResults");
+            }
+        }
+
+        private List<TypeFilterOption> _typeFilterOptions { get; set; } = new List<TypeFilterOption>();
+
+        public List<TypeFilterOption> TypeFilterOptions
+        {
+            get => _typeFilterOptions;
+            set
+            {
+                _typeFilterOptions = value;
+                NotifyPropertyChanged("TypeFilterOptions");
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly DispatcherTimer _searchDebounce;
 
         public FileExplorer()
         {
             InitializeComponent();
             Instance = this;
+
+            _searchDebounce = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(200) };
+            _searchDebounce.Tick += (s, e) =>
+            {
+                _searchDebounce.Stop();
+                ExecuteSearch();
+            };
 
             FileTypes = new List<Entity.FileType>()
             {
@@ -111,6 +168,16 @@ namespace ACViewer.View
             History = new History();
 
             DataContext = this;
+
+            SetSearchControlsEnabled(false, "Weenie search requires the ace_world database");
+        }
+
+        private void SetSearchControlsEnabled(bool enabled, string tooltip = null)
+        {
+            SearchBox.IsEnabled = enabled;
+            TypeFilterToggle.IsEnabled = enabled;
+            SearchBox.ToolTip = tooltip;
+            TypeFilterToggle.ToolTip = tooltip;
         }
 
         private void FileType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -198,6 +265,120 @@ namespace ACViewer.View
                 ReadCellFile(fileID);
         // Update navigation buttons after any navigation
         MainWindow?.menuMain?.UpdateNavigationButtons();
+        }
+
+        // minimum characters before actually running a search -- a 1-character term matches
+        // thousands of the ~44k indexed weenies, which is the expensive case to sort/group
+        private const int MinSearchLength = 2;
+
+        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(SearchBox.Text))
+            {
+                // clearing the box should feel instant -- don't wait on the debounce timer.
+                // ExecuteSearch (not an immediate hide) since a type filter alone can still show results
+                _searchDebounce.Stop();
+                ExecuteSearch();
+                return;
+            }
+
+            // debounce -- running the full search+regroup on every single keystroke is what was
+            // causing the multi-second lag while typing, since each intermediate 1-2 character
+            // prefix matches thousands of entries. Only search once typing pauses.
+            _searchDebounce.Stop();
+            _searchDebounce.Start();
+        }
+
+        private void TypeFilterOption_Changed(object sender, RoutedEventArgs e)
+        {
+            var selected = TypeFilterOptions.Where(o => o.IsSelected).Select(o => o.Name).ToList();
+
+            TypeFilterToggle.Content = selected.Count == 0 ? "All Types" :
+                selected.Count == 1 ? selected[0] :
+                $"{selected.Count} types";
+
+            // react immediately -- unlike typing, a checkbox toggle isn't a rapid-fire event
+            // stream, so there's no need to debounce it
+            _searchDebounce.Stop();
+            ExecuteSearch();
+        }
+
+        private void ExecuteSearch()
+        {
+            var query = SearchBox.Text?.Trim() ?? "";
+            var hasQuery = query.Length >= MinSearchLength;
+
+            var selectedTypes = TypeFilterOptions.Where(o => o.IsSelected).Select(o => o.Name).ToList();
+            var hasTypeFilter = selectedTypes.Count > 0;
+
+            if (!hasQuery && !hasTypeFilter)
+            {
+                SearchResultsList.Visibility = Visibility.Collapsed;
+                Files.Visibility = Visibility.Visible;
+                return;
+            }
+
+            if (!Data.WeenieSearchIndex.IsLoaded)
+            {
+                MainWindow.Status.WriteLine("Weenie search index isn't ready yet -- is the ace_world database connected?");
+                return;
+            }
+
+            SearchResultsList.Visibility = Visibility.Visible;
+            Files.Visibility = Visibility.Collapsed;
+
+            SearchResults = Data.WeenieSearchIndex.Search(hasQuery ? query : null, hasTypeFilter ? selectedTypes : null);
+
+            // group by resolved Setup dat ID -- many WCIDs commonly share one asset (e.g. a
+            // Baby/Chief/Elder tier of the same creature), so this collapses those into one
+            // header instead of repeating a near-identical row per WCID
+            var grouped = new ListCollectionView(SearchResults);
+            grouped.GroupDescriptions.Add(new PropertyGroupDescription(nameof(Data.WeenieSearchEntry.SetupIdHex)));
+
+            SearchResultsList.ItemsSource = grouped;
+        }
+
+        /// <summary>
+        /// Called by Server.TryPrimeDatabase()/RefreshWeenieSearchIndex() once the search index has
+        /// finished (or failed to) build
+        /// </summary>
+        public void OnSearchIndexLoaded(bool success)
+        {
+            SearchBox.Text = "";
+
+            if (!success)
+            {
+                SetSearchControlsEnabled(false, "Weenie search unavailable -- check the ace_world database connection");
+                return;
+            }
+
+            SetSearchControlsEnabled(true);
+
+            TypeFilterOptions = Data.WeenieSearchIndex.AvailableWeenieTypes
+                .Select(t => new TypeFilterOption { Name = t })
+                .ToList();
+            TypeFilterToggle.Content = "All Types";
+        }
+
+        private void SearchResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var entry = (Data.WeenieSearchEntry)SearchResultsList.SelectedItem;
+            if (entry == null) return;
+
+            Finder.Navigate(entry.SetupId.ToString("X8"));
+        }
+
+        private void GroupHeader_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is FrameworkElement fe && fe.DataContext is CollectionViewGroup group)
+            {
+                // reuse the already-working leaf-row selection path (SearchResults_SelectionChanged)
+                // rather than calling Finder.Navigate directly, since there's no obviously safer way
+                // to jump straight to the group's shared asset than picking a representative member
+                var firstEntry = group.Items.OfType<Data.WeenieSearchEntry>().FirstOrDefault();
+                if (firstEntry != null)
+                    SearchResultsList.SelectedItem = firstEntry;
+            }
         }
 
         public void ReadCellFile(uint fileID)
