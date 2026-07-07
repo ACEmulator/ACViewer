@@ -52,6 +52,7 @@
             <MenuItem Header="_Server">
                 <MenuItem Header="Load _Instances" Click="LoadInstances_Click" x:Name="optionLoadInstances"/>
                 <MenuItem Header="Load _Encounters" Click="LoadEncounters_Click" x:Name="optionLoadEncounters"/>
+                <MenuItem Header="_Refresh Weenie Search Index" Click="RefreshWeenieSearchIndex_Click"/>
             </MenuItem>
             <MenuItem Header="_View">
                 <MenuItem Header="_World Map" Click="WorldMap_Click" />

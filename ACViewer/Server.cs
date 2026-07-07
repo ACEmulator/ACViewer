@@ -343,23 +343,91 @@ namespace ACViewer
 
         public static void TryPrimeDatabase()
         {
-            SetDatabaseConfig();
+            try
+            {
+                SetDatabaseConfig();
+            }
+            catch (Exception ex)
+            {
+                // SetDatabaseConfig runs on the caller's thread (here, during app startup) --
+                // an unhandled exception this early can take the whole app down silently,
+                // so this must never be allowed to escape uncaught
+                MainWindow.Instance.Status.WriteLine($"ace_world database configuration failed: {ex.Message}");
+                View.FileExplorer.Instance.OnSearchIndexLoaded(false);
+                return;
+            }
 
             var worker = new BackgroundWorker();
 
             worker.DoWork += (sender, doWorkEventArgs) =>
             {
-                try
+                using (var ctx = new WorldDbContext())
                 {
-                    using (var ctx = new WorldDbContext())
-                    {
-                        var weenie = ctx.Weenie.FirstOrDefault();
-                    }
+                    var weenie = ctx.Weenie.FirstOrDefault();
                 }
-                catch (Exception)
-                {
-                }
+
+                ACViewer.Data.WeenieSearchIndex.Load();
             };
+            worker.RunWorkerCompleted += (sender, args) =>
+            {
+                if (args.Error != null)
+                {
+                    MainWindow.Instance.Status.WriteLine($"ace_world database connection failed: {args.Error.Message}");
+                    View.FileExplorer.Instance.OnSearchIndexLoaded(false);
+                    return;
+                }
+
+                var loaded = ACViewer.Data.WeenieSearchIndex.IsLoaded;
+
+                MainWindow.Instance.Status.WriteLine(loaded
+                    ? ACViewer.Data.WeenieSearchIndex.LastLoadSummary
+                    : "Weenie search index failed to load -- check the ace_world database connection");
+
+                View.FileExplorer.Instance.OnSearchIndexLoaded(loaded);
+            };
+
+            MainWindow.Instance.Status.WriteLine("Loading weenie search index...");
+            worker.RunWorkerAsync();
+        }
+
+        /// <summary>
+        /// Forces a rebuild of the weenie search index from the database, bypassing the cache file.
+        /// Manual escape hatch for cases the cache's last_Modified check can't catch, like deletions.
+        /// </summary>
+        public static void RefreshWeenieSearchIndex()
+        {
+            try
+            {
+                SetDatabaseConfig();
+            }
+            catch (Exception ex)
+            {
+                MainWindow.Instance.Status.WriteLine($"ace_world database configuration failed: {ex.Message}");
+                return;
+            }
+
+            var worker = new BackgroundWorker();
+
+            worker.DoWork += (sender, doWorkEventArgs) =>
+            {
+                ACViewer.Data.WeenieSearchIndex.Load(forceRefresh: true);
+            };
+            worker.RunWorkerCompleted += (sender, args) =>
+            {
+                // args.Error (not IsLoaded) is the right success check here -- unlike TryPrimeDatabase's
+                // first-ever load, this can run after a prior successful load, so IsLoaded would still
+                // read true from that earlier state even if this refresh attempt itself failed
+                if (args.Error != null)
+                {
+                    MainWindow.Instance.Status.WriteLine($"Weenie search index refresh failed: {args.Error.Message}");
+                    return;
+                }
+
+                MainWindow.Instance.Status.WriteLine(ACViewer.Data.WeenieSearchIndex.LastLoadSummary);
+                View.FileExplorer.Instance.OnSearchIndexLoaded(true);
+            };
+
+            MainWindow.Instance.Status.WriteLine("Refreshing weenie search index from database...");
             worker.RunWorkerAsync();
         }
 
