@@ -15,11 +15,11 @@ namespace ACViewer.Entity
         {
             var treeNode = new List<TreeNode>();
 
+            treeNode.Add(new TreeNode($"MaximumSameCharactersInARow: {_nameFilterLanguageData.MaximumSameCharactersInARow}"));
             treeNode.Add(new TreeNode($"MaximumVowelsInARow: {_nameFilterLanguageData.MaximumVowelsInARow}"));
             treeNode.Add(new TreeNode($"FirstNCharactersMustHaveAVowel: {_nameFilterLanguageData.FirstNCharactersMustHaveAVowel}"));
             treeNode.Add(new TreeNode($"VowelContainingSubstringLength: {_nameFilterLanguageData.VowelContainingSubstringLength}"));
             treeNode.Add(new TreeNode($"ExtraAllowedCharacters: {_nameFilterLanguageData.ExtraAllowedCharacters}"));
-            treeNode.Add(new TreeNode($"Unknown: {_nameFilterLanguageData.Unknown}"));
 
             var compoundLetterGroups = new TreeNode($"CompoundLetterGrounds");
 
