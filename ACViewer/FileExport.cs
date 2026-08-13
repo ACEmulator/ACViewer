@@ -882,7 +882,7 @@ namespace ACViewer
                 {
                     //FilePath = surfaceFilename,
                     FilePath = $"{surfaceID:X8}.png",
-                    TextureType = TextureType.Diffuse,
+                    TextureType = Assimp.TextureType.Diffuse,
                     //WrapModeU = TextureWrapMode.Wrap,
                     //WrapModeV = TextureWrapMode.Wrap,
                 };
