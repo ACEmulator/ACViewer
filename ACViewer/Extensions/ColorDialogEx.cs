@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -128,6 +129,7 @@ namespace ACViewer.Extensions
         }
         #endregion
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Action<int, int, int> ColorEditCallback { get; set; }
     }
 }

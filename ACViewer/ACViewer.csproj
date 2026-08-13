@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon />
     <StartupObject />
@@ -98,6 +98,13 @@
     <None Update="Data\LootArmor.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-4f7c-pmjv-c25w" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-7mfr-774f-w5r9" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8884-xcr4-r68p" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-xcvr-qv8h-m7xw" />
   </ItemGroup>
 
 	<PropertyGroup>
