@@ -100,6 +100,13 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-4f7c-pmjv-c25w" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-7mfr-774f-w5r9" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-8884-xcr4-r68p" />
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-xcvr-qv8h-m7xw" />
+  </ItemGroup>
+
 	<PropertyGroup>
 		<PostBuildEvent>
 			robocopy $(SolutionDir)docs $(TargetDir)docs /S /E /COPY:DAT /MIR /NP /TEE /V
